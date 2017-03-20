@@ -1,0 +1,111 @@
+\name{ei_est_gen}
+\alias{ei_est_gen}
+\title{
+Iterative EI Estimation
+}
+\description{
+Iteratively fits EI models for candidates and racial/ethnic groups
+}
+\usage{
+ei_est_gen(cand_vector, race_group, total, rho = 10, data, table_names, 
+sample = 1000, tomog = F, density_plot = F, beta_yes=F,...)
+}
+
+\arguments{
+  \item{cand_vector}{
+Character vector of candidate names, taken from the dataset
+}
+  \item{race_group}{
+Character vector of formula, e.g., "~ pct_latino"
+}
+  \item{total}{
+Character vector (e.g., "totvote") of total variable name from data, variable in data is numeric
+
+}
+  \item{rho}{
+Rho parameter for ei() estimate, defaults to 10, numeric
+}
+  \item{data}{
+data.frame() object containing the data
+}
+  \item{table_names}{
+Character vector of table names with same length as race_group. Used for formatting output. If only one racial group, must provide "Pct. Other" as second element of vector
+
+}
+  \item{sample}{
+Number of samples used for EI calculation, default = 1000
+}
+  \item{tomog}{
+Logical to display tomography plot. If true will will save pdf plot to working directory. Default is FALSE
+}
+  \item{density_plot}{
+Logical to display density plot of betab and betaw. If true will save pdf plot to working directory. Default is FALSE
+}
+
+  \item{beta_yes}{
+Logical to export betas (b, w) in list object in addition to table of results. Default is FALSE
+}
+
+  \item{\dots}{
+Arguments passed onto ei() function
+}
+}
+
+\value{
+Data frame/table object containing EI individually estimated results. If beta_yes=T, two list items, first the data frame table of results, second dataframe of betas themselves.
+}
+\references{
+eiPack. Gary King (1997). A Solution to the Ecological Inference Problem. Princeton: Princeton University Press.
+}
+\author{
+Loren Collingwood <loren.collingwood@ucr.edu>
+}
+\note{
+If this results in an error, "Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'", just rerun the algorithm again.
+
+}
+
+
+\examples{
+# TOY DATA EXAMPLE
+canda <- c(.1, .09, .85, .9, .92)
+candb <- 1-canda
+white <- c(.8, .9, .10, .08, .11)
+black <- 1 - white
+total <- c(30,80, 70, 20, 29)
+toy <- data.frame(canda, candb, white, black, total)
+
+# CREATE VECTORS
+cands <- c("canda")
+race_group <- c("~ black") # only use one group for example
+table_names <- c("EI: PCT Black", "EI: PCT White")
+
+# RUN ei_est_gen()
+# KEEP DATA TO JUST ONE ROW FOR EXAMPLE (time) ONLY!
+ei_est_gen(cands, race_group, "total",
+            data = toy[c(1,3,5),], table_names = table_names, sample=100)
+
+\donttest{
+# WARNING -- May take a little while to execute
+# Load Package Data
+data(corona)
+# Create Character Vectors
+cands <- c("pct_husted","pct_spiegel","pct_ruth","pct_button","pct_montanez","pct_fox")
+race_group3 <- c("~ pct_hisp", "~ pct_asian", "~ pct_white")
+table_names <- c("EI: Pct Hisp", "EI: Pct Asian", "EI: Pct White")
+
+# Run ei_est_gen function
+results <- ei_est_gen(cand_vector=cands, race_group = race_group3,
+			total = "totvote", data = corona, table_names = table_names)
+
+results
+# Run ei_est_gen function; Exporting betas into data frame
+results_w_betas <- ei_est_gen(cand_vector=cands, race_group = race_group3,
+			total = "totvote", data = corona, table_names = table_names, beta_yes=T)
+
+res1 <- results_w_betas[[1]]# table of mean estimates
+res1
+res2 <- results_w_betas[[2]]# betas of estimates for each precinct
+
+}
+}
