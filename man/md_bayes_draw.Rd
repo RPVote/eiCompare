@@ -56,5 +56,5 @@
   # Then excute md_bayes_draw(); not run here due to time
   # md_bayes_draw(toy, c(2,3), form )
     
-  }
 }
+
