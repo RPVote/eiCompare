@@ -1,6 +1,7 @@
 exportPattern("^[[:alpha:]]+")
-import(eiPack, methods, tmvtnorm, foreach, ggplot2, ei)
+import(eiPack, methods, tmvtnorm, foreach, ggplot2, ei, RCurl, RJSONIO, sjmisc, data.table, wru)
 importFrom(R.utils, insert)
+importFrom("utils", "str")
 importFrom(ucminf, ucminf)
 importFrom(mvtnorm, dmvnorm, rmvnorm, pmvnorm)
 importFrom(msm, rtnorm)
