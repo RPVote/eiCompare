@@ -28,7 +28,7 @@ ggplot2 graph output of EI and RxC differences
 eiPack, King et. al. (http://gking.harvard.edu/eiR)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <loren.collingwood@ucr.edu>; Sergio Garcia-Rios <garcia.rios@cornell.edu>
 }
 
 \examples{
