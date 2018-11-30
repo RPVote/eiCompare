@@ -22,7 +22,8 @@
 }
 
 \value{
-  Data frame of probably one scenario over the other by 10 pct., by 5 pct., greater than 0
+  Data frame of the probability of one scenario over the other by 10 pct., by 5 pct., greater than 0 
+  (e.g., what is the probability that candidate 1 beats candidate 2 among Latinos by 10 percentage points, etc.)
 }
 \references{
   eiPack, King et. al. (http://gking.harvard.edu/eiR)
