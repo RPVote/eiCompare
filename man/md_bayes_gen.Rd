@@ -1,0 +1,68 @@
+\name{md_bayes_gen}
+\alias{md_bayes_gen}
+
+\title{
+  MD Bayes Generalize
+}
+\description{
+  Tunes and estimates MD Bayes algorithm (ei.MD.bayes). This, combined with md_bayes_table() produces tables of results compatible with EI table of results.
+}
+\usage{
+  md_bayes_gen(dat, form, total_yes=TRUE, total, ntunes = 10, totaldraws = 10000, 
+                   seed = 12345, sample = 10000, thin = 100, burnin = 10000, 
+                   ret.mcmc = TRUE, ci=c(0.025, 0.975), ci_TRUE=TRUE, produce_draws=FALSE, ...)
+
+}
+
+\arguments{
+  \item{dat}{
+    data.frame() object of just raw candidate vote and raw population counts. Put vote results in first set of columns, put population counts next
+  }
+  
+  \item{form}{Formula object, e.g.: cbind(V1, V2, novote) ~ cbind(VtdAVap_cor, VtdBVap_cor, VtdHVap_cor, VtdOVap_cor)
+  }
+  \item{total_yes}{Logical, default=TRUE. Include total variable from data? Usually when data are stored in percents}
+  \item {total}{character, total variable column name}
+  \item{ntunes}{Numeric; how much to tune tuneMD. Default = 10}
+  \item{totaldraws}{Numeric; How many total draws from MD. Default = 10000}
+  \item{seed}{Numeric. Default = 12345}
+  \item{sample}{Numeric. Default = 10000}
+  \item{thin}{Numeric. Default = 10}
+  \item{burnin}{Numeric. Default = 10000}
+  \item{ret.mcmc}{Logical. Default = TRUE}
+  \item{ci}{numeric vector of credible interval (low/high), default is 95 percent= c(0.025, 0.975)} 
+  \item{ci_TRUE}{Logical, default = TRUE. Include credible intervals in reported results.}
+  \item{produce_draws}{Logical, default is FALSE. Produces two-item list of table and md.bayes() mcmc draws (for additional testing and analysis)}
+  \item{...}{Additional arguments passed to tuneMD() and ei.MD.bayes()}
+}
+
+\value{
+  List object of length 1 (when produce_draws=FALSE). List object of length 2 (when produce_draws=TRUE). First item is list of race x candidate tabular results, with mean, SE, and credible intervals. Second item is mcmc draws. 
+}
+\references{
+  eiPack, King et. al. (http://gking.harvard.edu/eiR)
+}
+\author{
+  Loren Collingwood <loren.collingwood@ucr.edu>
+}
+
+\examples{
+  
+  # TOY DATA EXAMPLE
+  canda <- c(10,8, 10, 4, 8)
+  candb <- 20-canda
+  white <- c(15, 12, 18, 6, 10)
+  black <- 20 - white
+  toy <- data.frame(canda, candb, white, black)
+  
+  # Generate formula for passage to ei.reg.bayes() function #
+  form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
+  
+  # Then execute md_bayes_gen(); not run here due to time
+  md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1, totaldraws=100, sample=10, burnin=1)
+  
+  # Add in mcmc drawrings #
+  drawrings <- md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1,totaldraws=100,sample=10,burnin                             =1, produce_draws=TRUE)
+  head ( drawrings$draws )
+
+}

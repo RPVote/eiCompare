@@ -1,0 +1,46 @@
+\name{md_bayes_table}
+\alias{md_bayes_table}
+
+\title{
+  MD Bayes Generalize Table Creation
+}
+\description{
+  This, combined with md_bayes_gen() produces tables of results compatible with EI table of results.
+}
+\usage{
+  md_bayes_table(md_results)
+
+}
+
+\arguments{
+  \item{md_results}{Results object from md_bayes_gen() function.}
+}
+
+\value{
+  Data.frame object of candidate (rows) and race (columns) RxC results. This, combined with results from ei_est_gen() sends to the ei_rc_good_table() function for combined table results and comparisons.
+}
+\references{
+  eiPack, King et. al. (http://gking.harvard.edu/eiR)
+}
+\author{
+  Loren Collingwood <loren.collingwood@ucr.edu>
+}
+
+\examples{
+  
+  # TOY DATA EXAMPLE
+  canda <- c(10,8, 10, 4, 8)
+  candb <- 20-canda
+  white <- c(15, 12, 18, 6, 10)
+  black <- 20 - white
+  toy <- data.frame(canda, candb, white, black)
+  
+  # Generate formula for passage to ei.reg.bayes() function
+  form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
+  
+  # Then execute md_bayes_gen(); not run here due to time
+  res <- md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1,totaldraws=100,sample=10,burnin=1, 
+               ci_TRUE=F)
+            
+  md_bayes_table(res)
+}
