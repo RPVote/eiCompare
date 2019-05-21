@@ -16,15 +16,12 @@
 
 \arguments{
   \item{dat}{
-    data.frame() object of just raw candidate vote and raw population counts. Put vote results in first set of columns, put population counts next
-  }
-  
-  \item{form}{Formula object, e.g.: cbind(V1, V2, novote) ~ cbind(VtdAVap_cor, VtdBVap_cor, VtdHVap_cor, VtdOVap_cor)
-  }
+    data.frame() object of just raw candidate vote and raw population counts. Put vote results in first set of columns, put population counts next}
+  \item{form}{Formula object, e.g.: cbind(V1, V2, novote) ~ cbind(VtdAVap_cor, VtdBVap_cor, VtdHVap_cor, VtdOVap_cor)}
   \item{total_yes}{Logical, default=TRUE. Include total variable from data? Usually when data are stored in percents}
-  \item {total}{character, total variable column name}
-  \item{ntunes}{Numeric; how much to tune tuneMD. Default = 10}
-  \item{totaldraws}{Numeric; How many total draws from MD. Default = 10000}
+  \item{total}{character, total variable column name}
+  \item{ntunes}{Numeric. How much to tune tuneMD. Default = 10}
+  \item{totaldraws}{Numeric. Number of total draws from MD. Default = 10000}
   \item{seed}{Numeric. Default = 12345}
   \item{sample}{Numeric. Default = 10000}
   \item{thin}{Numeric. Default = 10}
