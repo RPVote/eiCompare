@@ -1,4 +1,6 @@
 # eiCompare
+[![R build status](https://github.com/DSSG-eiCompare/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=R-CMD-check)
+
 eiCompare development version
 
 This package helps analysts with Ecological Inference and RxC analysis, to produce plots and tables. 
