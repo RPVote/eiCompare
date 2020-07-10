@@ -8,12 +8,12 @@ Create EI Comparison Table
 Takes output from EI model, EI RxC model, Goodman regression, and puts them into a data frame table for useful analysis and comparison.
 }
 \usage{
-ei_rc_good_table(ei, rc, good, groups, include_good = F)
+ei_rc_good_table(ei, rc, good, groups, include_good = FALSE)
 }
 
 \arguments{
   \item{ei}{
-Table/data frame object result from ei_est_gen. This assumes beta_yes=F in ei_est_gen(). See example below for beta_yes=T in ei_est_gen().
+Table/data frame object result from ei_est_gen. This assumes beta_yes=FALSE in ei_est_gen(). See example below for beta_yes=TRUE in ei_est_gen().
 }
   \item{rc}{
 Table/data frame from EI:RxC process from bayes_table_make()
@@ -25,7 +25,7 @@ Table/data frame from Goodman regression, from goodman_generalize(). Default is 
 Character vector of voting blocks (e.g., c("Latino", "White"))
 }
   \item{include_good}{
-Logical, default is FALSE (F), Set to TRUE (T) if including a Goodman table/data object
+Logical, default is FALSE, Set to TRUE if including a Goodman table/data object
 }
 
 }
@@ -112,7 +112,7 @@ ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res,
 				)
 ei_rc_combine
 
-# If set beta_yes=T in ei_est_gen():
+# If set beta_yes=TRUE in ei_est_gen():
 #ei_rc_combine2 <- ei_rc_good_table(results[[1]], ei_bayes_res, groups= c("Black", "White"))
 
 }

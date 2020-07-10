@@ -8,7 +8,7 @@ Iteratively fits EI models for candidates and racial/ethnic groups
 }
 \usage{
 ei_est_gen(cand_vector, race_group, total, rho = 10, data, table_names, 
-sample = 1000, tomog = F, density_plot = F, beta_yes=F,...)
+sample = 1000, tomog = FALSE, density_plot = FALSE, beta_yes=FALSE,...)
 }
 
 \arguments{
@@ -52,7 +52,7 @@ Arguments passed onto ei() function
 }
 
 \value{
-Data frame/table object containing EI individually estimated results. If beta_yes=T, two list items, first the data frame table of results, second dataframe of betas themselves.
+Data frame/table object containing EI individually estimated results. If beta_yes=TRUE, two list items, first the data frame table of results, second dataframe of betas themselves.
 }
 \references{
 eiPack. Gary King (1997). A Solution to the Ecological Inference Problem. Princeton: Princeton University Press.
@@ -101,7 +101,7 @@ results <- ei_est_gen(cand_vector=cands, race_group = race_group3,
 results
 # Run ei_est_gen function; Exporting betas into data frame
 results_w_betas <- ei_est_gen(cand_vector=cands, race_group = race_group3,
-			total = "totvote", data = corona, table_names = table_names, beta_yes=T)
+			total = "totvote", data = corona, table_names = table_names, beta_yes=TRUE)
 
 res1 <- results_w_betas[[1]]# table of mean estimates
 res1
