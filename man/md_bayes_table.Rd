@@ -40,7 +40,7 @@
   
   # Then execute md_bayes_gen(); not run here due to time
   res <- md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1,totaldraws=100,sample=10,burnin=1, 
-               ci_TRUE=F)
+               ci_TRUE=FALSE)
             
   md_bayes_table(res)
 }
