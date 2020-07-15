@@ -4,7 +4,7 @@
 \title{Multinomial Dirichlet Bayes Draw Two Candidates
   
 }
-\description{Extract posterior means and credible intervals. Need to label candidate vote variables: V1, V2, when two=F, add V3; Hispanic = VtdHVap_cor, White = VtdAVap_cor, Black = VtdBVap_cor
+\description{Extract posterior means and credible intervals. Need to label candidate vote variables: V1, V2, when two=FALSE, add V3; Hispanic = VtdHVap_cor, White = VtdAVap_cor, Black = VtdBVap_cor
   
 }
 \usage{mbd_two(md, colnames, two=TRUE)
