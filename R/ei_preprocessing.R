@@ -21,11 +21,19 @@
 
 check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
   
+  # check max_dev, avg_dev validity
+  if((max_dev < 0) | (avg_dev < 0)) {
+    stop(
+      "max_dev and avg_dev must be greater than 0"
+    )
+  }
+  
   # get max and avg deviations
   diff_prps <- abs(vote_sums - provided_totals) / provided_totals
   max <- max(diff_prps)
   avg <- mean(diff_prps)
   
+  # check conditions
   if (all(diff_prps == 0)) {
     return(2)
   } else if (max < max_dev & avg < avg_dev) {
@@ -65,8 +73,8 @@ standardize_votes <- function(votes) {
 #' @param data A dataframe of election results, where each row represents a precinct or geographic voting unit.
 #' @param cols A character vector with the names of the columns indicating total votes cast by each race
 #' @param totals_col A character string with the name of the total vote count column in the data. If null, total votes are computed within the function.
-#' @param max_dev A floating point object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col
-#' @param avg_dev A floating point object indicating the maximum average deviation of all precints' vote sums from the totals in totals_col
+#' @param max_dev A numeric type object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col.
+#' @param avg_dev A numeric type object indicating the maximum average deviation difference of all precints' vote sums from the totals in totals_col.
 #' @param verbose A boolean indicating whether to print warnings and messages.
 #'
 #' @export
