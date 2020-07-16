@@ -24,8 +24,9 @@ test_that("check_race_diffs gets conditions right", {
     max_dev,
     avg_dev
   )
-  expect_equal(res, 2)
-
+  expect_equal(res$closeness, 2)
+  expect_equal(res$deviates, rep(FALSE, 5))
+  
   # near match should return 1
   vote_sums[1] <- 1.05
   res <- check_race_diffs(
@@ -34,7 +35,8 @@ test_that("check_race_diffs gets conditions right", {
     max_dev,
     avg_dev
   )
-  expect_equal(res, 1)
+  expect_equal(res$closeness, 1)
+  expect_equal(res$deviates, c(TRUE, rep(FALSE, 4)))
 
   # max diff > 0.1 should return 0
   vote_sums[1] <- 1.11
@@ -44,8 +46,9 @@ test_that("check_race_diffs gets conditions right", {
     max_dev,
     avg_dev
   )
-  expect_equal(res, 0)
-
+  expect_equal(res$closeness, 0)
+  expect_equal(res$deviates, c(TRUE, rep(FALSE, 4)))
+  
   # avg diff > 0.025 should return 0
   vote_sums <- rep(1.03, 5)
   res <- check_race_diffs(
@@ -54,7 +57,8 @@ test_that("check_race_diffs gets conditions right", {
     max_dev,
     avg_dev
   )
-  expect_equal(res, 0)
+  expect_equal(res$closeness, 0)
+  expect_equal(res$deviates, rep(TRUE, 5))
   
   # should return error if max_dev < 0
   max_dev <- -0.3
@@ -79,5 +83,5 @@ test_that("check_race_diffs gets conditions right", {
     max_dev,
     avg_dev
   )
-  expect_equal(res, 0)
+  expect_equal(res$closeness, 0)
 })

@@ -17,7 +17,7 @@
 #' @param max_dev A flaoting point object passed from clean_race
 #' @param avg_dev A floating point object passed from clean_race
 #' 
-#' @return A numeric vector 0, 1, or 2. 
+#' @return A list containing two objects, 'closeness' and 'deviates'. See details for more information
 
 check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
   
@@ -28,18 +28,22 @@ check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
     )
   }
   
-  # get max and avg deviations
+  # get deviation info
   diff_prps <- abs(vote_sums - provided_totals) / provided_totals
+  deviates <- diff_prps != 0
   max <- max(diff_prps)
   avg <- mean(diff_prps)
   
   # check conditions
+  output <- list(closeness = 2, deviates = deviates)
   if (all(diff_prps == 0)) {
-    return(2)
+    return(output)
   } else if (max < max_dev & avg < avg_dev) {
-    return(1)
+    output$closeness <- 1
+    return(output)
   } else {
-    return(0)
+    output$closeness <- 0
+    return(output)
   }
 }
 
@@ -76,6 +80,7 @@ standardize_votes <- function(votes) {
 #' @param max_dev A numeric type object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col.
 #' @param avg_dev A numeric type object indicating the maximum average deviation difference of all precints' vote sums from the totals in totals_col.
 #' @param verbose A boolean indicating whether to print warnings and messages.
+#' @param return_devs A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals_col
 #'
 #' @export
 #' 
@@ -86,7 +91,8 @@ clean_race <- function(data,
                        totals_col = NULL, 
                        max_dev = 0.1, 
                        avg_dev = 0.025, 
-                       verbose = TRUE) {
+                       verbose = TRUE,
+                       return_devs = FALSE) {
 
   # get votes by race, sum of votes
   votes <- data[, cols]
@@ -97,13 +103,14 @@ clean_race <- function(data,
     # if no vote totals_col passed, use vote_sums for totals
     proportions <- eiCompare::standardize_votes(votes)
     return(proportions)
+    
+  # else check the extent of deviation from provided totals
   } else {
     vote_totals <- data[, totals_col]
-    closeness <- eiCompare::check_race_diffs(vote_sums,
-                                             vote_totals,
-                                             max_dev,
-                                             avg_dev)
-
+    race_check <- eiCompare::check_race_diffs(
+      vote_sums, vote_totals, max_dev, avg_dev
+    )
+    closeness <- race_check$closeness
     if (closeness == 2) {
       if (verbose == TRUE) {
         print(
@@ -111,6 +118,9 @@ clean_race <- function(data,
         )
       }
       proportions <- eiCompare::standardize_votes(votes)
+      if (return_devs == TRUE) {
+        proportions$deviates <- race_check$deviates 
+      }
       return(proportions)
       
     } else if (closeness == 1) {
@@ -121,14 +131,18 @@ clean_race <- function(data,
         )
       }
       proportions <- eiCompare::standardize_votes(votes)
+      if (return_devs == TRUE) {
+        proportions$deviates <- race_check$deviates 
+      }
       return(proportions)
       
     } else if (closeness == 0) {
-      stop(
+      warning(
         "Precinct vote sums are too far from the totals. 
-        Recheck your data, or leave vote_totals blank. 
-        Type ?prep_race for more information."
+        Returning column 'deviates' identifying problematic
+        rows..."
       )
+      return(race_check$deviates)
     }
   }
 }
