@@ -1,3 +1,31 @@
+#' Congruence for 2x2
+#' 
+#' Calculates congruence scores between EI and RxC for the 2x2 Scenario
+#' 
+#' 
+#' @param ei_rc_table Object produced from ei_rc_good_table(), where
+#' include_good=F, of class ei_compare
+#' @param cand_race Numeric vector indicating race of the candidates in order
+#' they show up in table rownames, where 1=Latino; 2=Black; 3=Asian;
+#' 4=White/Non
+#' @param group_race Numeric vector, taking similar values as cand_race where
+#' 1=Latino; 2=Black; 3=Asian; 4=White/Non
+#' @return Table of congruence scores
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>, Matt Barreto
+#' <barretom@@ucla.edu>
+#' @examples
+#' 
+#' 
+#' # LA County 2010 Insurance Commissioner Race
+#' #ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res, 
+#' #                                  groups= c("Latino", "Non Latino"))
+#' 
+#' load ( system.file("extdata/congruence_table.RData",package="eiCompare") )
+#' 
+#' ei_rc_congruence(ei_rc_combine2_2, c(1,4), c(1,4)) 
+#' 
+#' 
+#' @export ei_rc_congruence
 ei_rc_congruence <- function(ei_rc_table, cand_race, group_race) {
   dat <- ei_rc_table@data # extract data table
   dat[, 1] <- as.character(dat[, 1]) # convert to character

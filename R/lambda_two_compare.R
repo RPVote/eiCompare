@@ -1,3 +1,44 @@
+#' Lambda Two Compare
+#' 
+#' Compares two vectors of lambdas, usually one racial group's support for two
+#' separate candidates, or two separate groups' support for the same candidate.
+#' 
+#' 
+#' @param lmd data.frame() object returned from md_bayes_draw_lambda()
+#' @param cnames Vector of character (column) names, needs to match relevant
+#' column names in md_bayes_draw_lambda return.
+#' @param group_name Character string for name appearing in posterio plot.
+#' Default is "Latino")
+#' @param cand1or2 Numeric. Either 1 or 2. Default = 1. Which pairing over the
+#' other.
+#' @return Data frame of the probability of one scenario over the other by 10
+#' pct., by 5 pct., greater than 0 (e.g., what is the probability that
+#' candidate 1 beats candidate 2 among Latinos by 10 percentage points, etc.)
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; Justin Gross
+#' <jhgross@@umass.edu>
+#' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
+#' @examples
+#' 
+#'   
+#'   # TOY DATA EXAMPLE
+#'   canda <- c(10,8, 10, 4, 8)
+#'   candb <- 20-canda
+#'   white <- c(15, 12, 18, 6, 10)
+#'   black <- 20 - white
+#'   toy <- data.frame(canda, candb, white, black)
+#'   
+#'   # Generate formula for passage to ei.reg.bayes() function
+#'   form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
+#'   # Then excute md_bayes_draw(); not run here due to time
+#'   # lmd <- md_bayes_draw_lambda(toy, c(2,3), form )
+#'   # Function Prep #
+#'   # cnames <- c("lambda.black.canda", "lambda.black.candb")
+#' 
+#'   # Canda a over candb among black voters#
+#'   #lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
+#'   
+#' 
+#' @export lambda_two_compare
 lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
                                cand1or2 = 1) {
   if (cand1or2 == 2) {

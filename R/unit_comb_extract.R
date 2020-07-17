@@ -1,3 +1,18 @@
+#' Extract relevant geographic units from 15-digit FIPS code
+#' 
+#' Extract relevant geographic units from 15-digit FIPS code
+#' 
+#' 
+#' @param fips Character vector. 15-digit FIPS code
+#' @return List with separate datasets of length fips, including values for
+#' fips, state, county, tract, block, state-county, and state-county-tract.
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @examples
+#' 
+#'   
+#' 
+#' 
+#' @export unit_comb_extract
 unit_comb_extract <- function(fips) {
 
   # NA in FIPS -- just make everything NA
