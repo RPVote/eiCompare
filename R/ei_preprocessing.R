@@ -56,7 +56,7 @@ check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
 #' @param totals A numeric vector of totals on which to standardize
 #' 
 #' @return A dataframe of standardized proportions whose columns sum rowwise to 1
-standardize_votes <- function(votes) {
+standardize <- function(votes) {
   prps <- votes / rowSums(votes)
   names(prps) <- paste(names(prps), "p", sep = "_")
   return(prps)
@@ -89,7 +89,7 @@ standardize_votes <- function(votes) {
 #' @export
 #' 
 #' @return A dataframe with proportions corresponding to the turnout of each race/ethnicity group
-clean_votes <- function(
+stdize_votes <- function(
     data,
     cols, 
     totals_col = NULL, 
@@ -170,7 +170,7 @@ clean_votes <- function(
 #' @export
 #' 
 #' @return A dataframe containing columns for each race and candidate converted to percentages, ready for Ecological Inference
-clean_votes_all <- function(
+stdize_votes_all <- function(
     data,
     race_cols,
     cand_cols,

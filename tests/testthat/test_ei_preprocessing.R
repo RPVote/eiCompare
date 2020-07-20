@@ -1,6 +1,6 @@
 context("Testing performance of ei_preprocessing functions")
 
-test_that("standardize_votes() returns correct results", {
+test_that("standardize_() returns correct results", {
   votes <- empty_ei_df(2, 0, 2)
   votes$c1 <- c(1, 1)
   votes$c2 <- c(1, 1)
@@ -10,7 +10,7 @@ test_that("standardize_votes() returns correct results", {
     "c2_p" = c(0.5, 0.5)
   )
 
-  expect_equal(standardize_votes(votes), expected)
+  expect_equal(standardize_(votes), expected)
 })
 
 test_that("check_diffs() gets conditions right", {
@@ -89,7 +89,7 @@ test_that("check_diffs() gets conditions right", {
   expect_equal(res$closeness, 0)
 })
 
-test_that("clean_votes() handles all cases", {
+test_that("stdize_votes) handles all cases", {
   
   df <- empty_ei_df()
   df$r1 <- 1
@@ -97,7 +97,7 @@ test_that("clean_votes() handles all cases", {
   df$t <- 2
   
   # base case works correctly
-  res <- clean_votes(
+  res <- stdize_votes
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -112,7 +112,7 @@ test_that("clean_votes() handles all cases", {
   
   # message prints when things work well
   expect_message(
-    clean_votes(
+    stdize_votes
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -122,7 +122,7 @@ test_that("clean_votes() handles all cases", {
   )
   
   # diagnostic works correctly
-  res <- clean_votes(
+  res <- stdize_votes
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -141,7 +141,7 @@ test_that("clean_votes() handles all cases", {
   df$r1[2] <- 1.01
   df$r2[1] <- 1.01
   expect_message(
-    clean_votes(
+    stdize_votes
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -154,7 +154,7 @@ test_that("clean_votes() handles all cases", {
   df$r2 <- 1
   df$r1 <- c(10,1)
   expect_warning(
-    clean_votes(
+    stdize_votes
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -165,7 +165,7 @@ test_that("clean_votes() handles all cases", {
   
   # upon violation, return diagnostic column regardless of verbose
   res <- suppressWarnings({
-    clean_votes(
+    stdize_votes
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
