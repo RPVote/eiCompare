@@ -1,16 +1,16 @@
-mean_and_ci <- function(cbind_dat, ci=c(.025, .975)){
+mean_and_ci <- function(cbind_dat, ci = c(.025, .975)) {
   # Add votes together
   total <- apply(cbind_dat, 1, sum)
   # Create vote filler
-  v_fill <- matrix(NA, nrow=nrow(cbind_dat), ncol=ncol(cbind_dat))
+  v_fill <- matrix(NA, nrow = nrow(cbind_dat), ncol = ncol(cbind_dat))
   # Create mean, CI filler
-  qtile <- matrix(NA, nrow=ncol(cbind_dat), ncol=3)
+  qtile <- matrix(NA, nrow = ncol(cbind_dat), ncol = 3)
   # Create percents for every vote column for 1 racial group
   for (j in 1:ncol(v_fill)) {
     # Divide each vote by the total
-    v_fill[,j] <- cbind_dat[,j] / total
+    v_fill[, j] <- cbind_dat[, j] / total
     # Mean, 95% confidence interval
-    qtile[j,]<- c(mean(v_fill[,j]), quantile(v_fill[,j], ci) ) 
+    qtile[j, ] <- c(mean(v_fill[, j]), quantile(v_fill[, j], ci))
   }
   # Label Output #
   row.names(qtile) <- colnames(cbind_dat)
