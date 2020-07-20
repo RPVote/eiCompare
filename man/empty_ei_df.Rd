@@ -4,7 +4,7 @@
 \alias{empty_ei_df}
 \title{Create a dataframe with NA values for racial and candidate counts.}
 \usage{
-empty_ei_df(ncand = 3, nrace = 3, nrow = 10)
+empty_ei_df(ncand = 2, nrace = 2, nrow = 2)
 }
 \arguments{
 \item{ncand}{The number of candidates to include}

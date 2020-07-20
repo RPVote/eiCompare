@@ -12,7 +12,8 @@ clean_race(
   totals_col = NULL,
   max_dev = 0.1,
   avg_dev = 0.025,
-  verbose = TRUE
+  verbose = TRUE,
+  diagnostic = FALSE
 )
 }
 \arguments{
@@ -22,11 +23,13 @@ clean_race(
 
 \item{totals_col}{A character string with the name of the total vote count column in the data. If null, total votes are computed within the function.}
 
-\item{max_dev}{A floating point object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col}
+\item{max_dev}{A numeric type object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col.}
 
-\item{avg_dev}{A floating point object indicating the maximum average deviation of all precints' vote sums from the totals in totals_col}
+\item{avg_dev}{A numeric type object indicating the maximum average deviation difference of all precints' vote sums from the totals in totals_col.}
 
 \item{verbose}{A boolean indicating whether to print warnings and messages.}
+
+\item{diagnostic}{A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals_col}
 }
 \value{
 A dataframe with proportions corresponding to the turnout of each race/ethnicity group.

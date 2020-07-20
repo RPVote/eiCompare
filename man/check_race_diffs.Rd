@@ -17,7 +17,7 @@ check_race_diffs(vote_sums, provided_totals, max_dev, avg_dev)
 \item{avg_dev}{A floating point object passed from clean_race}
 }
 \value{
-A numeric vector 0, 1, or 2.
+A list containing two objects, 'closeness' and 'deviates'. See details for more information
 }
 \description{
 This function checks conditions inputted to clean_race by the user

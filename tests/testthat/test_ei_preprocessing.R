@@ -5,12 +5,15 @@ test_that("standardize_votes() returns correct results", {
   votes$c1 <- c(1, 1)
   votes$c2 <- c(1, 1)
   totals <- c(2, 2)
-  expected <- data.frame("c1_prp" = c(0.5, 0.5), "c2_prp" = c(0.5, 0.5))
+  expected <- data.frame(
+    "c1_p" = c(0.5, 0.5), 
+    "c2_p" = c(0.5, 0.5)
+  )
 
   expect_equal(standardize_votes(votes), expected)
 })
 
-test_that("check_race_diffs gets conditions right", {
+test_that("check_race_diffs() gets conditions right", {
   
   vote_sums <- rep(1, 5)
   provided_totals <- rep(1, 5)
@@ -84,4 +87,92 @@ test_that("check_race_diffs gets conditions right", {
     avg_dev
   )
   expect_equal(res$closeness, 0)
+})
+
+test_that("clean_race() handles all cases", {
+  
+  df <- empty_ei_df()
+  df$r1 <- 1
+  df$r2 <- 1
+  df$t <- 2
+  
+  # base case works correctly
+  res <- clean_race(
+    data = df, 
+    cols = c('r1', 'r2'), 
+    totals_col = 't', 
+    verbose = FALSE,
+    diagnostic = FALSE
+  )
+  expected <- data.frame(
+    'r1_p' = c(0.5, 0.5),
+    'r2_p' = c(0.5, 0.5)
+  )
+  expect_equal(res, expected)
+  
+  # message prints when things work well
+  expect_message(
+    clean_race(
+      data = df, 
+      cols = c('r1', 'r2'), 
+      totals_col = 't', 
+      verbose = TRUE,
+      diagnostic = FALSE
+    )
+  )
+  
+  # diagnostic works correctly
+  res <- clean_race(
+    data = df, 
+    cols = c('r1', 'r2'), 
+    totals_col = 't', 
+    verbose = F,
+    diagnostic = T
+  )
+  expected <- data.frame(
+    'r1_p' = c(0.5, 0.5),
+    'r2_p' = c(0.5, 0.5),
+    'deviates' = c(FALSE, FALSE)
+  )
+  expect_equal(res, expected)
+  
+  # message on minor deviation only where verbose = TRUE
+  df$r1[1] <- 0.99
+  df$r1[2] <- 1.01
+  df$r2[1] <- 1.01
+  expect_message(
+    clean_race(
+      data = df, 
+      cols = c('r1', 'r2'), 
+      totals_col = 't', 
+      verbose = TRUE,
+      diagnostic = FALSE
+    )
+  )
+  
+  # upon violation, print warning
+  df$r2 <- 1
+  df$r1 <- c(10,1)
+  expect_warning(
+    clean_race(
+      data = df, 
+      cols = c('r1', 'r2'), 
+      totals_col = 't', 
+      verbose = TRUE,
+      diagnostic = FALSE
+    )
+  )
+  
+  # upon violation, return diagnostic column regardless of verbose
+  res <- suppressWarnings({
+    clean_race(
+      data = df, 
+      cols = c('r1', 'r2'), 
+      totals_col = 't', 
+      verbose = FALSE,
+      diagnostic = FALSE
+    )
+  })
+  expected <- data.frame('deviates' = c(TRUE, FALSE))
+  expect_equal(res, expected)
 })

@@ -6,7 +6,7 @@
 #' 
 #' @return A dataframe with columns for each candidate and race, all with NAs
 
-empty_ei_df <- function(ncand = 3, nrace = 3, nrow = 10) {
+empty_ei_df <- function(ncand = 2, nrace = 2, nrow = 2) {
   cands <- paste0('c', c(1:ncand))
   races <- paste0('r', c(1:nrace))
   if (ncand == 0) {

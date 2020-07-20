@@ -57,7 +57,7 @@ check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
 
 standardize_votes <- function(votes) {
   prps <- votes / rowSums(votes)
-  names(prps) <- paste(names(prps), "prp", sep = "_")
+  names(prps) <- paste(names(prps), "p", sep = "_")
   return(prps)
 }
 
@@ -80,7 +80,7 @@ standardize_votes <- function(votes) {
 #' @param max_dev A numeric type object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col.
 #' @param avg_dev A numeric type object indicating the maximum average deviation difference of all precints' vote sums from the totals in totals_col.
 #' @param verbose A boolean indicating whether to print warnings and messages.
-#' @param return_devs A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals_col
+#' @param diagnostic A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals_col
 #'
 #' @export
 #' 
@@ -92,7 +92,7 @@ clean_race <- function(data,
                        max_dev = 0.1, 
                        avg_dev = 0.025, 
                        verbose = TRUE,
-                       return_devs = FALSE) {
+                       diagnostic = FALSE) {
 
   # get votes by race, sum of votes
   votes <- data[, cols]
@@ -113,36 +113,33 @@ clean_race <- function(data,
     closeness <- race_check$closeness
     if (closeness == 2) {
       if (verbose == TRUE) {
-        print(
+        message(
           "All race columns sum correctly. Computing proportions..."
         )
       }
       proportions <- eiCompare::standardize_votes(votes)
-      if (return_devs == TRUE) {
+      if (diagnostic == TRUE) {
         proportions$deviates <- race_check$deviates 
       }
       return(proportions)
       
     } else if (closeness == 1) {
       if (verbose == TRUE) {
-        warning(
-          "Precinct vote sums deviate from provided totals. 
-          Deviations are minor. Restandardizing vote columns..."
+        message(
+          "Precinct vote sums deviate from provided totals.\nDeviations are minor. Restandardizing vote columns..."
         )
       }
       proportions <- eiCompare::standardize_votes(votes)
-      if (return_devs == TRUE) {
+      if (diagnostic == TRUE) {
         proportions$deviates <- race_check$deviates 
       }
       return(proportions)
       
     } else if (closeness == 0) {
       warning(
-        "Precinct vote sums are too far from the totals. 
-        Returning column 'deviates' identifying problematic
-        rows..."
+        "Precinct vote sums are too far from the totals.\n  Returning boolean column identifying problematic rows..."
       )
-      return(race_check$deviates)
+      return(data.frame('deviates' = race_check$deviates))
     }
   }
 }
