@@ -13,7 +13,7 @@ test_that("standardize_votes() returns correct results", {
   expect_equal(standardize_votes(votes), expected)
 })
 
-test_that("check_race_diffs() gets conditions right", {
+test_that("check_diffs() gets conditions right", {
   
   vote_sums <- rep(1, 5)
   provided_totals <- rep(1, 5)
@@ -21,7 +21,7 @@ test_that("check_race_diffs() gets conditions right", {
   avg_dev <- 0.025
 
   # exact match should return 2
-  res <- check_race_diffs(
+  res <- check_diffs(
     vote_sums,
     provided_totals,
     max_dev,
@@ -32,7 +32,7 @@ test_that("check_race_diffs() gets conditions right", {
   
   # near match should return 1
   vote_sums[1] <- 1.05
-  res <- check_race_diffs(
+  res <- check_diffs(
     vote_sums,
     provided_totals,
     max_dev,
@@ -43,7 +43,7 @@ test_that("check_race_diffs() gets conditions right", {
 
   # max diff > 0.1 should return 0
   vote_sums[1] <- 1.11
-  res <- check_race_diffs(
+  res <- check_diffs(
     vote_sums,
     provided_totals,
     max_dev,
@@ -54,7 +54,7 @@ test_that("check_race_diffs() gets conditions right", {
   
   # avg diff > 0.025 should return 0
   vote_sums <- rep(1.03, 5)
-  res <- check_race_diffs(
+  res <- check_diffs(
     vote_sums,
     provided_totals,
     max_dev,
@@ -65,14 +65,14 @@ test_that("check_race_diffs() gets conditions right", {
   
   # should return error if max_dev < 0
   max_dev <- -0.3
-  expect_error(check_race_diffs(
+  expect_error(check_diffs(
     vote_sums, provided_totals, max_dev, avg_dev
   ))
   
   # should return error if avg_dev < 0
   max_dev <- 0.1
   avg_dev <- -0.3
-  expect_error(check_race_diffs(
+  expect_error(check_diffs(
     vote_sums, provided_totals, max_dev, avg_dev
   ))
   
@@ -80,7 +80,7 @@ test_that("check_race_diffs() gets conditions right", {
   # and avg_dev = 0
   max_dev <- 0
   avg_dev <- 0
-  res <- check_race_diffs(
+  res <- check_diffs(
     vote_sums,
     provided_totals,
     max_dev,
@@ -89,7 +89,7 @@ test_that("check_race_diffs() gets conditions right", {
   expect_equal(res$closeness, 0)
 })
 
-test_that("clean_race() handles all cases", {
+test_that("clean_votes() handles all cases", {
   
   df <- empty_ei_df()
   df$r1 <- 1
@@ -97,7 +97,7 @@ test_that("clean_race() handles all cases", {
   df$t <- 2
   
   # base case works correctly
-  res <- clean_race(
+  res <- clean_votes(
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -112,7 +112,7 @@ test_that("clean_race() handles all cases", {
   
   # message prints when things work well
   expect_message(
-    clean_race(
+    clean_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -122,7 +122,7 @@ test_that("clean_race() handles all cases", {
   )
   
   # diagnostic works correctly
-  res <- clean_race(
+  res <- clean_votes(
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -141,7 +141,7 @@ test_that("clean_race() handles all cases", {
   df$r1[2] <- 1.01
   df$r2[1] <- 1.01
   expect_message(
-    clean_race(
+    clean_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -154,7 +154,7 @@ test_that("clean_race() handles all cases", {
   df$r2 <- 1
   df$r1 <- c(10,1)
   expect_warning(
-    clean_race(
+    clean_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -165,7 +165,7 @@ test_that("clean_race() handles all cases", {
   
   # upon violation, return diagnostic column regardless of verbose
   res <- suppressWarnings({
-    clean_race(
+    clean_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 

@@ -12,14 +12,15 @@
 #' When this function returns 2, votes sum exactly to vote
 #' totals 
 #' 
+#' @author Ari Decter-Frain
+#' 
 #' @param vote_sums A numeric vector containing the sums of votes by each race/ethnicity
 #' @param provided_totals A numeric vector containing the totals provided to the clean_race function
 #' @param max_dev A flaoting point object passed from clean_race
 #' @param avg_dev A floating point object passed from clean_race
 #' 
 #' @return A list containing two objects, 'closeness' and 'deviates'. See details for more information
-
-check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
+check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
   
   # check max_dev, avg_dev validity
   if((max_dev < 0) | (avg_dev < 0)) {
@@ -47,52 +48,56 @@ check_race_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
   }
 }
 
-
 #' Computes proportions for returning by clean_race and clean_cand
+#' 
+#' @author Ari Decter-Frain
 #' 
 #' @param votes A dataframe of raw votes by race or candidates
 #' @param totals A numeric vector of totals on which to standardize
 #' 
 #' @return A dataframe of standardized proportions whose columns sum rowwise to 1
-
 standardize_votes <- function(votes) {
   prps <- votes / rowSums(votes)
   names(prps) <- paste(names(prps), "p", sep = "_")
   return(prps)
 }
 
-#' Converts raw vote totals from different race/ethnicies across precincts 
-#' into proportions, checking for problematic differences between known
-#' vote totals and sums across race/ethnicities.
+#' Converts raw vote totals from different race/ethnicies, or for 
+#' different candidates, across precincts into proportions, 
+#' checking for problematic differences between known vote totals 
+#' and sums across race/ethnicities.
 #' 
-#' If race turnout columns sum row-wise to equal vote_totals, they are 
+#' If turnout columns sum row-wise to equal vote_totals, they are 
 #' returned as proportions. 
 #'  
-#' If race turnout columns sum row-wise to sufficiently close to 
+#' If turnout columns sum row-wise to sufficiently close to 
 #' vote_totals, they are returned as proportions of the sums.
 #'  
-#' If race turnout columns sum row-wise exceedingly far from 
+#' If turnout columns sum row-wise exceedingly far from 
 #' vote_totals, the function stops and returns an error message.
 #'
-#' @param data A dataframe of election results, where each row represents a precinct or geographic voting unit.
-#' @param cols A character vector with the names of the columns indicating total votes cast by each race
-#' @param totals_col A character string with the name of the total vote count column in the data. If null, total votes are computed within the function.
-#' @param max_dev A numeric type object indicating the maximum allowable deviation of a precinct's vote sum from the totals in totals_col.
-#' @param avg_dev A numeric type object indicating the maximum average deviation difference of all precints' vote sums from the totals in totals_col.
-#' @param verbose A boolean indicating whether to print warnings and messages.
-#' @param diagnostic A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals_col
+#' @author Ari Decter-Frain
+#'
+#' @param data A dataframe of election results, where each row represents a precinct or geographic voting unit
+#' @param cols A character vector with the names of the columns indicating total votes cast by each race, or for each candidate
+#' @param totals_col A character string with the name of the total vote count column in the data. If null, total votes are computed within the function
+#' @param max_dev A numeric object setting the max allowable deviation of a precinct's vote sum from totals
+#' @param avg_dev A numeric object setting the max allowable average deviation difference of all precints' vote sums from totals
+#' @param verbose A boolean indicating whether to print status messages
+#' @param diagnostic A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals
 #'
 #' @export
 #' 
-#' @return A dataframe with proportions corresponding to the turnout of each race/ethnicity group.
-
-clean_race <- function(data,
-                       cols, 
-                       totals_col = NULL, 
-                       max_dev = 0.1, 
-                       avg_dev = 0.025, 
-                       verbose = TRUE,
-                       diagnostic = FALSE) {
+#' @return A dataframe with proportions corresponding to the turnout of each race/ethnicity group
+clean_votes <- function(
+    data,
+    cols, 
+    totals_col = NULL, 
+    max_dev = 0.1, 
+    avg_dev = 0.025, 
+    verbose = TRUE,
+    diagnostic = FALSE
+) {
 
   # get votes by race, sum of votes
   votes <- data[, cols]
@@ -107,10 +112,10 @@ clean_race <- function(data,
   # else check the extent of deviation from provided totals
   } else {
     vote_totals <- data[, totals_col]
-    race_check <- eiCompare::check_race_diffs(
+    diff_check <- eiCompare::check_diffs(
       vote_sums, vote_totals, max_dev, avg_dev
     )
-    closeness <- race_check$closeness
+    closeness <- diff_check$closeness
     if (closeness == 2) {
       if (verbose == TRUE) {
         message(
@@ -119,7 +124,7 @@ clean_race <- function(data,
       }
       proportions <- eiCompare::standardize_votes(votes)
       if (diagnostic == TRUE) {
-        proportions$deviates <- race_check$deviates 
+        proportions$deviates <- diff_check$deviates 
       }
       return(proportions)
       
@@ -131,7 +136,7 @@ clean_race <- function(data,
       }
       proportions <- eiCompare::standardize_votes(votes)
       if (diagnostic == TRUE) {
-        proportions$deviates <- race_check$deviates 
+        proportions$deviates <- diff_check$deviates 
       }
       return(proportions)
       
@@ -139,7 +144,44 @@ clean_race <- function(data,
       warning(
         "Precinct vote sums are too far from the totals.\n  Returning boolean column identifying problematic rows..."
       )
-      return(data.frame('deviates' = race_check$deviates))
+      return(data.frame('deviates' = diff_check$deviates))
     }
   }
+}
+
+#' Converts a dataframe with total votes for candidates and total votes
+#' by each racial/ethnic group into proportions that can be used for 
+#' Ecological Inference analysis
+#'
+#' @author Ari Decter-Frain
+#'
+#' @param data A dataframe of election results, where each row represents a precinct or geographic voting unit
+#' @param race_cols A character vector of colnames corresponding to turnout counts of each race/ethnicity group
+#' @param cand_cols A character vector of colnames corresponding to turnout counts of voters for each candidate
+#' @param totals_from A character string, either "cand" or "race" to set whether totals are computed from candidate turnout or race/ethnicity turnout columns. Ignored if totals_col provided.
+#' @param totals_col A character string with the name of the total vote count column in the data. If null, total votes are computed within the function
+#' @param max_dev_race A numeric object setting the max allowable deviation of any one precincts' sum of race columns from totals
+#' @param max_dev_cand A numeric object setting the max allowable deviation of any one precincts' sum of candidate columns from totals
+#' @param avg_dev_race A numeric object setting the max allowable mean deviation of all precincts' sum of race columns from totals
+#' @param avg_dec_cand A numeric object setting the max allowable mean deviation of all precincts' sum of candidate columns from totals
+#' @param verbose A boolean. When true, function returns progress messages.
+#' @param diagnostic A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals
+#' 
+#' @export
+#' 
+#' @return A dataframe containing columns for each race and candidate converted to percentages, ready for Ecological Inference
+clean_votes_all <- function(
+    data,
+    race_cols,
+    cand_cols,
+    totals_from = "cand",
+    totals_col = NULL,
+    max_dev_race = 0.1,
+    max_dev_cand = 0.1,
+    avg_dev_race = 0.025,
+    avg_dev_cand = 0.025,
+    verbose = T,
+    daignostic = F
+) {
+  return(data)
 }

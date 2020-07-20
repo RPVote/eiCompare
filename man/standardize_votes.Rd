@@ -17,3 +17,6 @@ A dataframe of standardized proportions whose columns sum rowwise to 1
 \description{
 Computes proportions for returning by clean_race and clean_cand
 }
+\author{
+Ari Decter-Frain
+}
