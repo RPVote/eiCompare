@@ -57,7 +57,7 @@
 #' ei_bayes_res
 #' }
 #' 
-#' @import utils
+#' @import R.utils
 #' 
 #' @export bayes_table_make
 bayes_table_make <-
@@ -65,7 +65,7 @@ bayes_table_make <-
 
     # Used for Later Sorting/Colnames
     seq_split <- 2:length(cand_vector)
-    rn <- c(utils::insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
+    rn <- c(R.utils::insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
     # Summarize Bayes Object to get posterior means/devs
     ei_bayes_object <- summary(ei_bayes_object)
     means <- ei_bayes_object$coef # get the estimates
