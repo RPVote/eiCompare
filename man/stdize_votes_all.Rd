@@ -17,7 +17,7 @@ stdize_votes_all(
   avg_dev_race = 0.025,
   avg_dev_cand = 0.025,
   verbose = T,
-  daignostic = F
+  diagnostic = F
 )
 }
 \arguments{
@@ -39,9 +39,9 @@ stdize_votes_all(
 
 \item{verbose}{A boolean. When true, function returns progress messages.}
 
-\item{avg_dec_cand}{A numeric object setting the max allowable mean deviation of all precincts' sum of candidate columns from totals}
-
 \item{diagnostic}{A boolean. When true, an extra column of booleans is returned indicating whether each row had a deviation from totals}
+
+\item{avg_dec_cand}{A numeric object setting the max allowable mean deviation of all precincts' sum of candidate columns from totals}
 }
 \value{
 A dataframe containing columns for each race and candidate converted to percentages, ready for Ecological Inference

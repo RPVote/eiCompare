@@ -2,9 +2,9 @@
 % Please edit documentation in R/ei_preprocessing.R
 \name{stdize_votes}
 \alias{stdize_votes}
-\title{Converts raw vote totals from different race/ethnicies, or for 
-different candidates, across precincts into proportions, 
-checking for problematic differences between known vote totals 
+\title{Converts raw vote totals from different voter groups / 
+candidates across precincts into proportions, checking 
+for problematic differences between known vote totals 
 and sums across race/ethnicities.}
 \usage{
 stdize_votes(

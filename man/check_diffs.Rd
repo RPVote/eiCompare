@@ -3,7 +3,7 @@
 \name{check_diffs}
 \alias{check_diffs}
 \title{Internal function that checks for adequate closeness between sums
-of race columns and provided vote totals.}
+of race/candidate columns and provided vote totals.}
 \usage{
 check_diffs(vote_sums, provided_totals, max_dev, avg_dev)
 }

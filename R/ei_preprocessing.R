@@ -1,5 +1,5 @@
 #' Internal function that checks for adequate closeness between sums
-#' of race columns and provided vote totals.
+#' of race/candidate columns and provided vote totals.
 #' 
 #' This function checks conditions inputted to clean_race by the user
 #' 
@@ -18,6 +18,8 @@
 #' @param provided_totals A numeric vector containing the totals provided to the clean_race function
 #' @param max_dev A flaoting point object passed from clean_race
 #' @param avg_dev A floating point object passed from clean_race
+#' 
+#' @keyword internal
 #' 
 #' @return A list containing two objects, 'closeness' and 'deviates'. See details for more information
 check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
@@ -55,16 +57,18 @@ check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
 #' @param votes A dataframe of raw votes by race or candidates
 #' @param totals A numeric vector of totals on which to standardize
 #' 
+#' @keyword internal
+#' 
 #' @return A dataframe of standardized proportions whose columns sum rowwise to 1
-standardize <- function(votes) {
+standardize_votes <- function(votes) {
   prps <- votes / rowSums(votes)
   names(prps) <- paste(names(prps), "p", sep = "_")
   return(prps)
 }
 
-#' Converts raw vote totals from different race/ethnicies, or for 
-#' different candidates, across precincts into proportions, 
-#' checking for problematic differences between known vote totals 
+#' Converts raw vote totals from different voter groups / 
+#' candidates across precincts into proportions, checking 
+#' for problematic differences between known vote totals 
 #' and sums across race/ethnicities.
 #' 
 #' If turnout columns sum row-wise to equal vote_totals, they are 
@@ -106,23 +110,23 @@ stdize_votes <- function(
   if (is.null(totals_col)) {
 
     # if no vote totals_col passed, use vote_sums for totals
-    proportions <- eiCompare::standardize_votes(votes)
+    proportions <- standardize_votes(votes)
     return(proportions)
     
   # else check the extent of deviation from provided totals
   } else {
     vote_totals <- data[, totals_col]
-    diff_check <- eiCompare::check_diffs(
+    diff_check <- check_diffs(
       vote_sums, vote_totals, max_dev, avg_dev
     )
     closeness <- diff_check$closeness
     if (closeness == 2) {
       if (verbose == TRUE) {
         message(
-          "All race columns sum correctly. Computing proportions..."
+          "All columns sum correctly. Computing proportions..."
         )
       }
-      proportions <- eiCompare::standardize_votes(votes)
+      proportions <- standardize_votes(votes)
       if (diagnostic == TRUE) {
         proportions$deviates <- diff_check$deviates 
       }
@@ -131,10 +135,10 @@ stdize_votes <- function(
     } else if (closeness == 1) {
       if (verbose == TRUE) {
         message(
-          "Precinct vote sums deviate from provided totals.\nDeviations are minor. Restandardizing vote columns..."
+          "Vote sums deviate from totals.\nDeviations are minor. Restandardizing vote columns..."
         )
       }
-      proportions <- eiCompare::standardize_votes(votes)
+      proportions <- standardize_votes(votes)
       if (diagnostic == TRUE) {
         proportions$deviates <- diff_check$deviates 
       }
@@ -142,7 +146,7 @@ stdize_votes <- function(
       
     } else if (closeness == 0) {
       warning(
-        "Precinct vote sums are too far from the totals.\n  Returning boolean column identifying problematic rows..."
+        "Precinct vote sums are too far from totals.\n  Returning boolean column identifying problematic rows..."
       )
       return(data.frame('deviates' = diff_check$deviates))
     }
@@ -181,7 +185,45 @@ stdize_votes_all <- function(
     avg_dev_race = 0.025,
     avg_dev_cand = 0.025,
     verbose = T,
-    daignostic = F
+    diagnostic = F
 ) {
-  return(data)
+  
+  if(is.null(totals_col) & totals_from == "cand") {
+    data$cand_totals <- rowSums(data[, cand_cols])
+    cand_totals_col = NULL
+    race_totals_col = "cand_totals"
+  } else if (is.null(totals_col) & totals_from == 'race') {
+    data$race_totals <- rowSums(data[, race_cols])
+    cand_totals_col = "race_totals"
+    race_totals_col = NULL
+  } else if (!is.null(totals_col)) {
+    cand_totals_col = totals_col
+    race_totals_col = totals_col
+  } else {
+    stop("You must either define a totals column with totals_col, 
+       or set totals_from equal to 'cand' or 'race'")
+  }
+        
+  cand_prps <- stdize_votes(
+    data = data,
+    cols = cand_cols, 
+    totals_col = cand_totals_col, 
+    max_dev = max_dev_cand, 
+    avg_dev = avg_dev_cand, 
+    verbose = verbose,
+    diagnostic = diagnostic  
+  )
+    
+  race_prps <- stdize_votes(
+    data = data,
+    cols = race_cols, 
+    totals_col = race_totals_col, 
+    max_dev = max_dev_race, 
+    avg_dev = avg_dev_race, 
+    verbose = verbose,
+    diagnostic = diagnostic
+  )
+    
+  all_proportions <- cbind(cand_prps, race_prps)
+  return(all_proportions)
 }
