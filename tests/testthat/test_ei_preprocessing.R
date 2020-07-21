@@ -1,6 +1,6 @@
 context("Testing performance of ei_preprocessing functions")
 
-test_that("standardize_() returns correct results", {
+test_that("standardize_votes() returns correct results", {
   votes <- empty_ei_df(2, 0, 2)
   votes$c1 <- c(1, 1)
   votes$c2 <- c(1, 1)
@@ -89,7 +89,7 @@ test_that("check_diffs() gets conditions right", {
   expect_equal(res$closeness, 0)
 })
 
-test_that("stdize_votes) handles all cases", {
+test_that("stdize_votes() handles all cases", {
   
   df <- empty_ei_df()
   df$r1 <- 1
@@ -150,6 +150,25 @@ test_that("stdize_votes) handles all cases", {
     )
   )
   
+  # correct values on minor deviation
+  res <- stdize_votes(
+    data = df, 
+    cols = c('r1', 'r2'), 
+    totals_col = 't', 
+    verbose = TRUE,
+    diagnostic = FALSE
+  )
+  
+  r11 <- 0.99 / (0.99 + 1.01)
+  r12 <- 1.01 / (1 + 1.01)
+  r21 <- 1.01 / (0.99 + 1.01)
+  r22 <- 1 / (1 + 1.01)
+  
+  expected <- data.frame(
+    'r1' = c(r11, r12),
+    'r2' = c(r21, r22)
+  )
+  
   # upon violation, print warning
   df$r2 <- 1
   df$r1 <- c(10,1)
@@ -175,4 +194,124 @@ test_that("stdize_votes) handles all cases", {
   })
   expected <- data.frame('deviates' = c(TRUE, FALSE))
   expect_equal(res, expected)
+})
+
+test_that("stdize_votes_all() handles all cases", {
+  df <- empty_ei_df()
+  df[1,] <- 1
+  df[2,] <- 1
+  
+  # base case works correctly
+  res <- stdize_votes_all(
+    data = df,
+    race_cols = c('r1', 'r2'),
+    cand_cols = c('c1', 'c2')
+  )
+  expected <- data.frame(
+    'c1_p' = rep(0.5, 2),
+    'c2_p' = rep(0.5, 2),
+    'r1_p' = rep(0.5, 2),
+    'r2_p' = rep(0.5, 2)
+  )
+  expect_equal(res, expected)
+  
+  # deviation in cand breaks race when totals_from = 'cand'
+  df$c1[1] <- 9
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2')
+    )
+  })
+  expected <- data.frame(
+    'c1_p' = c(0.9, 0.5),
+    'c2_p' = c(0.1, 0.5),
+    'race_deviates' = c(TRUE, FALSE)
+  )
+  expect_equal(res, expected)
+  
+  # deviation in cand breaks cand when totals_from = 'race'
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2'),
+      totals_from = 'race'
+    )
+  })
+  expected <- data.frame(
+    'r1_p' = c(0.5, 0.5),
+    'r2_p' = c(0.5, 0.5),
+    'cand_deviates' = c(TRUE, FALSE)
+  )
+  expect_equal(res, expected)
+  
+  # deviation in race breaks cand when totals_from = 'race'
+  df$c1[1] <- 1
+  df$r1[1] <- 9
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2'),
+      totals_from = 'race'
+    )
+  })
+  expected <- data.frame(
+    'r1_p' = c(0.9, 0.5),
+    'r2_p' = c(0.1, 0.5),
+    'cand_deviates' = c(TRUE, FALSE)
+  )
+  expect_equal(res, expected)
+  
+  # deviation in race breaks race when totals_from = 'cand'
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2'),
+      totals_from = 'cand'
+    )
+  })
+  expected <- data.frame(
+    'c1_p' = c(0.5, 0.5),
+    'c2_p' = c(0.5, 0.5),
+    'race_deviates' = c(TRUE, FALSE)
+  )
+  expect_equal(res, expected)
+  
+  # totals_col works in base case
+  df$r1 <- 1
+  df$t <- 2
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2'),
+      totals_col = 't'
+    )
+  })
+  expected <- data.frame(
+    'c1_p' = rep(0.5, 2),
+    'c2_p' = rep(0.5, 2),
+    'r1_p' = rep(0.5, 2),
+    'r2_p' = rep(0.5, 2)
+  )
+  expect_equal(res, expected)
+  
+  # both break when a total deviates
+  df$t[1] <- 10
+  res <- suppressWarnings({
+    stdize_votes_all(
+      data = df,
+      race_cols = c('r1', 'r2'),
+      cand_cols = c('c1', 'c2'),
+      totals_col = 't'
+    )
+  })
+  expected <- data.frame(
+    'cand_deviates' = c(TRUE, FALSE),
+    'race_deviates' = c(TRUE, FALSE)
+  )
 })

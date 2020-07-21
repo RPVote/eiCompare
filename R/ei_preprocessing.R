@@ -222,7 +222,25 @@ stdize_votes_all <- function(
     verbose = verbose,
     diagnostic = diagnostic
   )
-    
-  all_proportions <- cbind(cand_prps, race_prps)
+  
+  # adjust deviation column names to allow for two 
+  if(names(cand_prps)[1] == 'deviates') {
+    names(cand_prps)[1] <- 'cand_deviates'
+  }
+  if(names(race_prps)[1] == 'deviates') {
+    names(race_prps)[1] <- 'race_deviates'
+  }
+  if(diagnostic == TRUE) {
+    names(cand_prps)[length(cand_prps)] <- 'cand_deviates'
+    names(race_prps)[length(cand_prps)] <- 'race_deviates'
+  }
+  
+  # set appropriate order of columns in output
+  if(totals_from == 'cand') {
+    all_proportions <- cbind(cand_prps, race_prps)
+  } else {
+    all_proportions <- cbind(race_prps, cand_prps)
+  }
+  
   return(all_proportions)
 }
