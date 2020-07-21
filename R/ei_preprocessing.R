@@ -19,7 +19,7 @@
 #' @param max_dev A flaoting point object passed from clean_race
 #' @param avg_dev A floating point object passed from clean_race
 #' 
-#' @keyword internal
+#' @keywords internal
 #' 
 #' @return A list containing two objects, 'closeness' and 'deviates'. See details for more information
 check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
@@ -55,9 +55,8 @@ check_diffs <- function(vote_sums, provided_totals, max_dev, avg_dev) {
 #' @author Ari Decter-Frain
 #' 
 #' @param votes A dataframe of raw votes by race or candidates
-#' @param totals A numeric vector of totals on which to standardize
 #' 
-#' @keyword internal
+#' @keywords internal
 #' 
 #' @return A dataframe of standardized proportions whose columns sum rowwise to 1
 standardize_votes <- function(votes) {

@@ -8,8 +8,6 @@ standardize_votes(votes)
 }
 \arguments{
 \item{votes}{A dataframe of raw votes by race or candidates}
-
-\item{totals}{A numeric vector of totals on which to standardize}
 }
 \value{
 A dataframe of standardized proportions whose columns sum rowwise to 1
@@ -20,3 +18,4 @@ Computes proportions for returning by clean_race and clean_cand
 \author{
 Ari Decter-Frain
 }
+\keyword{internal}

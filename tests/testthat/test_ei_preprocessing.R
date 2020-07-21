@@ -10,7 +10,7 @@ test_that("standardize_() returns correct results", {
     "c2_p" = c(0.5, 0.5)
   )
 
-  expect_equal(standardize_(votes), expected)
+  expect_equal(standardize_votes(votes), expected)
 })
 
 test_that("check_diffs() gets conditions right", {
@@ -97,7 +97,7 @@ test_that("stdize_votes) handles all cases", {
   df$t <- 2
   
   # base case works correctly
-  res <- stdize_votes
+  res <- stdize_votes(
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -112,7 +112,7 @@ test_that("stdize_votes) handles all cases", {
   
   # message prints when things work well
   expect_message(
-    stdize_votes
+    stdize_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -122,7 +122,7 @@ test_that("stdize_votes) handles all cases", {
   )
   
   # diagnostic works correctly
-  res <- stdize_votes
+  res <- stdize_votes(
     data = df, 
     cols = c('r1', 'r2'), 
     totals_col = 't', 
@@ -141,7 +141,7 @@ test_that("stdize_votes) handles all cases", {
   df$r1[2] <- 1.01
   df$r2[1] <- 1.01
   expect_message(
-    stdize_votes
+    stdize_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -154,7 +154,7 @@ test_that("stdize_votes) handles all cases", {
   df$r2 <- 1
   df$r1 <- c(10,1)
   expect_warning(
-    stdize_votes
+    stdize_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
@@ -165,7 +165,7 @@ test_that("stdize_votes) handles all cases", {
   
   # upon violation, return diagnostic column regardless of verbose
   res <- suppressWarnings({
-    stdize_votes
+    stdize_votes(
       data = df, 
       cols = c('r1', 'r2'), 
       totals_col = 't', 
