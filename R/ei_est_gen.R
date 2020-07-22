@@ -6,10 +6,10 @@ ei_est_gen <- function(
     data, 
     table_names,
     sample = 1000, 
-    tomog = F, 
-    density_plot = F, 
-    beta_yes = F, 
-    verbose = F,
+    tomog = FALSE, 
+    density_plot = FALSE, 
+    beta_yes = FALSE, 
+    verbose = FALSE,
     ...
 ) {
   list_extract <- function(x) x[, 1:2]
@@ -23,13 +23,17 @@ ei_est_gen <- function(
   data <- na.omit(data)
   race_group_table <- list()
   beta_full_hold <- list()
+  if(!verbose) {
+    pb <- txtProgressBar(min = 0, max = length(cand_vector)*length(race_group), style = 3)
+    j <- 0
+  }
   for (k in 1:length(race_group)) {
     cand_table <- list()
     beta_container <- list()
     for (i in 1:length(cand_vector)) {
       form <- formula(paste(cand_vector[i], race_group[k]))
       try(
-        if(verbose == FALSE) {
+        if(!verbose) {
           capture.output({ 
             suppressMessages({
               ei_out <- ei::ei(
@@ -49,7 +53,7 @@ ei_est_gen <- function(
       if (gm == "Maximizing likelihood\\n         Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'") {
         stop("Maximizing likelihood\\n             Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'\\n\\n             \\n ei package error try re-running ei_est_gen()")
       }
-      if(verbose == TRUE) { 
+      if(verbose) { 
         cat(paste("Model:", cand_vector[i], race_group[k],
           "\\n",
           sep = " "
@@ -93,6 +97,13 @@ ei_est_gen <- function(
       colnames(cand_betas) <- c("betab", "betaw")
       cand_table[[i]] <- eimean
       beta_container[[i]] <- cand_betas
+    
+      # increment progressbar
+      if(!verbose) {
+        j <- j + 1
+        setTxtProgressBar(pb, j)
+      }
+      
     }
     cand_table <- data.table::rbindlist(cand_table)
     cand_table <- data.frame(rn, cand_table)
