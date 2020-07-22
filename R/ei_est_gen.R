@@ -33,7 +33,7 @@ ei_est_gen <- function(
     for (i in 1:length(cand_vector)) {
       form <- formula(paste(cand_vector[i], race_group[k]))
       try(
-        if(!verbose) {
+        if (!verbose) {
           capture.output({ 
             suppressMessages({
               ei_out <- ei::ei(
@@ -53,7 +53,7 @@ ei_est_gen <- function(
       if (gm == "Maximizing likelihood\\n         Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'") {
         stop("Maximizing likelihood\\n             Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'\\n\\n             \\n ei package error try re-running ei_est_gen()")
       }
-      if(verbose) { 
+      if (verbose) { 
         cat(paste("Model:", cand_vector[i], race_group[k],
           "\\n",
           sep = " "
@@ -99,7 +99,7 @@ ei_est_gen <- function(
       beta_container[[i]] <- cand_betas
     
       # increment progressbar
-      if(!verbose) {
+      if (!verbose) {
         j <- j + 1
         setTxtProgressBar(pb, j)
       }
