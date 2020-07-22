@@ -1,5 +1,17 @@
-ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_names,
-                       sample = 1000, tomog = F, density_plot = F, beta_yes = F, ...) {
+ei_est_gen <- function(
+    cand_vector, 
+    race_group, 
+    total, 
+    rho = 10, 
+    data, 
+    table_names,
+    sample = 1000, 
+    tomog = F, 
+    density_plot = F, 
+    beta_yes = F, 
+    verbose = F,
+    ...
+) {
   list_extract <- function(x) x[, 1:2]
   seq_split <- 2:length(cand_vector)
   if (length(cand_vector) == 1) {
@@ -16,19 +28,34 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
     beta_container <- list()
     for (i in 1:length(cand_vector)) {
       form <- formula(paste(cand_vector[i], race_group[k]))
-      try(ei_out <- ei::ei(form,
-        total = total, erho = rho,
-        data = data, sample = sample, ...
-      ), silent = T)
+      try(
+        if(verbose == FALSE) {
+          capture.output({ 
+            suppressMessages({
+              ei_out <- ei::ei(
+                form, total = total, erho = rho, 
+                data = data, sample = sample, ...
+              )
+            })
+          })
+        } else {
+          ei_out <- ei::ei(
+            form, total = total, erho = rho,
+              data = data, sample = sample, ...
+            )
+        }, 
+      silent = T)
       gm <- geterrmessage()
       if (gm == "Maximizing likelihood\\n         Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'") {
         stop("Maximizing likelihood\\n             Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'\\n\\n             \\n ei package error try re-running ei_est_gen()")
       }
-      cat(paste("Model:", cand_vector[i], race_group[k],
-        "\\n",
-        sep = " "
-      ))
-      print(summary(ei_out))
+      if(verbose == TRUE) { 
+        cat(paste("Model:", cand_vector[i], race_group[k],
+          "\\n",
+          sep = " "
+        ))
+        print(summary(ei_out))
+      }
       if (tomog) {
         pdf(paste(cand_vector[i], race_group[k], ".pdf",
           sep = ""
