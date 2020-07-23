@@ -72,25 +72,23 @@ results.
 }
 \examples{
 
-  
-  # TOY DATA EXAMPLE
-  canda <- c(10,8, 10, 4, 8)
-  candb <- 20-canda
-  white <- c(15, 12, 18, 6, 10)
-  black <- 20 - white
-  toy <- data.frame(canda, candb, white, black)
-  
-  # Generate formula for passage to ei.reg.bayes() function #
-  form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
-  
-  # Then execute md_bayes_gen(); not run here due to time
-  md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1, totaldraws=100, sample=10, burnin=1)
-  
-  # Add in mcmc drawrings #
-  drawrings <- md_bayes_gen(toy, form, total_yes=FALSE, ntunes=1, thin=1,totaldraws=100,sample=10,burnin                             =1, produce_draws=TRUE)
-  head ( drawrings$draws )
 
+# TOY DATA EXAMPLE
+canda <- c(10, 8, 10, 4, 8)
+candb <- 20 - canda
+white <- c(15, 12, 18, 6, 10)
+black <- 20 - white
+toy <- data.frame(canda, candb, white, black)
 
+# Generate formula for passage to ei.reg.bayes() function #
+form <- formula(cbind(canda, candb) ~ cbind(black, white))
+
+# Then execute md_bayes_gen(); not run here due to time
+md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1)
+
+# Add in mcmc drawrings #
+drawrings <- md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1, produce_draws = TRUE)
+head(drawrings$draws)
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)

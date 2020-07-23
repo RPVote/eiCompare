@@ -105,34 +105,31 @@ Preps data for BISG estimation via WRU package
 }
 \examples{
 
-  
-  # EXAMPLE: NOT RUN #
-  # NOTE: You need to have a census key to run this #
-  
-  data(ny_voter)
-  head(ny_voter)
-  
-  # Load ny_census object #
-  # load ( system.file("extdata/ny_census.RData",package="eiCompare") )
-  
-  # Now load your Census key #
-  # [add in here where you would do that]
-  # key_census = ""
 
-  ####################################################
-  # Prep Data & Perform Bayesian Surname Geolocation #
-  ####################################################
-  # Extract second list object (called bisg, note $bisg)
-  #bisg <- bisg_prep_race_predict(df=ny_voter,
-  #                     voterid = "Voter.ID",
-  #                     precinct = "SD..Poll",
-  #                     surname_char = "Last.Name",
-  #                     state = "NY",
-  #                     census.key = key_census,
-  #                     census.data = ny_census)$bisg
+# EXAMPLE: NOT RUN #
+# NOTE: You need to have a census key to run this #
 
-  
+data(ny_voter)
+head(ny_voter)
 
+# Load ny_census object #
+# load ( system.file("extdata/ny_census.RData",package="eiCompare") )
+
+# Now load your Census key #
+# [add in here where you would do that]
+# key_census = ""
+
+####################################################
+# Prep Data & Perform Bayesian Surname Geolocation #
+####################################################
+# Extract second list object (called bisg, note $bisg)
+# bisg <- bisg_prep_race_predict(df=ny_voter,
+#                     voterid = "Voter.ID",
+#                     precinct = "SD..Poll",
+#                     surname_char = "Last.Name",
+#                     state = "NY",
+#                     census.key = key_census,
+#                     census.data = ny_census)$bisg
 }
 \references{
 wru R package. Kabir Khanna, Kosuke Imai, Hubert Jin.  Imai and
