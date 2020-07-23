@@ -18,10 +18,10 @@
 #' @param sample Numeric. Default = 10000
 #' @param thin Numeric. Default = 10
 #' @param burnin Numeric. Default = 10000
-#' @param ret.mcmc Logical. Default = TRUE
+#' @param ret_mcmc Logical. Default = TRUE
 #' @param ci numeric vector of credible interval (low/high), default is 95
 #' percent= c(0.025, 0.975)
-#' @param ci_TRUE Logical, default = TRUE. Include credible intervals in
+#' @param ci_true Logical, default = TRUE. Include credible intervals in
 #' reported results.
 #' @param produce_draws Logical, default is FALSE. Produces two-item list of
 #' table and md.bayes() mcmc draws (for additional testing and analysis)
@@ -30,6 +30,7 @@
 #' length 2 (when produce_draws=TRUE). First item is list of race x candidate
 #' tabular results, with mean, SE, and credible intervals. Second item is mcmc
 #' draws.
+#'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
@@ -70,75 +71,75 @@
 #'   produce_draws = TRUE
 #' )
 #' head(drawings$draws)
+#' @importFrom stringr str_squish
+#' @importFrom mcmcse, mcse.mat
 #' @export md_bayes_gen
 md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
                          totaldraws = 10000, seed = 12345, sample = 1000,
-                         thin = 100, burnin = 10000, ret.mcmc = TRUE,
-                         ci = c(0.025, 0.975), ci_TRUE = TRUE,
+                         thin = 100, burnin = 10000, ret_mcmc = TRUE,
+                         ci = c(0.025, 0.975), ci_true = TRUE,
                          produce_draws = FALSE, ...) {
   set.seed(seed)
   # when variables are percents
   if (total_yes) {
-    suppressWarnings(tune.nocov <- tuneMD(form,
+    suppressWarnings(tune_nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
       totaldraws = totaldraws, total = total, ...
     ))
 
-    # Estimate Bayes Model -- can take a while
-    suppressWarnings(md.out <- ei.MD.bayes(form,
+    # estimate bayes model - can take a while
+    suppressWarnings(md_out <- ei.MD.bayes(form,
       data = dat, sample = sample, total = total,
-      thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
-      tune.list = tune.nocov, ...
+      thin = thin, burnin = burnin, ret.mcmc = ret_mcmc,
+      tune.list = tune_nocov, ...
     ))
     # when variables are raw numbers
   } else {
-    # tune the MD bayes model
-    tune.nocov <- tuneMD(form,
+    # tune the MD Bayes model
+    tune_nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
       totaldraws = totaldraws, ...
     )
 
-    # Estimate Bayes Model
-    md.out <- ei.MD.bayes(form,
+    # estimate Bayes model
+    md_out <- ei.MD.bayes(form,
       data = dat, sample = sample,
-      thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
-      tune.list = tune.nocov, ...
+      thin = thin, burnin = burnin, ret.mcmc = ret_mcmc,
+      tune.list = tune_nocov, ...
     )
   }
 
-  # Extract MD Bayes Cells
-  md_draw <- md.out$draws$Cell.counts
+  # extract MD Bayes cells
+  md_draw <- md_out$draws$Cell.counts
 
-  # Clean up formula
+  # clean up formula
   name_extract_rxc <- function(form_object, num) {
     form <- gsub("cbind(", "", as.character(form)[num], fixed = T)
     form <- gsub(")", "", form, fixed = T)
     var <- unlist(strsplit(form, ","))
-    str_squish(var)
+    stringr::str_squish(var)
   }
 
-  # Race & Candidates
+  # race and candidates
   race <- name_extract_rxc(form, 3)
   candidates <- name_extract_rxc(form, 2)
 
   race_list <- list()
 
-  # For loop along Race #
-  for (i in 1:length(race)) { # open up i loop
-
-    # Pull MD-Draws #
+  # loop along race
+  for (i in seq_len(race)) {
+    # pull MD draws
     race_comb <- md_draw[, grep(race[i], colnames(md_draw))]
 
     total <- apply(race_comb, 1, sum)
     v_fill <- matrix(NA, nrow = nrow(race_comb), ncol = ncol(race_comb))
 
-    for (j in 1:ncol(v_fill)) { # open j loop
-
+    for (j in seq_len(ncol(v_fill))) {
       v_fill[, j] <- race_comb[, j] / total
-    } # close j loop
+    }
 
     # get confidence intervals
-    if (ci_TRUE) {
+    if (ci_true) {
       qtile <- cbind(
         mcse.mat(v_fill) * 100, mcse.q.mat(v_fill, q = ci[1])[, 1] * 100,
         mcse.q.mat(v_fill, q = ci[2])[, 1] * 100
@@ -151,26 +152,24 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
         paste(ci[2] * 100, collapse = "")
       )
       rownames(qtile) <- candidates
-      # don't get confidence intervals
     } else {
-      qtile <- cbind(mcse.mat(v_fill) * 100)
+      # don't get confidence intervals
+      qtile <- cbind(mcmcse::mcse.mat(v_fill) * 100)
 
       colnames(qtile) <- c("Mean", "SE")
       rownames(qtile) <- candidates
     }
 
     race_list[[i]] <- qtile
-  } # close initial i loop #
+  }
 
   names(race_list) <- race
 
-  # Produce both the table and the draws for draw analysis #
-  # Two-item list #
-
+  # produce both the table and the draws for draw analysis
+  # two-item list
   if (produce_draws) {
     return(list(table = race_list, draws = md_draw))
-  } else { # Just the table #
-
+  } else {
     return(race_list)
   }
-} # Close Function
+}
