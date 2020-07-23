@@ -1,8 +1,8 @@
 #' MD Bayes Draw
-#' 
+#'
 #' Tunes and estimates MD Bayes algorithm (ei.MD.bayes)
-#' 
-#' 
+#'
+#'
 #' @param dat data.frame() object of just raw candidate vote and raw population
 #' counts. Put vote results in first set of columns, put population counts next
 #' @param race_vote_split Numeric vector of length 2 indicating where vote
@@ -20,21 +20,20 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
-#' 
-#'   
-#'   # TOY DATA EXAMPLE
-#'   canda <- c(10,8, 10, 4, 8)
-#'   candb <- 20-canda
-#'   white <- c(15, 12, 18, 6, 10)
-#'   black <- 20 - white
-#'   toy <- data.frame(canda, candb, white, black)
-#'   
-#'   # Generate formula for passage to ei.reg.bayes() function
-#'   form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
-#'   # Then excute md_bayes_draw(); not run here due to time
-#'   # md_bayes_draw(toy, c(2,3), form )
-#'     
-#' 
+#'
+#'
+#' # TOY DATA EXAMPLE
+#' canda <- c(10, 8, 10, 4, 8)
+#' candb <- 20 - canda
+#' white <- c(15, 12, 18, 6, 10)
+#' black <- 20 - white
+#' toy <- data.frame(canda, candb, white, black)
+#'
+#' # Generate formula for passage to ei.reg.bayes() function
+#' form <- formula(cbind(canda, candb) ~ cbind(black, white))
+#' # Then excute md_bayes_draw(); not run here due to time
+#' # md_bayes_draw(toy, c(2,3), form )
+#' @import eiPack
 #' @export md_bayes_draw
 md_bayes_draw <- function(dat, race_vote_split, form,
                           ntunes = 10, totaldraws = 100000, seed = 12345,
@@ -49,10 +48,10 @@ md_bayes_draw <- function(dat, race_vote_split, form,
   formula1 <- form
   set.seed(seed)
   # Tune #
-  tune.nocov <- tuneMD(formula1, data = dat, ntunes = ntunes, totaldraws = totaldraws)
+  tune.nocov <- eiPack::tuneMD(formula1, data = dat, ntunes = ntunes, totaldraws = totaldraws)
 
   # Estimate Model #
-  md.out <- ei.MD.bayes(formula1,
+  md.out <- eiPack::ei.MD.bayes(formula1,
     data = dat, sample = sample, thin = thin,
     burnin = burnin, ret.mcmc = ret.mcmc, tune.list = tune.nocov
   )
