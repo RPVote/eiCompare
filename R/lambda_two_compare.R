@@ -1,9 +1,9 @@
 #' Lambda Two Compare
-#' 
+#'
 #' Compares two vectors of lambdas, usually one racial group's support for two
 #' separate candidates, or two separate groups' support for the same candidate.
-#' 
-#' 
+#'
+#'
 #' @param lmd data.frame() object returned from md_bayes_draw_lambda()
 #' @param cnames Vector of character (column) names, needs to match relevant
 #' column names in md_bayes_draw_lambda return.
@@ -18,26 +18,24 @@
 #' <jhgross@@umass.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
-#' 
-#'   
-#'   # TOY DATA EXAMPLE
-#'   canda <- c(10,8, 10, 4, 8)
-#'   candb <- 20-canda
-#'   white <- c(15, 12, 18, 6, 10)
-#'   black <- 20 - white
-#'   toy <- data.frame(canda, candb, white, black)
-#'   
-#'   # Generate formula for passage to ei.reg.bayes() function
-#'   form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
-#'   # Then excute md_bayes_draw(); not run here due to time
-#'   # lmd <- md_bayes_draw_lambda(toy, c(2,3), form )
-#'   # Function Prep #
-#'   # cnames <- c("lambda.black.canda", "lambda.black.candb")
-#' 
-#'   # Canda a over candb among black voters#
-#'   #lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
-#'   
-#' 
+#'
+#'
+#' # TOY DATA EXAMPLE
+#' canda <- c(10, 8, 10, 4, 8)
+#' candb <- 20 - canda
+#' white <- c(15, 12, 18, 6, 10)
+#' black <- 20 - white
+#' toy <- data.frame(canda, candb, white, black)
+#'
+#' # Generate formula for passage to ei.reg.bayes() function
+#' form <- formula(cbind(canda, candb) ~ cbind(black, white))
+#' # Then excute md_bayes_draw(); not run here due to time
+#' # lmd <- md_bayes_draw_lambda(toy, c(2,3), form )
+#' # Function Prep #
+#' # cnames <- c("lambda.black.canda", "lambda.black.candb")
+#'
+#' # Canda a over candb among black voters#
+#' # lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
 #' @export lambda_two_compare
 lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
                                cand1or2 = 1) {
@@ -63,7 +61,7 @@ lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
 
   # Density #
 
-  # Need regular expression for everything to right of period to extract names #
+  # Need regular expression for everything to right of period to extract names
   dens <- density(p.cand_over_cand)
   plot(dens,
     main = paste("Difference in Proportion ", group_name,
@@ -72,17 +70,26 @@ lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
     ),
     xlab = "Difference in Posterior Distribution Sampled from "
   )
-  points(p.cand_over_cand, rep(0, length(p.cand_over_cand)), pch = 3) # plot individual posterior sampled points (no)
+  # plot individual posterior sampled points (no)
+  points(p.cand_over_cand, rep(0, length(p.cand_over_cand)), pch = 3)
   abline(v = 0, col = "grey", lty = 2)
 
   # Probability 1 Candidate over Another #
-  c1g10 <- length(which(p.cand_over_cand > .10)) / n # Morales over Rothman by at least 10 points
-  c1g5 <- length(which(p.cand_over_cand > .05)) / n # # Morales over Rothman by at least 5 points
+  # Morales over Rothman by at least 10 points
+  c1g10 <- length(which(p.cand_over_cand > .10)) / n
+  # Morales over Rothman by at least 5 points
+  c1g5 <- length(which(p.cand_over_cand > .05)) / n
   c1g0 <- length(which(p.cand_over_cand > 0)) / n
 
   med <- median(p.cand_over_cand)
   mean <- mean(p.cand_over_cand)
   df <- data.frame(c1g10, c1g5, c1g0, round(med, 3), round(mean, 3))
-  colnames(df) <- c("Prob>10%", "Prob>5%", "Prob>0", "Dist. Median", "Dist. Mean")
+  colnames(df) <- c(
+    "Prob>10%",
+    "Prob>5%",
+    "Prob>0",
+    "Dist. Median",
+    "Dist. Mean"
+  )
   return(df)
 }
