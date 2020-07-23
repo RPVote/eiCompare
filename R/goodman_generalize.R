@@ -1,9 +1,9 @@
 #' Goodman Regression Generalization
-#' 
+#'
 #' Makes summary table out of multiple heckman regression results, for multiple
 #' candidates and groups
-#' 
-#' 
+#'
+#'
 #' @param cand_vector Character vector of candidate names, taken from the
 #' dataset
 #' @param race_group Character vector of formula, e.g., "~ pct_latino"
@@ -21,17 +21,21 @@
 #' Goodman. Ecological regressions and behavior of individuals. American
 #' Sociological Review, 1953.
 #' @examples
-#' 
+#'
 #' # Load corona data
 #' data(corona)
 #' # Generate character vectors
-#' cands <- c("pct_husted","pct_spiegel","pct_ruth","pct_button","pct_montanez","pct_fox")
+#' cands <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
 #' race_group3 <- c("~ pct_hisp", "~ pct_asian", "~ pct_white")
-#' 
+#'
 #' # Goodman Regression
 #' table_names <- c("Good: Pct Lat", "Good: Pct Asian", "Good: Pct Wht")
 #' good_corona <- goodman_generalize(cands, race_group3, "totvote", corona, table_names)
-#' 
+#' @importFrom photobiology na.omit
+#' @importFrom stats formula
+#' @importFrom stats lm
+#' @ImportFrom stats coef
+#'
 #' @export goodman_generalize
 goodman_generalize <-
   function(cand_vector, race_group, total, data, table_names, ...) {
@@ -44,7 +48,7 @@ goodman_generalize <-
     rn <- c(insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
 
     # Remove any missing datas
-    data <- na.omit(data)
+    data <- photobiology::na.omit(data)
 
     # Loop Placeholder
     race_group_table <- list()
@@ -53,10 +57,10 @@ goodman_generalize <-
     for (k in 1:length(race_group)) {
       cand_table <- list()
       for (i in 1:length(cand_vector)) {
-        form <- formula(paste(cand_vector[i], race_group[k], "+", total))
-        summary(res <- lm(form, data = data, ...))
-        vote_pct <- coef(res)[1] + coef(res)[2]
-        ste <- coef(summary(res))[, "Std. Error"]
+        form <- stats::formula(paste(cand_vector[i], race_group[k], "+", total))
+        summary(res <- stats::lm(form, data = data, ...))
+        vote_pct <- stats::coef(res)[1] + stats::coef(res)[2]
+        ste <- stats::coef(summary(res))[, "Std. Error"]
         vote_ste <- ste[1] + ste[2]
         cand_table[[i]] <- c(vote_pct, vote_ste) * 100
       }
