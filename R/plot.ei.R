@@ -1,14 +1,14 @@
 #' Plotting Ecological Inference Estimates
-#' 
+#'
 #' 'plot' method for the class 'ei'.
-#' 
+#'
 #' Returns any of a set of possible graphical objects, mirroring those in the
 #' examples in King (1997). Graphical option lci is a logical value specifying
 #' the use of the Law of Conservation of Ink, where the implicit information in
 #' the data is represented through color gradients, i.e. the color of the line
 #' is a function of the length of the tomography line.  This can be passed as
 #' an argument and is used for ``tomogD'' and ``tomog'' plots.
-#' 
+#'
 #' @param x An ei object from the function ei.
 #' @param \dots A list of options to return in graphs. See values below.
 #' @return \item{tomogD}{Tomography plot with the data only. See Figure 5.1,
@@ -55,32 +55,36 @@
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press.
 #' @examples
-#' 
+#'
 #' # TOY DATA EXAMPLE
 #' canda <- c(.1, .09, .85, .9, .92)
-#' candb <- 1-canda
+#' candb <- 1 - canda
 #' white <- c(.8, .9, .10, .08, .11)
 #' black <- 1 - white
-#' total <- c(30,80, 70, 20, 29)
+#' total <- c(30, 80, 70, 20, 29)
 #' toy <- data.frame(canda, candb, white, black, total)
-#' 
+#'
 #' # CREATE VECTORS
 #' cands <- c("canda")
 #' race_group <- c("~ black") # only use one group for example
 #' table_names <- c("EI: PCT Black", "EI: PCT White")
-#' 
+#'
 #' # RUN ei_est_gen()
 #' # KEEP DATA TO JUST ONE ROW FOR EXAMPLE (time) ONLY!
 #' results <- ei_est_gen(cands, race_group, "total",
-#'                       data = toy[c(1,3,5),], table_names = table_names, 
-#'                       sample=100, tomog=TRUE)
-#' 
+#'   data = toy[c(1, 3, 5), ], table_names = table_names,
+#'   sample = 100, tomog = TRUE
+#' )
+#'
 #' # Delete Pdf files produced
 #' getwd() # Show working directory
 #' list.files() # show all files in directory
 #' # To remove pdf files, make sure no other pdf files in directory
 #' # system ("rm *.pdf ")
-#' 
+#' @importFrom graphics lines
+#' @importFrom grDevices hcl
+#' @importFrom ellipse ellipse
+#' @importFrom graphics points
 #' @export plot.ei
 plot.ei <- function(x, ...) {
 
@@ -108,7 +112,7 @@ plot.ei <- function(x, ...) {
     )
     if (lci == T) {
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = hcl(
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = grDevices::hcl(
           h = 30,
           c = 100, l = scale[i], alpha = 1
         ))
@@ -116,7 +120,7 @@ plot.ei <- function(x, ...) {
     }
     else {
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = "yellow")
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = "yellow")
       }
     }
   }
@@ -176,7 +180,7 @@ plot.ei <- function(x, ...) {
     )
     if (lci == T) {
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = hcl(
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = grDevices::hcl(
           h = 30,
           c = 100, l = scale[i], alpha = 1
         ))
@@ -184,7 +188,7 @@ plot.ei <- function(x, ...) {
     }
     else {
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = "yellow")
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = "yellow")
       }
     }
   }
@@ -205,13 +209,13 @@ plot.ei <- function(x, ...) {
   }
 
   .tomog3 <- function(bb, bw, sb, sw, rho) {
-    lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2), scale = c(
+    graphics::lines(ellipse::ellipse(matrix(c(1, rho, rho, 1), nrow = 2), scale = c(
       sb,
       sw
     ), centre = c(mean(bb), mean(bw)), level = 0.914),
     col = "blue", lwd = 4
     )
-    lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2), scale = c(
+    graphics::lines(ellipse::ellipse(matrix(c(1, rho, rho, 1), nrow = 2), scale = c(
       sb,
       sw
     ), centre = c(mean(bb), mean(bw)), level = 0.35),
@@ -302,7 +306,7 @@ plot.ei <- function(x, ...) {
       })
       n <- dim(betabcd)[2]
       for (i in 1:n) {
-        lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
+        graphics::lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
           col = "red", lwd = 3
         )
       }
@@ -335,7 +339,7 @@ plot.ei <- function(x, ...) {
       })
       n <- dim(betabcd)[2]
       for (i in 1:n) {
-        lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
+        graphics::lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
           col = "red", lwd = 3
         )
       }
@@ -395,7 +399,7 @@ plot.ei <- function(x, ...) {
       )
       vb <- as.vector(betabm)
       for (i in 1:length(vb)) {
-        lines(c(vb[i], vb[i]), c(0, 0.25))
+        graphics::lines(c(vb[i], vb[i]), c(0, 0.25))
       }
     }
   }
@@ -415,7 +419,7 @@ plot.ei <- function(x, ...) {
       )
       vw <- as.vector(betawm)
       for (i in 1:length(vw)) {
-        lines(c(vw[i], vw[i]), c(0, 0.25))
+        graphics::lines(c(vw[i], vw[i]), c(0, 0.25))
       }
     }
   }
@@ -481,11 +485,11 @@ plot.ei <- function(x, ...) {
         t[, i] <- betabs * x[i] + betaws * (1 - x[i])
       }
       et <- apply(t, 2, mean)
-      lines(x, et, col = "yellow")
+      graphics::lines(x, et, col = "yellow")
       lwr <- apply(t, 2, function(x) quantile(x, probs = c(low)))
       upr <- apply(t, 2, function(x) quantile(x, probs = c(up)))
-      lines(x, lwr, col = "red")
-      lines(x, upr, col = "red")
+      graphics::lines(x, lwr, col = "red")
+      graphics::lines(x, upr, col = "red")
     }
   }
 
@@ -522,11 +526,11 @@ plot.ei <- function(x, ...) {
         t[, i] <- betabs * x[i] + betaws * (1 - x[i])
       }
       et <- apply(t, 2, mean)
-      lines(x, et, col = "yellow")
+      graphics::lines(x, et, col = "yellow")
       lwr <- apply(t, 2, function(x) quantile(x, probs = c(low)))
       upr <- apply(t, 2, function(x) quantile(x, probs = c(up)))
-      lines(x, lwr, col = "red")
-      lines(x, upr, col = "red")
+      graphics::lines(x, lwr, col = "red")
+      graphics::lines(x, upr, col = "red")
       t <- ei.object$t
       x <- ei.object$x
       lm.fit <- lm(t ~ x)
@@ -564,7 +568,7 @@ plot.ei <- function(x, ...) {
       xlab = "X", pch = 20
     )
     for (i in 1:length(x)) {
-      lines(c(x[i], x[i]), c(bounds[, 1][i], bounds[, 2][i]))
+      graphics::lines(c(x[i], x[i]), c(bounds[, 1][i], bounds[, 2][i]))
     }
     lm.xb <- lm(truebb ~ x)
     abline(lm.xb, lty = 2)
@@ -582,7 +586,7 @@ plot.ei <- function(x, ...) {
       xlab = "X", pch = 20
     )
     for (i in 1:length(x)) {
-      lines(c(x[i], x[i]), c(bounds[, 3][i], bounds[, 4][i]))
+      graphics::lines(c(x[i], x[i]), c(bounds[, 3][i], bounds[, 4][i]))
     }
     lm.xw <- lm(truebw ~ x)
     abline(lm.xw, lty = 2)
@@ -644,7 +648,7 @@ plot.ei <- function(x, ...) {
       ])$y) + 1), yaxs = "i", xaxs = "i", main = "Density of Bb Posterior & Truth",
       xlab = "Bb", ylab = "Density"
     )
-    lines(c(truthbb, truthbb), c(0, 0.25 * (max(density(ag[
+    graphics::lines(c(truthbb, truthbb), c(0, 0.25 * (max(density(ag[
       ,
       1
     ])$y) + 1)), lwd = 3)
@@ -655,7 +659,7 @@ plot.ei <- function(x, ...) {
       ])$y) + 1), yaxs = "i", xaxs = "i", main = "Density of Bw Posterior & Truth",
       xlab = "Bw", ylab = "Density"
     )
-    lines(c(truthbw, truthbw), c(0, 0.25 * (max(density(ag[
+    graphics::lines(c(truthbw, truthbw), c(0, 0.25 * (max(density(ag[
       ,
       2
     ])$y) + 1)), lwd = 3)
@@ -673,8 +677,8 @@ plot.ei <- function(x, ...) {
     low <- mean(abs(ci80b[, 1] - betab))
     high <- mean(abs(ci80b[, 2] - betab))
     abline(0, 1)
-    lines(c(0, 1), c(-low, 1 - low), lty = 2)
-    lines(c(0, 1), c(high, 1 + high), lty = 2)
+    graphics::lines(c(0, 1), c(-low, 1 - low), lty = 2)
+    graphics::lines(c(0, 1), c(high, 1 + high), lty = 2)
     plot(betaw, truebw,
       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i",
       yaxs = "i", xlab = "Estimated\nbetaw", ylab = "True betaw",
@@ -690,8 +694,8 @@ plot.ei <- function(x, ...) {
     low <- mean(abs(ci80w[, 1] - betaw))
     high <- mean(abs(ci80w[, 2] - betaw))
     abline(0, 1)
-    lines(c(0, 1), c(-low, 1 - low), lty = 2)
-    lines(c(0, 1), c(high, 1 + high), lty = 2)
+    graphics::lines(c(0, 1), c(-low, 1 - low), lty = 2)
+    graphics::lines(c(0, 1), c(high, 1 + high), lty = 2)
   }
 
   .bndplot <- function(dbuf) {
@@ -971,16 +975,16 @@ plot.ei <- function(x, ...) {
       last.input <- as.integer(last.input)
       input <- last.input + 1
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = "yellow")
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = "yellow")
       }
-      lines(bbounds[input, ], wbounds[input, ], col = "black")
+      graphics::lines(bbounds[input, ], wbounds[input, ], col = "black")
     }
     else {
       input <- as.integer(input)
       for (i in 1:n) {
-        lines(bbounds[i, ], wbounds[i, ], col = "yellow")
+        graphics::lines(bbounds[i, ], wbounds[i, ], col = "yellow")
       }
-      lines(bbounds[input, ], wbounds[input, ], col = "black")
+      graphics::lines(bbounds[input, ], wbounds[input, ], col = "black")
     }
     return(input)
   }
@@ -1006,7 +1010,7 @@ plot.ei <- function(x, ...) {
       main = "Posterior Distribution of betaB", xlab = "Bb",
       ylab = "Density"
     )
-    lines(c(0, 0.25 * (max(density(betab[input, ])$y) + 1)),
+    graphics::lines(c(0, 0.25 * (max(density(betab[input, ])$y) + 1)),
       lwd = 3
     )
     plot(density(betaw[input, ]),
@@ -1017,7 +1021,7 @@ plot.ei <- function(x, ...) {
       main = "Posterior Distribution of betaW", xlab = "Bw",
       ylab = "Density"
     )
-    lines(c(0, 0.25 * (max(density(betaw[input, ])$y) + 1)),
+    graphics::lines(c(0, 0.25 * (max(density(betaw[input, ])$y) + 1)),
       lwd = 3
     )
     colors <- runif(length(betabs), 26, 51)
