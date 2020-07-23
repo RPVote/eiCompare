@@ -46,50 +46,59 @@
 #' form <- formula(cbind(canda, candb) ~ cbind(black, white))
 #'
 #' # Then execute md_bayes_gen(); not run here due to time
-#' md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1)
+#' md_bayes_gen(
+#'   dat = toy,
+#'   form = form,
+#'   total_yes = FALSE,
+#'   ntunes = 1,
+#'   thin = 1,
+#'   totaldraws = 100,
+#'   sample = 10,
+#'   burnin = 1
+#' )
 #'
-#' # Add in mcmc drawrings #
-#' drawrings <- md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1, produce_draws = TRUE)
-#' head(drawrings$draws)
+#' # Add in mcmc drawings
+#' drawings <- md_bayes_gen(
+#'   dat = toy,
+#'   form = form,
+#'   total_yes = FALSE,
+#'   ntunes = 1,
+#'   thin = 1,
+#'   totaldraws = 100,
+#'   sample = 10,
+#'   burnin = 1,
+#'   produce_draws = TRUE
+#' )
+#' head(drawings$draws)
 #' @export md_bayes_gen
-md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totaldraws = 10000,
-                         seed = 12345, sample = 1000, thin = 100, burnin = 10000,
-                         ret.mcmc = TRUE, ci = c(0.025, 0.975), ci_TRUE = TRUE, produce_draws = FALSE, ...) {
+md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
+                         totaldraws = 10000, seed = 12345, sample = 1000,
+                         thin = 100, burnin = 10000, ret.mcmc = TRUE,
+                         ci = c(0.025, 0.975), ci_TRUE = TRUE,
+                         produce_draws = FALSE, ...) {
   set.seed(seed)
-  if (total_yes) { # When variables are percents #
-
-    # Tune it real good #
-
-    cat("\nTune the tuneMD real good...\n")
-
+  # when variables are percents
+  if (total_yes) {
     suppressWarnings(tune.nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
       totaldraws = totaldraws, total = total, ...
     ))
 
-    # Estimate Bayes Model -- can take a while (real good)
-
-    cat("\nHello my name is Simon and I like to do ei.MD.bayes drawrings...\n")
-
+    # Estimate Bayes Model -- can take a while
     suppressWarnings(md.out <- ei.MD.bayes(form,
       data = dat, sample = sample, total = total,
       thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
       tune.list = tune.nocov, ...
     ))
-  } else { # When variables are raw numeros #
-
-    # Tune it so good #
-    cat("\nTune the tuneMD real good...\n")
-
+    # when variables are raw numbers
+  } else {
+    # tune the MD bayes model
     tune.nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
       totaldraws = totaldraws, ...
     )
 
-    # Estimate Bayes Model real good
-
-    cat("\nAnd you know my name is Simon and I like to do ei.MD.bayes() drawrings...\n")
-
+    # Estimate Bayes Model
     md.out <- ei.MD.bayes(form,
       data = dat, sample = sample,
       thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
@@ -97,7 +106,7 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
     )
   }
 
-  # Extract MD Bayes Cells #
+  # Extract MD Bayes Cells
   md_draw <- md.out$draws$Cell.counts
 
   # Clean up formula
@@ -108,7 +117,7 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
     str_squish(var)
   }
 
-  # Race & Candidates #
+  # Race & Candidates
   race <- name_extract_rxc(form, 3)
   candidates <- name_extract_rxc(form, 2)
 
@@ -128,17 +137,22 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
       v_fill[, j] <- race_comb[, j] / total
     } # close j loop
 
-    if (ci_TRUE) { # Get Confidence Intervals #
-
+    # get confidence intervals
+    if (ci_TRUE) {
       qtile <- cbind(
         mcse.mat(v_fill) * 100, mcse.q.mat(v_fill, q = ci[1])[, 1] * 100,
         mcse.q.mat(v_fill, q = ci[2])[, 1] * 100
       )
 
-      colnames(qtile) <- c("Mean", "SE", paste(ci[1] * 100, collapse = ""), paste(ci[2] * 100, collapse = ""))
+      colnames(qtile) <- c(
+        "Mean",
+        "SE",
+        paste(ci[1] * 100, collapse = ""),
+        paste(ci[2] * 100, collapse = "")
+      )
       rownames(qtile) <- candidates
-    } else { # Don't get Confidence Intervals #
-
+      # don't get confidence intervals
+    } else {
       qtile <- cbind(mcse.mat(v_fill) * 100)
 
       colnames(qtile) <- c("Mean", "SE")
