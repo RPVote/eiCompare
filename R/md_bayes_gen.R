@@ -1,12 +1,24 @@
-md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totaldraws = 10000,
-                         seed = 12345, sample = 1000, thin = 100, burnin = 10000,
-                         ret.mcmc = TRUE, ci = c(0.025, 0.975), ci_TRUE = TRUE, produce_draws = FALSE, ...) {
+md_bayes_gen <- function(
+  dat, form, 
+  total_yes = TRUE, 
+  total, ntunes = 10, 
+  totaldraws = 10000,
+  seed = 12345, 
+  sample = 1000, 
+  thin = 100, 
+  burnin = 10000,
+  ret.mcmc = TRUE, 
+  ci = c(0.025, 0.975), 
+  ci_TRUE = TRUE, 
+  produce_draws = FALSE,
+  verbose = FALSE,
+  ...
+) {
   set.seed(seed)
   if (total_yes) { # When variables are percents #
 
     # Tune it real good #
-
-    cat("\nTune the tuneMD real good...\n")
+    if (verbose == TRUE) { cat("\nTune the tuneMD real good...\n") }
 
     suppressWarnings(tune.nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
@@ -15,8 +27,10 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
 
     # Estimate Bayes Model -- can take a while (real good)
 
-    cat("\nHello my name is Simon and I like to do ei.MD.bayes drawrings...\n")
-
+    if (verbose == TRUE) {
+      cat("\nHello my name is Simon and I like to do ei.MD.bayes drawrings...\n")
+    }
+      
     suppressWarnings(md.out <- ei.MD.bayes(form,
       data = dat, sample = sample, total = total,
       thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
@@ -25,7 +39,7 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
   } else { # When variables are raw numeros #
 
     # Tune it so good #
-    cat("\nTune the tuneMD real good...\n")
+    if (verbose == TRUE) { cat("\nTune the tuneMD real good...\n") }
 
     tune.nocov <- tuneMD(form,
       data = dat, ntunes = ntunes,
@@ -33,8 +47,9 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10, totald
     )
 
     # Estimate Bayes Model real good
-
-    cat("\nAnd you know my name is Simon and I like to do ei.MD.bayes() drawrings...\n")
+    if (verbose == TRUE) {
+      cat("\nAnd you know my name is Simon and I like to do ei.MD.bayes() drawrings...\n")
+    }
 
     md.out <- ei.MD.bayes(form,
       data = dat, sample = sample,
