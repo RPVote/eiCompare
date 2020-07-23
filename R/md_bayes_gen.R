@@ -1,7 +1,10 @@
 md_bayes_gen <- function(
-  dat, form, 
+  data, 
+  cand_cols,
+  race_cols,
   total_yes = TRUE, 
-  total, ntunes = 10, 
+  totals_col, 
+  ntunes = 10, 
   totaldraws = 10000,
   seed = 12345, 
   sample = 1000, 
@@ -14,15 +17,27 @@ md_bayes_gen <- function(
   verbose = FALSE,
   ...
 ) {
+  # get formula
+  formula <- as.formula(
+    paste(
+      'cbind(',
+      paste(cand_cols, collapse = ", "),
+      ') ~ cbind(',
+      paste(race_cols, collapse = ", "),
+      ")",
+      sep = ""
+    )
+  )
+  
   set.seed(seed)
   if (total_yes) { # When variables are percents #
 
     # Tune it real good #
     if (verbose == TRUE) { cat("\nTune the tuneMD real good...\n") }
 
-    suppressWarnings(tune.nocov <- tuneMD(form,
-      data = dat, ntunes = ntunes,
-      totaldraws = totaldraws, total = total, ...
+    suppressWarnings(tune.nocov <- tuneMD(formula,
+      data = data, ntunes = ntunes,
+      totaldraws = totaldraws, total = totals_col, ...
     ))
 
     # Estimate Bayes Model -- can take a while (real good)
@@ -31,8 +46,8 @@ md_bayes_gen <- function(
       cat("\nHello my name is Simon and I like to do ei.MD.bayes drawrings...\n")
     }
       
-    suppressWarnings(md.out <- ei.MD.bayes(form,
-      data = dat, sample = sample, total = total,
+    suppressWarnings(md.out <- ei.MD.bayes(formula,
+      data = data, sample = sample, total = totals_col,
       thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
       tune.list = tune.nocov, ...
     ))
@@ -41,8 +56,8 @@ md_bayes_gen <- function(
     # Tune it so good #
     if (verbose == TRUE) { cat("\nTune the tuneMD real good...\n") }
 
-    tune.nocov <- tuneMD(form,
-      data = dat, ntunes = ntunes,
+    tune.nocov <- tuneMD(formula,
+      data = data, ntunes = ntunes,
       totaldraws = totaldraws, ...
     )
 
@@ -51,8 +66,8 @@ md_bayes_gen <- function(
       cat("\nAnd you know my name is Simon and I like to do ei.MD.bayes() drawrings...\n")
     }
 
-    md.out <- ei.MD.bayes(form,
-      data = dat, sample = sample,
+    md.out <- ei.MD.bayes(formula,
+      data = data, sample = sample,
       thin = thin, burnin = burnin, ret.mcmc = ret.mcmc,
       tune.list = tune.nocov, ...
     )
@@ -63,15 +78,15 @@ md_bayes_gen <- function(
 
   # Clean up formula
   name_extract_rxc <- function(form_object, num) {
-    form <- gsub("cbind(", "", as.character(form)[num], fixed = T)
+    form <- gsub("cbind(", "", as.character(formula)[num], fixed = T)
     form <- gsub(")", "", form, fixed = T)
     var <- unlist(strsplit(form, ","))
     str_squish(var)
   }
 
   # Race & Candidates #
-  race <- name_extract_rxc(form, 3)
-  candidates <- name_extract_rxc(form, 2)
+  race <- name_extract_rxc(formula, 3)
+  candidates <- name_extract_rxc(formula, 2)
 
   race_list <- list()
 
