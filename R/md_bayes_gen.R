@@ -2,8 +2,7 @@ md_bayes_gen <- function(
   data, 
   cand_cols,
   race_cols,
-  total_yes = TRUE, 
-  totals_col, 
+  totals_col = NULL, 
   ntunes = 10, 
   totaldraws = 10000,
   seed = 12345, 
@@ -30,7 +29,7 @@ md_bayes_gen <- function(
   )
   
   set.seed(seed)
-  if (total_yes) { # When variables are percents #
+  if (!is.null(totals_col)) { # When variables are percents #
 
     # Tune it real good #
     if (verbose == TRUE) { cat("\nTune the tuneMD real good...\n") }
