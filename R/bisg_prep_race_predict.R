@@ -1,8 +1,8 @@
 #' Bayesian Improved Surname Geocoding Data Preparation and Race Prediction
-#' 
+#'
 #' Preps data for BISG estimation via WRU package
-#' 
-#' 
+#'
+#'
 #' @param df data.frame() object, containing voter file information with FIPS
 #' code information extracted using unit_comb_extract() function, which brings
 #' in relevant columns
@@ -67,36 +67,34 @@
 #' @references wru R package. Kabir Khanna, Kosuke Imai, Hubert Jin.  Imai and
 #' Khanna (2015) "Improving Ecological Inference by Predicting Individual
 #' Ethnicity from Voter Registration Records" <DOI:10.1093/pan/mpw001>
+#' @importfrom R.utils
 #' @examples
-#' 
-#'   
-#'   # EXAMPLE: NOT RUN #
-#'   # NOTE: You need to have a census key to run this #
-#'   
-#'   data(ny_voter)
-#'   head(ny_voter)
-#'   
-#'   # Load ny_census object #
-#'   # load ( system.file("extdata/ny_census.RData",package="eiCompare") )
-#'   
-#'   # Now load your Census key #
-#'   # [add in here where you would do that]
-#'   # key_census = ""
-#' 
-#'   ####################################################
-#'   # Prep Data & Perform Bayesian Surname Geolocation #
-#'   ####################################################
-#'   # Extract second list object (called bisg, note $bisg)
-#'   #bisg <- bisg_prep_race_predict(df=ny_voter,
-#'   #                     voterid = "Voter.ID",
-#'   #                     precinct = "SD..Poll",
-#'   #                     surname_char = "Last.Name",
-#'   #                     state = "NY",
-#'   #                     census.key = key_census,
-#'   #                     census.data = ny_census)$bisg
-#' 
-#'   
-#' 
+#'
+#'
+#' # EXAMPLE: NOT RUN #
+#' # NOTE: You need to have a census key to run this #
+#'
+#' data(ny_voter)
+#' head(ny_voter)
+#'
+#' # Load ny_census object #
+#' # load ( system.file("extdata/ny_census.RData",package="eiCompare") )
+#'
+#' # Now load your Census key #
+#' # [add in here where you would do that]
+#' # key_census = ""
+#'
+#' ####################################################
+#' # Prep Data & Perform Bayesian Surname Geolocation #
+#' ####################################################
+#' # Extract second list object (called bisg, note $bisg)
+#' # bisg <- bisg_prep_race_predict(df=ny_voter,
+#' #                     voterid = "Voter.ID",
+#' #                     precinct = "SD..Poll",
+#' #                     surname_char = "Last.Name",
+#' #                     state = "NY",
+#' #                     census.key = key_census,
+#' #                     census.data = ny_census)$bisg
 #' @export bisg_prep_race_predict
 bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_char, state,
                                    census.geo = "block", census.key, census.data,
@@ -114,7 +112,7 @@ bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_
       block = as.character(df$block),
       stringsAsFactors = F
     )
-    print(str(voter.file))
+    print(R.utils::str(voter.file))
   } else {
     # Create Data.frame Object to send to predict_race() wru package function #
     voter.file <- data.frame(
@@ -126,7 +124,7 @@ bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_
       block = as.character(df$block),
       stringsAsFactors = F
     )
-    print(str(voter.file))
+    print(R.utils::str(voter.file))
   }
   # Estimate Voter Race #
   # Suppress the warning that a few people are not race predicted
