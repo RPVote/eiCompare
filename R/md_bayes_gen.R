@@ -72,7 +72,7 @@
 #' )
 #' head(drawings$draws)
 #' @importFrom stringr str_squish
-#' @importFrom mcmcse, mcse.mat
+#' @importFrom mcmcse mcse.mat mcse.q.mat
 #' @export md_bayes_gen
 md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
                          totaldraws = 10000, seed = 12345, sample = 1000,
@@ -141,8 +141,9 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
     # get confidence intervals
     if (ci_true) {
       qtile <- cbind(
-        mcse.mat(v_fill) * 100, mcse.q.mat(v_fill, q = ci[1])[, 1] * 100,
-        mcse.q.mat(v_fill, q = ci[2])[, 1] * 100
+        mcmcse::mcse.mat(v_fill) * 100,
+        mcmcse::mcse.q.mat(v_fill, q = ci[1])[, 1] * 100,
+        mcmcse::mcse.q.mat(v_fill, q = ci[2])[, 1] * 100
       )
 
       colnames(qtile) <- c(
