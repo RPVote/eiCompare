@@ -94,7 +94,8 @@
 #'
 #' @importFrom photobiology na.omit
 #' @import ggplot2
-#' aes, geom_point, position_dodge, labs, geom_hline, geom_linerange, coord_flip, theme_bw, ggtitle, theme, element_text
+#' @importFrom magrittr `%>%`
+#'
 #'
 #'
 #' @export plot.ei_compare
@@ -159,7 +160,7 @@ plot.ei_compare <- function(x, ...) {
       color = factor(Group, labels = x@groups)
     )) +
       # Manipulate Point spacing
-      ggplot2::geom_point(position = position_dodge(width = rep(.5, nplots)), size = 3) +
+      ggplot2::geom_point(position = ggplot2::position_dodge(width = rep(.5, nplots)), size = 3) +
       ggplot2::labs(color = "Group", shape = "Group") +
       ggplot2::geom_hline(yintercept = 0, colour = "gray", linetype = 2, size = 1.5) +
       # Adjust Error Bars for 1 and 2 SEs
@@ -178,7 +179,7 @@ plot.ei_compare <- function(x, ...) {
       ggplot2::coord_flip() +
       ggplot2::theme_bw() +
       ggplot2::ggtitle("Estimate Difference of EI and RxC Methods") +
-      ggplot2::theme(plot.title = element_text(size = 20, face = "bold")) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = 20, face = "bold")) +
       ggplot2::labs(x = "", y = "RxC-EI Estimate")
   ) # Close Warning: Ignoring unknown aesthetics: y message
 } # Close Function
