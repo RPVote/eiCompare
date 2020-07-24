@@ -1,17 +1,91 @@
-ei_est_gen <- function(
-    cand_vector, 
-    race_group, 
-    total, 
-    rho = 10, 
-    data, 
-    table_names,
-    sample = 1000, 
-    tomog = FALSE, 
-    density_plot = FALSE, 
-    beta_yes = FALSE, 
-    verbose = FALSE,
-    ...
-) {
+#' Iterative EI Estimation
+#'
+#' Iteratively fits EI models for candidates and racial/ethnic groups
+#'
+#'
+#' @param cand_vector Character vector of candidate names, taken from the
+#' dataset
+#' @param race_group Character vector of formula, e.g., "~ pct_latino"
+#' @param total Character vector (e.g., "totvote") of total variable name from
+#' data, variable in data is numeric
+#' @param rho Rho parameter for ei() estimate, defaults to 10, numeric
+#' @param data data.frame() object containing the data
+#' @param table_names Character vector of table names with same length as
+#' race_group. Used for formatting output. If only one racial group, must
+#' provide "Pct. Other" as second element of vector
+#' @param sample Number of samples used for EI calculation, default = 1000
+#' @param tomog Logical to display tomography plot. If true will will save pdf
+#' plot to working directory. Default is FALSE
+#' @param density_plot Logical to display density plot of betab and betaw. If
+#' true will save pdf plot to working directory. Default is FALSE
+#' @param beta_yes Logical to export betas (b, w) in list object in addition to
+#' table of results. Default is FALSE
+#' @param \dots Arguments passed onto ei() function
+#' @return Data frame/table object containing EI individually estimated
+#' results. If beta_yes=TRUE, two list items, first the data frame table of
+#' results, second dataframe of betas themselves.
+#' @note If this results in an error, "Error in .subset2(x, i, exact = exact) :
+#' invalid subscript type 'list'", just rerun the algorithm again.
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @references eiPack. Gary King (1997). A Solution to the Ecological Inference
+#' Problem. Princeton: Princeton University Press.
+#' @examples
+#'
+#' # TOY DATA EXAMPLE
+#' canda <- c(.1, .09, .85, .9, .92)
+#' candb <- 1 - canda
+#' white <- c(.8, .9, .10, .08, .11)
+#' black <- 1 - white
+#' total <- c(30, 80, 70, 20, 29)
+#' toy <- data.frame(canda, candb, white, black, total)
+#'
+#' # CREATE VECTORS
+#' cands <- c("canda")
+#' race_group <- c("~ black") # only use one group for example
+#' table_names <- c("EI: PCT Black", "EI: PCT White")
+#'
+#' # RUN ei_est_gen()
+#' # KEEP DATA TO JUST ONE ROW FOR EXAMPLE (time) ONLY!
+#' ei_est_gen(cands, race_group, "total",
+#'   data = toy[c(1, 3, 5), ], table_names = table_names, sample = 100
+#' )
+#' \donttest{
+#' # WARNING -- May take a little while to execute
+#' # Load Package Data
+#' data(corona)
+#' # Create Character Vectors
+#' cands <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
+#' race_group3 <- c("~ pct_hisp", "~ pct_asian", "~ pct_white")
+#' table_names <- c("EI: Pct Hisp", "EI: Pct Asian", "EI: Pct White")
+#'
+#' # Run ei_est_gen function
+#' results <- ei_est_gen(
+#'   cand_vector = cands, race_group = race_group3,
+#'   total = "totvote", data = corona, table_names = table_names
+#' )
+#'
+#' results
+#' # Run ei_est_gen function; Exporting betas into data frame
+#' results_w_betas <- ei_est_gen(
+#'   cand_vector = cands, race_group = race_group3,
+#'   total = "totvote", data = corona, table_names = table_names, beta_yes = TRUE
+#' )
+#'
+#' res1 <- results_w_betas[[1]] # table of mean estimates
+#' res1
+#' res2 <- results_w_betas[[2]] # betas of estimates for each precinct
+#' }
+#'
+#' @import ei
+#' @importFrom stringr str_trim
+#' @importFrom stats formula
+#' @importFrom grDevices pdf
+#' @importFrom graphics mtext
+#'
+#'
+#' @export
+ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_names,
+                       sample = 1000, tomog = F, density_plot = F, beta_yes = F, ...) {
   list_extract <- function(x) x[, 1:2]
   seq_split <- 2:length(cand_vector)
   if (length(cand_vector) == 1) {
@@ -23,63 +97,44 @@ ei_est_gen <- function(
   data <- na.omit(data)
   race_group_table <- list()
   beta_full_hold <- list()
-  if(!verbose) {
-    pb <- txtProgressBar(min = 0, max = length(cand_vector)*length(race_group), style = 3)
-    j <- 0
-  }
   for (k in 1:length(race_group)) {
     cand_table <- list()
     beta_container <- list()
     for (i in 1:length(cand_vector)) {
-      form <- formula(paste(cand_vector[i], race_group[k]))
-      try(
-        if (!verbose) {
-          capture.output({ 
-            suppressMessages({
-              ei_out <- ei::ei(
-                form, total = total, erho = rho, 
-                data = data, sample = sample, ...
-              )
-            })
-          })
-        } else {
-          ei_out <- ei::ei(
-            form, total = total, erho = rho,
-              data = data, sample = sample, ...
-            )
-        }, 
-      silent = T)
+      form <- stats::formula(paste(cand_vector[i], race_group[k]))
+      try(ei_out <- ei::ei(form,
+        total = total, erho = rho,
+        data = data, sample = sample, ...
+      ), silent = T)
       gm <- geterrmessage()
       if (gm == "Maximizing likelihood\\n         Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'") {
         stop("Maximizing likelihood\\n             Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'\\n\\n             \\n ei package error try re-running ei_est_gen()")
       }
-      if (verbose) { 
-        cat(paste("Model:", cand_vector[i], race_group[k],
-          "\\n",
-          sep = " "
-        ))
-        print(summary(ei_out))
-      }
+      cat(paste("Model:", cand_vector[i], race_group[k],
+        "\\n",
+        sep = " "
+      ))
+      print(summary(ei_out))
       if (tomog) {
-        pdf(paste(cand_vector[i], race_group[k], ".pdf",
+        grDevices::pdf(paste(cand_vector[i], race_group[k], ".pdf",
           sep = ""
         ))
         plot(ei_out, "tomogE")
-        mtext(paste(cand_vector[i], race_group[k], sep = " "),
+        graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1
         )
-        dev.off()
+        # imguR::dev.off() #not required?
       }
       if (density_plot) {
-        pdf(paste("density_plot", k, i, ".pdf", sep = "_"))
+        grDevices::pdf(paste("density_plot", k, i, ".pdf", sep = "_"))
         plot(ei_out, "betab", "betaw")
-        mtext(paste(cand_vector[i], race_group[k], sep = " "),
+        graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1
         )
-        dev.off()
+        # imguR::dev.off()
       }
 
-      beta_stan_err <- eiread(
+      beta_stan_err <- ei::eiread(
         ei_out, "betab", "sbetab",
         "betaw", "sbetaw"
       )
@@ -97,13 +152,6 @@ ei_est_gen <- function(
       colnames(cand_betas) <- c("betab", "betaw")
       cand_table[[i]] <- eimean
       beta_container[[i]] <- cand_betas
-    
-      # increment progressbar
-      if (!verbose) {
-        j <- j + 1
-        setTxtProgressBar(pb, j)
-      }
-      
     }
     cand_table <- data.table::rbindlist(cand_table)
     cand_table <- data.frame(rn, cand_table)
@@ -138,7 +186,7 @@ ei_est_gen <- function(
   if (beta_yes) {
     beta_names <- list()
     for (i in 1:length(race_group)) {
-      beta_names[[i]] <- paste(str_trim(gsub("~", "", race_group[i])),
+      beta_names[[i]] <- paste(stringr::str_trim(gsub("~", "", race_group[i])),
         cand_vector,
         sep = "_"
       )
