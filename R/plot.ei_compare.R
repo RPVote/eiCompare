@@ -54,7 +54,7 @@
 #' ei_rc_combine
 #'
 #' # PLOT EI DIFFERENCES
-#' plot(ei_rc_combine)
+#' # plot(ei_rc_combine)
 #' \donttest{
 #' # Warning: Takes a while to run
 #' # Load corona data
@@ -89,7 +89,7 @@
 #'   groups = c("Latino", "Asian", "White")
 #' )
 #' # Plot the Results
-#' plot(ei_rc_g_combine)
+#' # plot(ei_rc_g_combine)
 #' }
 #'
 #' @importFrom stats na.omit

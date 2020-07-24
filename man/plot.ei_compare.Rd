@@ -64,7 +64,7 @@ ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res,
 ei_rc_combine
 
 # PLOT EI DIFFERENCES
-plot(ei_rc_combine)
+# plot(ei_rc_combine)
 \donttest{
 # Warning: Takes a while to run
 # Load corona data
@@ -99,7 +99,7 @@ ei_rc_g_combine <- ei_rc_good_table(results, ei_bayes_res, good_corona,
   groups = c("Latino", "Asian", "White")
 )
 # Plot the Results
-plot(ei_rc_g_combine)
+# plot(ei_rc_g_combine)
 }
 
 }
