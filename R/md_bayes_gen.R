@@ -127,7 +127,7 @@ md_bayes_gen <- function(dat, form, total_yes = TRUE, total, ntunes = 10,
   race_list <- list()
 
   # loop along race
-  for (i in seq_len(race)) {
+  for (i in seq_len(length(race))) {
     # pull MD draws
     race_comb <- md_draw[, grep(race[i], colnames(md_draw))]
 
