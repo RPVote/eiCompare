@@ -77,15 +77,13 @@
 #' }
 #'
 #' @import ei
-#' @importFrom photobiology na.omit
 #' @importFrom stringr str_trim
 #' @importFrom stats formula
 #' @importFrom grDevices pdf
 #' @importFrom graphics mtext
-#' @importFrom imguR dev.off
 #'
 #'
-#' @export ei_est_gen
+#' @export
 ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_names,
                        sample = 1000, tomog = F, density_plot = F, beta_yes = F, ...) {
   list_extract <- function(x) x[, 1:2]
@@ -96,7 +94,7 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
   else {
     rn <- c(R.utils::insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
   }
-  data <- photobiology::na.omit(data)
+  data <- na.omit(data)
   race_group_table <- list()
   beta_full_hold <- list()
   for (k in 1:length(race_group)) {
@@ -125,7 +123,7 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
         graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1
         )
-        imguR::dev.off()
+        # imguR::dev.off() #not required?
       }
       if (density_plot) {
         grDevices::pdf(paste("density_plot", k, i, ".pdf", sep = "_"))
@@ -133,7 +131,7 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
         graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1
         )
-        imguR::dev.off()
+        # imguR::dev.off()
       }
 
       beta_stan_err <- ei::eiread(

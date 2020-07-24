@@ -1,10 +1,10 @@
 #' precinct_agg_combine
-#' 
+#'
 #' Combines voter file surname geocoded data into aggregated precinct counts.
 #' To be performed on data object resulting from successful completion of
 #' bisg_prep_race_predict() function.
-#' 
-#' 
+#'
+#'
 #' @param dat data.frame() object
 #' @param precinct Character of precinct column name. Default = "precinct",
 #' which is what is output from bisg_prep_race_predict()
@@ -12,8 +12,8 @@
 #' precinct estimates. Dataset suitable for EI/RxC.
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @examples
-#' 
-#' 
+#'
+#' @importFrom data.table rbindlist
 #' @export precinct_agg_combine
 precinct_agg_combine <- function(dat, precinct = "precinct") {
 

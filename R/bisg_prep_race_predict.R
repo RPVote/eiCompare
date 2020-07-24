@@ -67,7 +67,6 @@
 #' @references wru R package. Kabir Khanna, Kosuke Imai, Hubert Jin.  Imai and
 #' Khanna (2015) "Improving Ecological Inference by Predicting Individual
 #' Ethnicity from Voter Registration Records" <DOI:10.1093/pan/mpw001>
-#' @import R.utils
 #' @examples
 #'
 #'
@@ -112,7 +111,7 @@ bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_
       block = as.character(df$block),
       stringsAsFactors = F
     )
-    print(R.utils::str(voter.file))
+    # print(R.utils::str(voter.file))
   } else {
     # Create Data.frame Object to send to predict_race() wru package function #
     voter.file <- data.frame(
@@ -124,7 +123,7 @@ bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_
       block = as.character(df$block),
       stringsAsFactors = F
     )
-    print(R.utils::str(voter.file))
+    # print(R.utils::str(voter.file))
   }
   # Estimate Voter Race #
   # Suppress the warning that a few people are not race predicted

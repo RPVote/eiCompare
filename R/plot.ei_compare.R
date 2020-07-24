@@ -92,7 +92,7 @@
 #' plot(ei_rc_g_combine)
 #' }
 #'
-#' @importFrom photobiology na.omit
+#' @importFrom stats na.omit
 #' @import ggplot2
 #'
 #'
@@ -107,7 +107,7 @@ plot.ei_compare <- function(x, ...) {
   if (!is.na(x@data[2, 4])) stop("In 'ei_rc_good_table()' function set include_good=F, I'm cereal you guys")
 
   # Collect Candidate Names for Labeling
-  ei_rc_combine_a <- photobiology::na.omit(x@data)
+  ei_rc_combine_a <- na.omit(x@data)
   cand_names_plot <- as.character(ei_rc_combine_a[-nrow(ei_rc_combine_a), 1])
   # Subset Point Estimates Just to Differences
   ei_rc_combine_a <- ei_rc_combine_a[

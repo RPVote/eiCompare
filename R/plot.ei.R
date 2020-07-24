@@ -81,18 +81,11 @@
 #' list.files() # show all files in directory
 #' # To remove pdf files, make sure no other pdf files in directory
 #' # system ("rm *.pdf ")
-#' @importFrom graphics lines
-#' @importFrom graphics abline
-#' @importFrom graphics par
-#' @importFrom graphics polygon
-#' @importFrom graphics mtext
+#' @importFrom graphics lines abline par polygon mtext points
 #' @importFrom grDevices hcl
 #' @importFrom grDevices rgb
 #' @importFrom ellipse ellipse
-#' @importFrom graphics points
-#' @importFrom stats lm
-#' @importFrom stats runif
-#' @importFrom stats density
+#' @importFrom stats lm runif density weighted.mean
 #' @importFrom plotrix draw.circle
 #'
 #'

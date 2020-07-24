@@ -31,10 +31,7 @@
 #' # Goodman Regression
 #' table_names <- c("Good: Pct Lat", "Good: Pct Asian", "Good: Pct Wht")
 #' good_corona <- goodman_generalize(cands, race_group3, "totvote", corona, table_names)
-#' @importFrom photobiology na.omit
-#' @importFrom stats formula
-#' @importFrom stats lm
-#' @ImportFrom stats coef
+#' @importFrom stats formula lm coef na.omit
 #'
 #' @export goodman_generalize
 goodman_generalize <-
@@ -48,7 +45,7 @@ goodman_generalize <-
     rn <- c(insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
 
     # Remove any missing datas
-    data <- photobiology::na.omit(data)
+    data <- na.omit(data)
 
     # Loop Placeholder
     race_group_table <- list()

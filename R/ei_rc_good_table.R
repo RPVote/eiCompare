@@ -126,7 +126,7 @@
 #' )
 #' }
 #'
-#' @import methods new
+#' @importFrom methods new
 #' @export ei_rc_good_table
 ei_rc_good_table <-
   function(ei, rc, good, groups, include_good = FALSE) {
