@@ -36,6 +36,8 @@
 #'
 #' # Canda a over candb among black voters#
 #' # lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
+#' @importFrom graphics abline hist par points
+#' @importFrom stats median
 #' @export lambda_two_compare
 lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
                                cand1or2 = 1) {
@@ -51,18 +53,17 @@ lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
   p_cand_over_cand <- lmd[, cnames[1]] - lmd[, cnames[2]]
 
   # Plot Histogram & Posterior #
-  par(mfrow = c(1, 2))
+  graphics::par(mfrow = c(1, 2))
 
   # Histogram #
-  hist(lmd[, cnames[1]] - lmd[, cnames[2]],
+  graphics::hist(lmd[, cnames[1]] - lmd[, cnames[2]],
     main = paste(labels[1], " - ", labels[2], sep = ""),
     xlab = "Posterior Distribution"
   )
 
-  # Density #
-
+  # density
   # Need regular expression for everything to right of period to extract names
-  dens <- density(p_cand_over_cand)
+  dens <- stats::density(p_cand_over_cand)
   plot(dens,
     main = paste("Difference in Proportion ", group_name,
       "\nVote for ", labels[1], " and ", labels[2],
@@ -71,8 +72,8 @@ lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
     xlab = "Difference in Posterior Distribution Sampled from "
   )
   # plot individual posterior sampled points (no)
-  points(p_cand_over_cand, rep(0, length(p_cand_over_cand)), pch = 3)
-  abline(v = 0, col = "grey", lty = 2)
+  graphics::points(p_cand_over_cand, rep(0, length(p_cand_over_cand)), pch = 3)
+  graphics::abline(v = 0, col = "grey", lty = 2)
 
   # Probability 1 Candidate over Another #
   # Morales over Rothman by at least 10 points
@@ -81,7 +82,7 @@ lambda_two_compare <- function(lmd, cnames, group_name = "Latino",
   c1g5 <- length(which(p_cand_over_cand > .05)) / n
   c1g0 <- length(which(p_cand_over_cand > 0)) / n
 
-  med <- median(p_cand_over_cand)
+  med <- stats::median(p_cand_over_cand)
   mean <- mean(p_cand_over_cand)
   df <- data.frame(c1g10, c1g5, c1g0, round(med, 3), round(mean, 3))
   colnames(df) <- c(
