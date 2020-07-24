@@ -96,7 +96,7 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
   else {
     rn <- c(R.utils::insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
   }
-  data <- na.omit(data)
+  data <- photobiology::na.omit(data)
   race_group_table <- list()
   beta_full_hold <- list()
   for (k in 1:length(race_group)) {
