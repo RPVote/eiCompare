@@ -94,7 +94,6 @@
 #'
 #' @importFrom photobiology na.omit
 #' @import ggplot2
-#' @importFrom magrittr %>%
 #'
 #'
 #'
