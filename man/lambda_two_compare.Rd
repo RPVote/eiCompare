@@ -28,26 +28,22 @@ Compares two vectors of lambdas, usually one racial group's support for two
 separate candidates, or two separate groups' support for the same candidate.
 }
 \examples{
+# TOY DATA EXAMPLE
+canda <- c(10, 8, 10, 4, 8)
+candb <- 20 - canda
+white <- c(15, 12, 18, 6, 10)
+black <- 20 - white
+toy <- data.frame(canda, candb, white, black)
 
-  
-  # TOY DATA EXAMPLE
-  canda <- c(10,8, 10, 4, 8)
-  candb <- 20-canda
-  white <- c(15, 12, 18, 6, 10)
-  black <- 20 - white
-  toy <- data.frame(canda, candb, white, black)
-  
-  # Generate formula for passage to ei.reg.bayes() function
-  form <- formula(cbind(canda,candb) ~ cbind(black, white)) 
-  # Then excute md_bayes_draw(); not run here due to time
-  # lmd <- md_bayes_draw_lambda(toy, c(2,3), form )
-  # Function Prep #
-  # cnames <- c("lambda.black.canda", "lambda.black.candb")
+# Generate formula for passage to ei.reg.bayes() function
+form <- formula(cbind(canda, candb) ~ cbind(black, white))
+# Then excute md_bayes_draw(); not run here due to time
+# lmd <- md_bayes_draw_lambda(toy, c(2,3), form )
+# Function Prep #
+# cnames <- c("lambda.black.canda", "lambda.black.candb")
 
-  # Canda a over candb among black voters#
-  #lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
-  
-
+# Canda a over candb among black voters#
+# lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)

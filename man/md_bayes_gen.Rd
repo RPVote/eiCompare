@@ -15,9 +15,9 @@ md_bayes_gen(
   sample = 1000,
   thin = 100,
   burnin = 10000,
-  ret.mcmc = TRUE,
+  ret_mcmc = TRUE,
   ci = c(0.025, 0.975),
-  ci_TRUE = TRUE,
+  ci_true = TRUE,
   produce_draws = FALSE,
   ...
 )
@@ -46,12 +46,12 @@ Usually when data are stored in percents}
 
 \item{burnin}{Numeric. Default = 10000}
 
-\item{ret.mcmc}{Logical. Default = TRUE}
+\item{ret_mcmc}{Logical. Default = TRUE}
 
 \item{ci}{numeric vector of credible interval (low/high), default is 95
 percent= c(0.025, 0.975)}
 
-\item{ci_TRUE}{Logical, default = TRUE. Include credible intervals in
+\item{ci_true}{Logical, default = TRUE. Include credible intervals in
 reported results.}
 
 \item{produce_draws}{Logical, default is FALSE. Produces two-item list of
@@ -84,11 +84,30 @@ toy <- data.frame(canda, candb, white, black)
 form <- formula(cbind(canda, candb) ~ cbind(black, white))
 
 # Then execute md_bayes_gen(); not run here due to time
-md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1)
+md_bayes_gen(
+  dat = toy,
+  form = form,
+  total_yes = FALSE,
+  ntunes = 1,
+  thin = 1,
+  totaldraws = 100,
+  sample = 10,
+  burnin = 1
+)
 
-# Add in mcmc drawrings #
-drawrings <- md_bayes_gen(toy, form, total_yes = FALSE, ntunes = 1, thin = 1, totaldraws = 100, sample = 10, burnin = 1, produce_draws = TRUE)
-head(drawrings$draws)
+# Add in mcmc drawings
+drawings <- md_bayes_gen(
+  dat = toy,
+  form = form,
+  total_yes = FALSE,
+  ntunes = 1,
+  thin = 1,
+  totaldraws = 100,
+  sample = 10,
+  burnin = 1,
+  produce_draws = TRUE
+)
+head(drawings$draws)
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)

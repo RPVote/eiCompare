@@ -82,9 +82,20 @@
 #' # To remove pdf files, make sure no other pdf files in directory
 #' # system ("rm *.pdf ")
 #' @importFrom graphics lines
+#' @importFrom graphics abline
+#' @importFrom graphics par
+#' @importFrom graphics polygon
+#' @importFrom graphics mtext
 #' @importFrom grDevices hcl
+#' @importFrom grDevices rgb
 #' @importFrom ellipse ellipse
 #' @importFrom graphics points
+#' @importFrom stats lm
+#' @importFrom stats runif
+#' @importFrom stats density
+#' @importFrom plotrix draw.circle
+#'
+#'
 #' @export plot.ei
 plot.ei <- function(x, ...) {
 
@@ -392,7 +403,7 @@ plot.ei <- function(x, ...) {
       ok <- !is.na(ei.object$betab)
       betabs <- ei.object$betabs[ok, ]
       betabm <- apply(betabs, 1, mean)
-      plot(density(betabm),
+      plot(stats::density(betabm),
         xlim = c(0, 1), col = "green",
         xlab = "betaB", ylab = "density across precincts, f(betaB)",
         main = "Density of\nbetaB"
@@ -412,7 +423,7 @@ plot.ei <- function(x, ...) {
       ok <- !is.na(ei.object$betaw)
       betaws <- ei.object$betaws[ok, ]
       betawm <- apply(betaws, 1, mean)
-      plot(density(betawm),
+      plot(stats::density(betawm),
         xlim = c(0, 1), col = "green",
         xlab = "betaW", ylab = "density across precincts, f(betaW)",
         main = "Density of\nbetaW"
@@ -448,7 +459,7 @@ plot.ei <- function(x, ...) {
     maxn <- max(n)
     for (i in 1:length(x)) {
       radius <- (n[i] - minn + 1) / (1 + maxn - minn)
-      draw.circle(x[i], t[i], radius * circ)
+      plotrix::draw.circle(x[i], t[i], radius * circ)
     }
   }
 
@@ -475,7 +486,7 @@ plot.ei <- function(x, ...) {
       maxn <- max(n)
       for (i in 1:length(x)) {
         radius <- (n[i] - minn + 1) / (1 + maxn - minn)
-        draw.circle(x[i], t[i], radius * circ)
+        plotrix::draw.circle(x[i], t[i], radius * circ)
       }
       x <- seq(0, 1, by = 0.01)
       betabs <- as.vector(betabs)
@@ -516,7 +527,7 @@ plot.ei <- function(x, ...) {
       maxn <- max(n)
       for (i in 1:length(x)) {
         radius <- (n[i] - minn + 1) / (1 + maxn - minn)
-        draw.circle(x[i], t[i], radius * circ)
+        plotrix::draw.circle(x[i], t[i], radius * circ)
       }
       x <- seq(0, 1, by = 0.01)
       betabs <- as.vector(betabs)
@@ -533,8 +544,8 @@ plot.ei <- function(x, ...) {
       graphics::lines(x, upr, col = "red")
       t <- ei.object$t
       x <- ei.object$x
-      lm.fit <- lm(t ~ x)
-      abline(lm.fit, col = "green")
+      lm.fit <- stats::lm(t ~ x)
+      graphics::abline(lm.fit, col = "green")
     }
   }
 
@@ -546,7 +557,7 @@ plot.ei <- function(x, ...) {
       ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
       betabs <- ei.object$betabs[ok, ]
       betaws <- ei.object$betaws[ok, ]
-      colors <- runif(length(betabs), 26, 51)
+      colors <- stats::runif(length(betabs), 26, 51)
       plot(betabs, betaws,
         xlim = c(0, 1), ylim = c(0, 1),
         xaxs = "i", yaxs = "i", main = "Simulations of betaW and betaB",
@@ -570,8 +581,8 @@ plot.ei <- function(x, ...) {
     for (i in 1:length(x)) {
       graphics::lines(c(x[i], x[i]), c(bounds[, 1][i], bounds[, 2][i]))
     }
-    lm.xb <- lm(truebb ~ x)
-    abline(lm.xb, lty = 2)
+    lm.xb <- stats::lm(truebb ~ x)
+    graphics::abline(lm.xb, lty = 2)
   }
 
   .boundXw <- function(ei.object) {
@@ -588,8 +599,8 @@ plot.ei <- function(x, ...) {
     for (i in 1:length(x)) {
       graphics::lines(c(x[i], x[i]), c(bounds[, 3][i], bounds[, 4][i]))
     }
-    lm.xw <- lm(truebw ~ x)
-    abline(lm.xw, lty = 2)
+    lm.xw <- stats::lm(truebw ~ x)
+    graphics::abline(lm.xw, lty = 2)
   }
 
   .CI80b <- function(ei.object) {
@@ -639,27 +650,27 @@ plot.ei <- function(x, ...) {
     truthbb <- sum(truebb * n) / sum(n)
     truthbw <- sum(truebw * n) / sum(n)
     circ <- 0.04
-    par(mfrow = c(2, 2))
+    graphics::par(mfrow = c(2, 2))
     ag <- .aggs(ei.object)
-    plot(density(ag[, 1]),
-      xlim = c(0, 1), ylim = c(0, max(density(ag[
+    plot(stats::density(ag[, 1]),
+      xlim = c(0, 1), ylim = c(0, max(stats::density(ag[
         ,
         1
       ])$y) + 1), yaxs = "i", xaxs = "i", main = "Density of Bb Posterior & Truth",
       xlab = "Bb", ylab = "Density"
     )
-    graphics::lines(c(truthbb, truthbb), c(0, 0.25 * (max(density(ag[
+    graphics::lines(c(truthbb, truthbb), c(0, 0.25 * (max(stats::density(ag[
       ,
       1
     ])$y) + 1)), lwd = 3)
-    plot(density(ag[, 2]),
-      xlim = c(0, 1), ylim = c(0, max(density(ag[
+    plot(stats::density(ag[, 2]),
+      xlim = c(0, 1), ylim = c(0, max(stats::density(ag[
         ,
         2
       ])$y) + 1), yaxs = "i", xaxs = "i", main = "Density of Bw Posterior & Truth",
       xlab = "Bw", ylab = "Density"
     )
-    graphics::lines(c(truthbw, truthbw), c(0, 0.25 * (max(density(ag[
+    graphics::lines(c(truthbw, truthbw), c(0, 0.25 * (max(stats::density(ag[
       ,
       2
     ])$y) + 1)), lwd = 3)
@@ -671,12 +682,12 @@ plot.ei <- function(x, ...) {
     maxn <- max(x * n)
     for (i in 1:length(betab)) {
       radius <- (n[i] * x[i] - minn + 1) / (1 + maxn - minn)
-      draw.circle(betab[i], truebb[i], radius * circ)
+      plotrix::draw.circle(betab[i], truebb[i], radius * circ)
     }
     ci80b <- .CI80b(ei.object)
     low <- mean(abs(ci80b[, 1] - betab))
     high <- mean(abs(ci80b[, 2] - betab))
-    abline(0, 1)
+    graphics::abline(0, 1)
     graphics::lines(c(0, 1), c(-low, 1 - low), lty = 2)
     graphics::lines(c(0, 1), c(high, 1 + high), lty = 2)
     plot(betaw, truebw,
@@ -688,12 +699,12 @@ plot.ei <- function(x, ...) {
     maxn <- max(omx * n)
     for (i in 1:length(betaw)) {
       radius <- (omx[i] * n[i] - minn + 1) / (1 + maxn - minn)
-      draw.circle(betaw[i], truebw[i], radius * circ)
+      plotrix::draw.circle(betaw[i], truebw[i], radius * circ)
     }
     ci80w <- .CI80w(ei.object)
     low <- mean(abs(ci80w[, 1] - betaw))
     high <- mean(abs(ci80w[, 2] - betaw))
-    abline(0, 1)
+    graphics::abline(0, 1)
     graphics::lines(c(0, 1), c(-low, 1 - low), lty = 2)
     graphics::lines(c(0, 1), c(high, 1 + high), lty = 2)
   }
@@ -815,9 +826,9 @@ plot.ei <- function(x, ...) {
           alpha <- 0.05
         }
         border <- alpha
-        polygon(xaxs, yaxs, col = rgb(redg[i], 0, blug[i],
+        graphics::polygon(xaxs, yaxs, col = grDevices::rgb(redg[i], 0, blug[i],
           alpha = alpha
-        ), border = rgb(redg[i], 0, blug[i],
+        ), border = grDevices::rgb(redg[i], 0, blug[i],
           alpha = 1
         ), lty = 2)
       }
@@ -886,9 +897,9 @@ plot.ei <- function(x, ...) {
           alpha <- 0.05
         }
         border <- alpha
-        polygon(xaxs, yaxs, col = rgb(redg[i], 0, blug[i],
+        graphics::polygon(xaxs, yaxs, col = grDevices::rgb(redg[i], 0, blug[i],
           alpha = alpha
-        ), border = rgb(redg[i], 0, blug[i],
+        ), border = grDevices::rgb(redg[i], 0, blug[i],
           alpha = 1
         ), lty = 2)
       }
@@ -917,9 +928,9 @@ plot.ei <- function(x, ...) {
           alpha <- 0.05
         }
         border <- alpha
-        polygon(xaxs, yaxs, col = rgb(redg[i], 0, blug[i],
+        graphics::polygon(xaxs, yaxs, col = grDevices::rgb(redg[i], 0, blug[i],
           alpha = alpha
-        ), border = rgb(redg[i], 0, blug[i],
+        ), border = grDevices::rgb(redg[i], 0, blug[i],
           alpha = 1
         ), lty = 2)
       }
@@ -948,9 +959,9 @@ plot.ei <- function(x, ...) {
           alpha <- 0.05
         }
         border <- alpha
-        polygon(xaxs, yaxs, col = rgb(redg[i], 0, blug[i],
+        graphics::polygon(xaxs, yaxs, col = grDevices::rgb(redg[i], 0, blug[i],
           alpha = alpha
-        ), border = rgb(redg[i], 0, blug[i],
+        ), border = grDevices::rgb(redg[i], 0, blug[i],
           alpha = 1
         ), lty = 2)
       }
@@ -965,7 +976,7 @@ plot.ei <- function(x, ...) {
     bbounds <- cbind(bounds[, 1], bounds[, 2])
     wbounds <- cbind(bounds[, 4], bounds[, 3])
     n <- dim(bounds)[1]
-    par(mfrow = c(1, 1))
+    graphics::par(mfrow = c(1, 1))
     plot(c(100, 200),
       xlim = c(0, 1), ylim = c(0, 1), col = "white",
       ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
@@ -1001,30 +1012,30 @@ plot.ei <- function(x, ...) {
     else {
       input <- as.integer(input)
     }
-    par(mfrow = c(2, 2), oma = c(0, 0, 2, 0))
-    plot(density(betab[input, ]),
+    graphics::par(mfrow = c(2, 2), oma = c(0, 0, 2, 0))
+    plot(stats::density(betab[input, ]),
       xlim = c(0, 1), ylim = c(
         0,
-        max(density(betab[input, ])$y) + 1
+        max(stats::density(betab[input, ])$y) + 1
       ), yaxs = "i", xaxs = "i",
       main = "Posterior Distribution of betaB", xlab = "Bb",
       ylab = "Density"
     )
-    graphics::lines(c(0, 0.25 * (max(density(betab[input, ])$y) + 1)),
+    graphics::lines(c(0, 0.25 * (max(stats::density(betab[input, ])$y) + 1)),
       lwd = 3
     )
-    plot(density(betaw[input, ]),
+    plot(stats::density(betaw[input, ]),
       xlim = c(0, 1), ylim = c(
         0,
-        max(density(betaw[input, ])$y) + 1
+        max(stats::density(betaw[input, ])$y) + 1
       ), yaxs = "i", xaxs = "i",
       main = "Posterior Distribution of betaW", xlab = "Bw",
       ylab = "Density"
     )
-    graphics::lines(c(0, 0.25 * (max(density(betaw[input, ])$y) + 1)),
+    graphics::lines(c(0, 0.25 * (max(stats::density(betaw[input, ])$y) + 1)),
       lwd = 3
     )
-    colors <- runif(length(betabs), 26, 51)
+    colors <- stats::runif(length(betabs), 26, 51)
     plot(betabs[input, ], betaws[input, ],
       xlim = c(0, 1), ylim = c(
         0,
@@ -1033,7 +1044,7 @@ plot.ei <- function(x, ...) {
       ylab = "betaW simulations", xlab = "betaB simulations",
       pch = 20, col = colors, lty = 2, cex = 0.25
     )
-    mtext(sprintf("Plots for Observation %d", input),
+    graphics::mtext(sprintf("Plots for Observation %d", input),
       line = 0.5,
       outer = TRUE
     )
@@ -1101,7 +1112,7 @@ plot.ei <- function(x, ...) {
   results <- list()
   if (length(arguments) != 1) {
     row <- ceiling(length(arguments) / 2)
-    par(mfrow = c(row, 2))
+    graphics::par(mfrow = c(row, 2))
   }
   for (arg in arguments) {
     if (arg %in% names(function.list)) {

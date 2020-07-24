@@ -17,22 +17,22 @@ Creates EI reg bayes tables with confidence bands
 }
 \examples{
 
-# TOY DATA EXAMPLE
-canda <- c(.1, .09, .85, .9, .92)
-candb <- 1 - canda
+# Toy data example
+cand_a <- c(.1, .09, .85, .9, .92)
+cand_b <- 1 - cand_a
 white <- c(.8, .9, .10, .08, .11)
 black <- 1 - white
 total <- c(30, 80, 70, 20, 29)
-toy <- data.frame(canda, candb, white, black, total)
+toy <- data.frame(cand_a, cand_b, white, black, total)
 
-# CREATE VECTORS
-cands <- c("canda")
-race_group <- c("~ black") # only use one group for example
+# Create vectors for iterative EI function
+cands <- c("cand_a")
+race_group <- c("~ black")
 table_names <- c("EI: PCT Black", "EI: PCT White")
 
-# RUN ei_est_gen()
-# KEEP DATA TO JUST ONE ROW FOR EXAMPLE (time) ONLY!
-results <- ei_est_gen(cands,
+# Run iterative EI using only row for simplicity
+results <- ei_est_gen(
+  cands,
   race_group,
   "total",
   data = toy[c(1, 3, 5), ],
@@ -47,9 +47,9 @@ suppressWarnings(
 )
 
 # Produce Table
-ei.reg.bayes.conf.int(ei_bayes)
+ei_reg_bayes_conf_int(ei_bayes)
 \donttest{
-# Warning: Takes a while to run
+# An example using real election. Warning: this example takes a while to run.
 # Load corona data
 data(corona)
 # Generate character vectors
@@ -74,15 +74,22 @@ results <- ei_est_gen(
 form <- formula(cbind(
   pct_husted,
   pct_spiegel,
-  pct_ruth, pct_button,
-  pct_montanez, pct_fox
+  pct_ruth,
+  pct_button,
+  pct_montanez,
+  pct_fox
 )
 ~ cbind(pct_hisp, pct_asian, pct_white))
 suppressWarnings(
-  ei_bayes <- ei.reg.bayes(form, data = corona, sample = 10000, truncate = TRUE)
+  ei_bayes <- ei.reg.bayes(
+    form,
+    data = corona,
+    sample = 10000,
+    truncate = TRUE
+  )
 )
 # Produce Table
-ei.reg.bayes.conf.int(ei_bayes)
+ei_reg_bayes_conf_int(ei_bayes)
 }
 }
 \references{
