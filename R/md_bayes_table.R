@@ -32,7 +32,7 @@
 #'   totaldraws = 100,
 #'   sample = 10,
 #'   burnin = 1,
-#'   ci_TRUE = FALSE
+#'   ci_true = FALSE
 #' )
 #' md_bayes_table(res)
 #' @export md_bayes_table
