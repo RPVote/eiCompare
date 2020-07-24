@@ -40,7 +40,7 @@ results <- ei_est_gen(
 )
 
 # Generate formula for passage to ei.reg.bayes() function
-form <- formula(cbind(canda, candb) ~ cbind(black, white))
+form <- formula(cbind(cand_a, cand_b) ~ cbind(black, white))
 # Run Bayesian model
 suppressWarnings(
   ei_bayes <- ei.reg.bayes(form, data = toy, sample = 100, truncate = TRUE)
