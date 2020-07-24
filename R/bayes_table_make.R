@@ -118,7 +118,7 @@ bayes_table_make <-
     tot <- colSums(out[seq(1, nrow(out), 2), 2:ncol(out)])
     just_data <- out[, 2:ncol(out)]
     add <- rbind(just_data, tot)
-    add <- data.frame(1:nrow(add), add)
+    add <- data.frame(seq_len(nrow(add)), add)
     colnames(add) <- c("Candidate", table_names)
     add[, 1] <- c(as.character(out[, 1]), "Total")
     out <- add
