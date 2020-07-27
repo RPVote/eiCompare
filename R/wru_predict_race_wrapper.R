@@ -34,6 +34,11 @@
 #'
 #' @return The voter file component extracted from the provided data frame, with
 #' additional surname/geocode flags, as well as a data frame race prediction.
+#' @references Imai and Khanna (2016) "Improving Ecological Inference by
+#' Predicting Individual Ethnicity from Voter Registration Records"
+#'
+#' @export wru_predict_race_wrapper
+#' @importFrom wru merge_surnames predict_race
 wru_predict_race_wrapper <- function(voter_file,
                                      census_data,
                                      voter_id = NULL,
