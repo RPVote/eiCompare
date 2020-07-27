@@ -35,6 +35,9 @@ Imports:
   mcmcse,
 NeedsCompilation: no
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 RoxygenNote: 7.1.1
 Encoding: UTF-8
+VignetteBuilder: knitr
