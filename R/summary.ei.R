@@ -23,13 +23,19 @@
 #'
 #' # CREATE VECTORS
 #' cands <- c("canda")
-#' race_group <- c("~ black") # only use one group for example
+#' race_group <- c("black") # only use one group for example
 #' table_names <- c("EI: PCT Black", "EI: PCT White")
 #'
 #' # RUN ei_est_gen()
 #' # KEEP DATA TO JUST ONE ROW FOR EXAMPLE (time) ONLY!
-#' results <- ei_est_gen(cands, race_group, "total",
-#'   data = toy[c(1, 3, 5), ], table_names = table_names, sample = 100
+#' results <- ei_est_gen(
+#'   data = toy[c(1, 3, 5), ],
+#'   cand_cols = cands,
+#'   race_cols = race_group,
+#'   totals_col = "total",
+#'   data = toy[c(1, 3, 5), ],
+#'   table_names = table_names,
+#'   sample = 100
 #' )
 #' results
 #' @importFrom stats weighted.mean sd cor

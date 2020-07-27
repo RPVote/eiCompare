@@ -26,6 +26,7 @@
 #' reported results.
 #' @param produce_draws Logical, default is FALSE. Produces two-item list of
 #' table and md.bayes() mcmc draws (for additional testing and analysis)
+#' @param verbose A logical to print messages, ei summaries as iterations progress.
 #' @param ... Additional arguments passed to tuneMD() and ei.MD.bayes()
 #' @return List object of length 1 (when produce_draws=FALSE). List object of
 #' length 2 (when produce_draws=TRUE). First item is list of race x candidate
@@ -90,7 +91,7 @@ md_bayes_gen <- function(
                          sample = 1000,
                          thin = 100,
                          burnin = 10000,
-                         ret.mcmc = TRUE,
+                         ret_mcmc = TRUE,
                          ci = c(0.025, 0.975),
                          ci_true = TRUE,
                          produce_draws = FALSE,
@@ -138,7 +139,7 @@ md_bayes_gen <- function(
         total = totals_col,
         thin = thin,
         burnin = burnin,
-        ret.mcmc = ret.mcmc,
+        ret.mcmc = ret_mcmc,
         tune.list = tune.nocov,
         ...
       )
@@ -167,7 +168,7 @@ md_bayes_gen <- function(
       sample = sample,
       thin = thin,
       burnin = burnin,
-      ret.mcmc = ret.mcmc,
+      ret.mcmc = ret_mcmc,
       tune.list = tune.nocov,
       ...
     )
