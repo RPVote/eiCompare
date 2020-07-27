@@ -1,3 +1,31 @@
+#' race_check_2_3
+#' 
+#' Checks that both sides of the RxC equation for White/Minority and White,
+#' Black, Hispanic, Other, respectively, add up to the same values.  If small
+#' rounding issues, adjusts the "other" race category.
+#' 
+#' 
+#' @param dat data.frame() object. One no vote/third party vote column, with
+#' candidate votes (for either 2 or 3 candidates), then up to four demographics
+#' with last as other
+#' @param split Numeric vector of length 2. Default is c(3,4), for two
+#' candidates and one catch-all.  c(4,5) for three candidates and one catch
+#' all.
+#' @param catch Logical (TRUE/FALSE). Catch negative values. Default is FALSE
+#' @param catch_col Column names to be catched.
+#' @param print_sides Logical (TRUE/FALSE). Print out evaluations. Default is
+#' TRUE
+#' @return Dataset of Left side (Votes) vs. Right side (Demographics). diff
+#' column can be tagged on to exiting 'other' category to expedite data
+#' preparation process.
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @examples
+#' 
+#'   
+#'   # EXAMPLE: NOT RUN #
+#'   
+#' 
+#' @export race_check_2_3
 race_check_2_3 <- function(dat, split = c(3, 4), catch = FALSE, catch_col = NULL,
                            print_sides = TRUE) {
   # data set with 1 no vote column, w candidate votes, then 4 demographics with last as other
