@@ -56,9 +56,11 @@ fips_extract <- function(df, fips_col = NULL, geo = NULL) {
   } else if (geo == "tract") {
     into <- c("state", "county", "tract")
     sep <- c(state_idx, county_idx)
-  } else {
+  } else if (geo == "block") {
     into <- c("state", "county", "tract", "block")
     sep <- c(state_idx, county_idx, tract_idx)
+  } else {
+    stop("FIPS codes can only be split at the county, tract, or block level.")
   }
 
   # Separate FIPS column into constituent units
