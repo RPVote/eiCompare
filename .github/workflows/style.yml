@@ -1,5 +1,6 @@
 # Run styler and lintr checks
-# 
+# https://github.com/r-lib/styler
+# https://github.com/jimhester/lintr
 
 on:
   push:
@@ -9,10 +10,10 @@ on:
     branches:
       - master
 
-name: Syle
+name: Styler
 
 jobs:
-  style:
+  check-style:
     runs-on: ubuntu-16.04
     steps:
       - name: Checkout Repo
