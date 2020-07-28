@@ -13,7 +13,7 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@master
         with:
-           r-version: '4.0'
+           r-version: 'release'
   
       - name: Report R Version 
         run: |

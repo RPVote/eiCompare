@@ -13,7 +13,7 @@ name: Syle
 
 jobs:
   style:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
