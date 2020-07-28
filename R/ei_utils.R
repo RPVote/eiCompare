@@ -54,3 +54,26 @@ get_results_table <- function(
     )
   return(results_table)
 }
+
+
+#' Check for missing essential arguments from an ei function
+check_args <- function(data,
+                       cand_cols,
+                       race_cols,
+                       totals_col,
+                       totals_null = TRUE) {
+  cols <- names(data)
+  missing_cands <- cand_cols[which(!(cand_cols %in% cols))]
+  missing_races <- race_cols[which(!(race_cols %in% cols))]
+  missing_total <- totals_col[which(!(totals_col %in% cols))]
+
+  missing <- c(missing_cands, missing_races, missing_total)
+
+  if (length(missing) > 0) {
+    message <- paste(
+      "The following specified columns are not in the dataset:",
+      missing
+    )
+    stop(message)
+  }
+}
