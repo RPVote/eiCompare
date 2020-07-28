@@ -1,3 +1,19 @@
+#' mean_and_ci
+#' 
+#' Internal
+#' 
+#' 
+#' @param cbind_dat cbind object
+#' @param ci Credible intervals. Default: c(.025, .975)
+#' @return Mean and credible interval
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @examples
+#' 
+#'   
+#'   # EXAMPLE: NOT RUN #
+#'   
+#' 
+#' @export mean_and_ci
 mean_and_ci <- function(cbind_dat, ci = c(.025, .975)) {
   # Add votes together
   total <- apply(cbind_dat, 1, sum)
