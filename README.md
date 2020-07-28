@@ -1,5 +1,6 @@
 # eiCompare
 [![R build status](https://github.com/DSSG-eiCompare/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=R-CMD-check)
+[![Style status](https://github.com/DSSG-eiCompare/eiCompare/workflows/Styler/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=Styler)
 
 eiCompare development version
 
