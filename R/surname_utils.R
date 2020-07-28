@@ -77,13 +77,13 @@ get_special_character_surnames <- function(voter_file,
 #'  characters.
 #'
 #' @export strip_special_characters
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace_all
 strip_special_characters <- function(voter_file,
                                      surname_col = "last_name",
-                                     regex = "[^A-Za-z]",
+                                     regex = "[^A-Za-z]+",
                                      replace = " ") {
   # Replace special characters with empty spaces
-  voter_file[[surname_col]] <- stringr::str_replace(
+  voter_file[[surname_col]] <- stringr::str_replace_all(
     voter_file[[surname_col]],
     regex,
     replace
@@ -204,7 +204,7 @@ surname_summary <- function(voter_file, surname_col) {
 predict_race_double_barreled <- function(df,
                                          surname_col = "last_name",
                                          surname_only = TRUE,
-                                         pattern = "[ ]+") {
+                                         pattern = "[ -]+") {
   surnames <- stringr::str_split(df[[surname_col]], pattern = pattern)[[1]]
   surnames <- data.frame(surname = surnames)
 
