@@ -28,7 +28,7 @@ jobs:
   
       - name: Report R Version 
         run: |
-          echo which R
+          which R
           R --version
 
       - name: Query dependencies for cache

@@ -24,11 +24,11 @@ jobs:
       - name: Setup R
         uses: r-lib/actions/setup-r@master
         with:
-           r-version: 'release'
+           r-version: '4.0'
   
       - name: Report R Version 
         run: |
-          echo which R
+          which R
           R --version
 
       - name: Query dependencies for cache
