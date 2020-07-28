@@ -187,14 +187,23 @@ stdize_votes_all <- function(
 
   # Use different totals depending on user input.
   if (is.null(totals_col) & totals_from == "cand") {
+    if (verbose) {
+      message("Computing totals from candidate columns...")
+    }
     data$cand_totals <- rowSums(data[, cand_cols])
     cand_totals_col <- NULL
     race_totals_col <- "cand_totals"
   } else if (is.null(totals_col) & totals_from == "race") {
+    if (verbose) {
+      message("Computer totals from race columns...")
+    }
     data$race_totals <- rowSums(data[, race_cols])
     cand_totals_col <- "race_totals"
     race_totals_col <- NULL
   } else if (!is.null(totals_col)) {
+    if (verbose) {
+      message("Using provided totals...")
+    }
     cand_totals_col <- totals_col
     race_totals_col <- totals_col
   } else {
