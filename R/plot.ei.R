@@ -56,6 +56,8 @@
 #' Problem. Princeton: Princeton University Press.
 #' @examples
 #'
+#' #'
+#' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(.1, .09, .85, .9, .92)
 #' candb <- 1 - canda
@@ -81,6 +83,7 @@
 #' list.files() # show all files in directory
 #' # To remove pdf files, make sure no other pdf files in directory
 #' # system ("rm *.pdf ")
+#' }
 #' @importFrom graphics lines abline par polygon mtext points
 #' @importFrom grDevices hcl
 #' @importFrom grDevices rgb

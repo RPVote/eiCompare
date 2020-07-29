@@ -12,6 +12,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #'
+#' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
@@ -35,6 +36,7 @@
 #'   ci_true = FALSE
 #' )
 #' md_bayes_table(res)
+#' }
 #' @export md_bayes_table
 md_bayes_table <- function(md_results) {
   if (paste(names(md_results), collapse = "") == "tabledraws") {

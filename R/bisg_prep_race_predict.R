@@ -75,7 +75,7 @@
 #' \dontrun{
 #' data(ny_voter)
 #' head(ny_voter)
-#' }
+#'
 #' # Load ny_census object #
 #' # load ( system.file("extdata/ny_census.RData",package="eiCompare") )
 #'
@@ -94,6 +94,7 @@
 #' #                     state = "NY",
 #' #                     census.key = key_census,
 #' #                     census.data = ny_census)$bisg
+#' }
 #' @export bisg_prep_race_predict
 bisg_prep_race_predict <- function(df, voterid = NULL, precinct = NULL, surname_char, state,
                                    census.geo = "block", census.key, census.data,

@@ -25,7 +25,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #'
-#'
+#' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
@@ -37,6 +37,7 @@
 #' form <- formula(cbind(canda, candb) ~ cbind(black, white))
 #' # Then excute md_bayes_draw(); not run here due to time
 #' # md_bayes_draw_lambda(toy, c(2,3), form )
+#' }
 #' @import eiPack
 #' @export md_bayes_draw_lambda
 md_bayes_draw_lambda <- function(dat, race_vote_split, form, ntunes = 10, totaldraws = 1e+05,
