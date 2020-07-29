@@ -14,7 +14,7 @@
 #' @return A dataframe with additional columns containing the individual codes
 #'  for different geographic units.
 #'
-#' @export unit_comb_extract
+#' @export fips_extract
 #' @importFrom stringr str_length
 #' @importFrom tidyr replace_na separate
 fips_extract <- function(df, fips_col = NULL, geo = NULL) {
