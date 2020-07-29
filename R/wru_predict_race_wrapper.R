@@ -1,8 +1,9 @@
 #' Prepares a voter file for the WRU predict_race function, and then predicts
 #' race.
 #'
-#' This function assumes that the Census data is provided to the function (so
-#' that the )
+#' This function assumes that the Census data is provided to the function. It
+#' does not provide the capability of downloading the Census data, since this
+#' is a time intensive process.
 #'
 #' @param voter_file The voter file, containing columns with a surname and
 #'  potentially geographic information.
@@ -17,23 +18,21 @@
 #' @param block A string denoting the column containing the block FIPS code.
 #' @param census_geo The census level at which to apply BISG. Passed to WRU.
 #' @param use_surname Whether to use the surname in calculating race
-#' probabilities. Passed to WRU.
+#'  probabilities. Passed to WRU.
 #' @param surname_only Whether to only use the surname in calculating race
-#' probabilities. Passed to WRU.
+#'  probabilities. Passed to WRU.
 #' @param surname_year Which Census year to use for surname matching. Passed to
-#' WRU.
+#'  WRU.
 #' @param use_age Whether to use the age in the BISG calculation. Passed to WRU.
 #' @param use_sex Whether to use the sex in the BISG calculation. Passed to WRU.
-#' @param use_party Whether to use party affiliation in the BISG calculation.
-#' Passed to WRU.
 #' @param return_surname_flag If TRUE, returns a flag indicating whether the
-#' surnames matched.
+#'  surnames matched.
 #' @param return_geocode_flag If TRUE, returns a flag indicating whether the
-#' first level of geocode matched.
+#'  first level of geocode matched.
 #' @param verbose A flag indicating whether to print out status messages.
-#'
 #' @return The voter file component extracted from the provided data frame, with
 #' additional surname/geocode flags, as well as a data frame race prediction.
+#'
 #' @references Imai and Khanna (2016) "Improving Ecological Inference by
 #' Predicting Individual Ethnicity from Voter Registration Records"
 #'
@@ -53,7 +52,6 @@ wru_predict_race_wrapper <- function(voter_file,
                                      surname_year = 2010,
                                      use_age = FALSE,
                                      use_sex = FALSE,
-                                     use_party,
                                      return_surname_flag = FALSE,
                                      return_geocode_flag = FALSE,
                                      verbose = FALSE) {
@@ -140,7 +138,6 @@ wru_predict_race_wrapper <- function(voter_file,
           census.data = census_data,
           age = use_age,
           sex = use_sex,
-          party = use_party
         )
       )
     ))
