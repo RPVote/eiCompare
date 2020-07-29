@@ -23,6 +23,10 @@ ei_iter <- function(
                     plots = FALSE,
                     betas = FALSE,
                     ...) {
+
+  # check for valid arguments
+  check_args(data, cand_cols, race_cols, totals_col)
+
   # subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
 
