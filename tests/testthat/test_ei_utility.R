@@ -24,3 +24,27 @@ test_that("ei results table mungs results correctly", {
   )
   expect_equal(output, expected)
 })
+
+test_that("col_checker returns correct warnings", {
+  input <- data.frame(
+    "x" = NA,
+    "y" = NA,
+    "t" = NA
+  )
+  expect_silent(
+    check_args(
+      data = input,
+      cand_cols = c("x"),
+      race_cols = c("y"),
+      totals_col = "t"
+    )
+  )
+  expect_error(
+    check_args(
+      data = input,
+      cand_cols = c("x"),
+      race_cols = c("y"),
+      totals_col = "g"
+    )
+  )
+})
