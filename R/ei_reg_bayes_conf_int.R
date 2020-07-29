@@ -8,7 +8,7 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
-#'
+#' \dontrun{
 #' # Toy data example
 #' cand_a <- c(.1, .09, .85, .9, .92)
 #' cand_b <- 1 - cand_a
@@ -40,7 +40,6 @@
 #'
 #' # Produce Table
 #' ei_reg_bayes_conf_int(ei_bayes)
-#' \donttest{
 #' # An example using real election. Warning: this example takes a while to run.
 #' # Load corona data
 #' data(corona)

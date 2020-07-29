@@ -32,6 +32,7 @@
 #' @examples
 #'
 #' # TOY DATA EXAMPLE
+#' \dontrun{
 #' canda <- c(.1, .09, .85, .9, .92)
 #' candb <- 1 - canda
 #' white <- c(.8, .9, .10, .08, .11)
@@ -49,7 +50,7 @@
 #' ei_est_gen(cands, race_group, "total",
 #'   data = toy[c(1, 3, 5), ], table_names = table_names, sample = 100
 #' )
-#' \donttest{
+#'
 #' # WARNING -- May take a little while to execute
 #' # Load Package Data
 #' data(corona)
