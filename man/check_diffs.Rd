@@ -8,7 +8,7 @@ of race/candidate columns and provided vote totals.}
 check_diffs(vote_sums, provided_totals, max_dev = 0.1, avg_dev = 0.25)
 }
 \arguments{
-\item{vote_sums}{A numeric vector containing the sums of votes by each 
+\item{vote_sums}{A numeric vector containing the sums of votes by each
 race/ethnicity}
 
 \item{provided_totals}{A numeric vector containing the totals provided to the
@@ -19,7 +19,7 @@ clean_race function}
 \item{avg_dev}{A floating point object passed from clean_race}
 }
 \value{
-A list containing two objects, 'closeness' and 'deviates'. See 
+A list containing two objects, 'closeness' and 'deviates'. See
   details for more information.
 }
 \description{

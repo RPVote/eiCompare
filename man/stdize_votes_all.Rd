@@ -20,44 +20,44 @@ stdize_votes_all(
 )
 }
 \arguments{
-\item{data}{A dataframe of election results, where each row represents a 
+\item{data}{A dataframe of election results, where each row represents a
 precinct or geographic voting unit}
 
-\item{race_cols}{A character vector of colnames corresponding to turnout 
+\item{race_cols}{A character vector of colnames corresponding to turnout
 counts of each race/ethnicity group}
 
-\item{cand_cols}{A character vector of colnames corresponding to turnout 
+\item{cand_cols}{A character vector of colnames corresponding to turnout
 counts of voters for each candidate}
 
-\item{totals_from}{A character string, either "cand" or "race" to set whether 
-totals are computed from candidate turnout or race/ethnicity turnout columns. 
+\item{totals_from}{A character string, either "cand" or "race" to set whether
+totals are computed from candidate turnout or race/ethnicity turnout columns.
 Ignored if totals_col provided.}
 
-\item{totals_col}{A character string with the name of the total vote count 
+\item{totals_col}{A character string with the name of the total vote count
 column in the data. If null, total votes are computed within the function}
 
-\item{max_dev_race}{A numeric object setting the max allowable deviation of 
+\item{max_dev_race}{A numeric object setting the max allowable deviation of
 any one precincts' sum of race columns from totals}
 
-\item{max_dev_cand}{A numeric object setting the max allowable deviation of 
+\item{max_dev_cand}{A numeric object setting the max allowable deviation of
 any one precincts' sum of candidate columns from totals}
 
-\item{avg_dev_race}{A numeric object setting the max allowable mean deviation 
+\item{avg_dev_race}{A numeric object setting the max allowable mean deviation
 of all precincts' sum of race columns from totals}
 
-\item{avg_dev_cand}{A numeric object setting the max allowable mean deviation 
+\item{avg_dev_cand}{A numeric object setting the max allowable mean deviation
 of all precincts' sum of candidate columns from totals}
 
-\item{ignore_devs}{A boolean. When true, columns are standardized ignoring 
+\item{ignore_devs}{A boolean. When true, columns are standardized ignoring
 all deviations from totals}
 
 \item{verbose}{A boolean. When true, function returns progress messages.}
 
-\item{diagnostic}{A boolean. When true, an extra column of booleans is 
+\item{diagnostic}{A boolean. When true, an extra column of booleans is
 returned indicating whether each row had a deviation from totals}
 }
 \value{
-A dataframe containing columns for each race and candidate converted 
+A dataframe containing columns for each race and candidate converted
 to percentages and a totals column, ready for Ecological Inference
 }
 \description{

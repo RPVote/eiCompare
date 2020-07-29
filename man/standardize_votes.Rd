@@ -10,7 +10,7 @@ standardize_votes(votes)
 \item{votes}{A dataframe of raw votes by race or candidates}
 }
 \value{
-A dataframe of standardized proportions whose columns sum rowwise to 
+A dataframe of standardized proportions whose columns sum rowwise to
 1
 }
 \description{

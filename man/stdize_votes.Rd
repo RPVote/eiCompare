@@ -15,28 +15,28 @@ stdize_votes(
 )
 }
 \arguments{
-\item{data}{A dataframe of election results, where each row represents a 
+\item{data}{A dataframe of election results, where each row represents a
 precinct or geographic voting unit}
 
 \item{cols}{A character vector with the names of the columns indicating total
 votes cast by each race, or for each candidate}
 
-\item{totals_col}{A character string with the name of the total vote count 
+\item{totals_col}{A character string with the name of the total vote count
 column in the data. If null, total votes are computed within the function}
 
-\item{max_dev}{A numeric object setting the max allowable deviation of a 
+\item{max_dev}{A numeric object setting the max allowable deviation of a
 precinct's vote sum from totals}
 
-\item{avg_dev}{A numeric object setting the max allowable average deviation 
+\item{avg_dev}{A numeric object setting the max allowable average deviation
 difference of all precints' vote sums from totals}
 
 \item{verbose}{A boolean indicating whether to print status messages}
 
-\item{diagnostic}{A boolean. When true, an extra column of booleans is 
+\item{diagnostic}{A boolean. When true, an extra column of booleans is
 returned indicating whether each row had a deviation from totals}
 }
 \value{
-A dataframe with proportions corresponding to the turnout of each 
+A dataframe with proportions corresponding to the turnout of each
 race/ethnicity group
 }
 \description{
