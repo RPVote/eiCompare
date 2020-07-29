@@ -16,10 +16,14 @@ get_results_table <- function(
                               n_cand = n_cands,
                               n_race = n_races,
                               n_iter = n_iters) {
-  # build results matrix
+  # Build results matrix
   results_table <- matrix(nrow = (n_cand * 2 + 1), ncol = (n_race + 1))
 
-  # add values from district_results list
+  # If only one race column, add an "other" column to matrix
+  single_race <- length(n_race) == 1
+  if (single_race) results_table <- cbind(results_table, NA)
+
+  # Add values from district_results list
   for (i in 1:n_iter) {
     cand <- district_results[[i]]$Candidate[1]
     race <- names(district_results[[i]])[2]
@@ -30,17 +34,28 @@ get_results_table <- function(
 
     results_table[mean_row, col] <- district_results[[i]][1, 2]
     results_table[sd_row, col] <- district_results[[i]][2, 2]
+
+    # Handle single race case
+    if (single_race) {
+      results_table[mean_row, (col + 1)] <- district_results[[i]][1, 3]
+      results_table[sd_row, (col + 1)] <- district_results[[i]][2, 3]
+    }
   }
 
-  # add totals
-  totals <- sapply(1:n_race, function(x) sum(results_table[seq(1, n_cand * 2 - 1, 2), x + 1]))
+  # Add totals. Totals num ensures single race case is handled
+  totals_num <- ncol(results_table) - 1
+  totals <- sapply(1:totals_num, function(x) sum(results_table[seq(1, n_cand * 2 - 1, 2), x + 1]))
   results_table[nrow(results_table), 2:ncol(results_table)] <- totals
 
-  # add column names
+  # Add column names
   results_table <- as.data.frame(results_table)
-  names(results_table) <- c("Candidate", race_col)
+  if (single_race) {
+    names(results_table) <- c("Candidate", race_col, "other")
+  } else {
+    names(results_table) <- c("Candidate", race_col)
+  }
 
-  # add first column of candidate info
+  # Add first column of candidate info
   seq_split <- 2:n_cand
   results_table[, 1] <-
     c(
