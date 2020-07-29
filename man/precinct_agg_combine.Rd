@@ -23,7 +23,6 @@ bisg_prep_race_predict() function.
 }
 \examples{
 
-
 }
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
