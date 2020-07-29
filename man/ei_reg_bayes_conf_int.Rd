@@ -48,7 +48,6 @@ suppressWarnings(
 
 # Produce Table
 ei_reg_bayes_conf_int(ei_bayes)
-\donttest{
 # An example using real election. Warning: this example takes a while to run.
 # Load corona data
 data(corona)
@@ -90,7 +89,6 @@ suppressWarnings(
 )
 # Produce Table
 ei_reg_bayes_conf_int(ei_bayes)
-}
 }
 }
 \references{

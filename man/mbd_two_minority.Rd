@@ -20,16 +20,6 @@ List with two data frames
 Extract posterior means and credible intervals. Need to call variables V1,
 V2. When two=FALSE, add in V3; Race names = VtdAVap_cor, VtdMVap_cor
 }
-\examples{
-
-  
-  # EXAMPLE: NOT RUN #
-  
-
-}
-\references{
-
-}
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 }

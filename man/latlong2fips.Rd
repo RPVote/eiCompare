@@ -22,19 +22,19 @@ with FCC API.
 }
 \examples{
 
-  
-  # EXAMPLE: NOT RUN #
-  #census_block <- list()
-  #num_catch <- rep(NA, nrow(nom_geo))
+\dontrun{
+# EXAMPLE: NOT RUN #
+# census_block <- list()
+# num_catch <- rep(NA, nrow(nom_geo))
 
-  #for (i in 1:nrow(nom_geo)) {
-  
-  #  census_block[[i]] <- latlong2fips(nom_geo$lat[i], nom_geo$lon[i], i)
-  #}
-  
-  # Row Bind the list into a data.frame object #
-  #fips_df <- rbindlist(census_block)
-    
+# for (i in 1:nrow(nom_geo)) {
+
+#  census_block[[i]] <- latlong2fips(nom_geo$lat[i], nom_geo$lon[i], i)
+# }
+
+# Row Bind the list into a data.frame object #
+# fips_df <- rbindlist(census_block)
+}
 
 }
 \references{

@@ -76,7 +76,7 @@ ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res,
 )
 # Produces data and character vector, which can be sent to plot()
 ei_rc_combine
-\donttest{
+
 # Warning: Takes a while to run
 # Load corona data
 data(corona)
@@ -138,7 +138,6 @@ ei_rc_combine2 <- ei_rc_good_table(results[[1]],
   ei_bayes_res,
   groups = c("Black", "White")
 )
-}
 }
 
 }

@@ -67,6 +67,8 @@ Used within the ei_est_gen()
 }
 \examples{
 
+#'
+\dontrun{
 # TOY DATA EXAMPLE
 canda <- c(.1, .09, .85, .9, .92)
 candb <- 1 - canda
@@ -92,6 +94,7 @@ getwd() # Show working directory
 list.files() # show all files in directory
 # To remove pdf files, make sure no other pdf files in directory
 # system ("rm *.pdf ")
+}
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference
