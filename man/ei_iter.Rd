@@ -17,27 +17,48 @@ ei_iter(
 )
 }
 \arguments{
-\item{data}{A data.frame() object containing precinct-level turnout data by race and candidate}
+\item{data}{A data.frame() object containing precinct-level turnout data by 
+race and candidate}
 
-\item{cand_cols}{A character vector listing the column names for turnout for each candidate}
+\item{cand_cols}{A character vector listing the column names for turnout for 
+each candidate}
 
-\item{race_cols}{A character vector listing the column names for turnout by race}
+\item{race_cols}{A character vector listing the column names for turnout by
+race}
 
-\item{totals_col}{The name of the column containing total votes cast in each precinct}
+\item{totals_col}{The name of the column containing total votes cast in each 
+precinct}
+
+\item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
 
 \item{sample}{The number of samples used in ei estimation. Defaulted to 1000}
 
-\item{plots}{A boolean indicating whether or not to include density and tomography plots}
+\item{plots}{A boolean indicating whether or not to include density and 
+tomography plots}
 
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
-
-\item{rho}{A number passed directly to ei::ei(). Defaulted to 10}
 }
 \value{
 dataframe of results from iterative ei
 }
 \description{
-Iterative EI Estimation
+This function runs enables running iterative ecoligical inference (EI) to 
+estimate the proportion of votes by different race/ethnicity groups for 
+different political candidates.
+}
+\details{
+Iterative EI iterates through all possible race-candidate pairs. For each
+pair, votes by other races and for other candidates are binned and 2x2 
+ecological inference is run.
+}
+\references{
+eiPack. Gary King (1997). A Solution to the Ecological Inference
+Problem. Princeton: Princeton University Press.
+}
+\author{
+Loren Collingwood <loren.collingwood@ucr.edu>
+
+Ari Decter-Frain
 }

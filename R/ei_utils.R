@@ -8,7 +8,7 @@ remove_nas <- function(data) {
   return(out)
 }
 
-#' Get results dataframe from a list of results
+#' Get results dataframe from a list of results as from ei_est_gen
 get_results_table <- function(
                               district_results,
                               cand_col = cand_cols,
@@ -76,4 +76,12 @@ check_args <- function(data,
     )
     stop(message)
   }
+}
+
+#' Manipulate precinct results to get betas as from ei_est_gen
+betas_for_return <- function(precinct_results, race_cand_pairs) {
+  betas <- do.call(cbind, precinct_results)
+  col_ids <- paste(race_cand_pairs$race, race_cand_pairs$cand, sep = "_")
+  colnames(betas) <- paste(colnames(betas), col_ids, sep = "_")
+  return(betas)
 }
