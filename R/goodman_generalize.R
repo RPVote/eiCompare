@@ -23,6 +23,7 @@
 #' @examples
 #'
 #' # Load corona data
+#' \dontrun{
 #' data(corona)
 #' # Generate character vectors
 #' cands <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
@@ -31,6 +32,7 @@
 #' # Goodman Regression
 #' table_names <- c("Good: Pct Lat", "Good: Pct Asian", "Good: Pct Wht")
 #' good_corona <- goodman_generalize(cands, race_group3, "totvote", corona, table_names)
+#' }
 #' @importFrom stats formula lm coef na.omit
 #'
 #' @export goodman_generalize

@@ -16,6 +16,7 @@
 #' @examples
 #'
 #' # TOY DATA EXAMPLE
+#' \dontrun{
 #' canda <- runif(5)
 #' candb <- 1 - canda
 #' white <- runif(5)
@@ -39,7 +40,6 @@
 #'   table_names = table_names
 #' )
 #' ei_bayes_res
-#' \donttest{
 #' # load package data
 #' data(corona)
 #' # create character vectors

@@ -72,10 +72,10 @@
 #'
 #' # EXAMPLE: NOT RUN #
 #' # NOTE: You need to have a census key to run this #
-#'
+#' \dontrun{
 #' data(ny_voter)
 #' head(ny_voter)
-#'
+#' }
 #' # Load ny_census object #
 #' # load ( system.file("extdata/ny_census.RData",package="eiCompare") )
 #'
