@@ -20,6 +20,7 @@ with EI table of results.
 }
 \examples{
 
+\dontrun{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
 candb <- 20 - canda
@@ -43,6 +44,7 @@ res <- md_bayes_gen(
   ci_true = FALSE
 )
 md_bayes_table(res)
+}
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)

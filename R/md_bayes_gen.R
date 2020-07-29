@@ -35,7 +35,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #'
-#'
+#' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
@@ -71,6 +71,7 @@
 #'   produce_draws = TRUE
 #' )
 #' head(drawings$draws)
+#' }
 #' @importFrom stringr str_squish
 #' @importFrom mcmcse mcse.mat mcse.q.mat
 #' @export md_bayes_gen

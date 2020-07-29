@@ -21,16 +21,6 @@ Extract posterior means and credible intervals. Need to label candidate vote
 variables: V1, V2, when two=FALSE, add V3; Hispanic = VtdHVap_cor, White =
 VtdAVap_cor, Black = VtdBVap_cor
 }
-\examples{
-
-  
-  # EXAMPLE: NOT RUN #
-  
-
-}
-\references{
-
-}
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 }

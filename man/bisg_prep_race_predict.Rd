@@ -108,7 +108,7 @@ Preps data for BISG estimation via WRU package
 
 # EXAMPLE: NOT RUN #
 # NOTE: You need to have a census key to run this #
-
+\dontrun{
 data(ny_voter)
 head(ny_voter)
 
@@ -130,6 +130,7 @@ head(ny_voter)
 #                     state = "NY",
 #                     census.key = key_census,
 #                     census.data = ny_census)$bisg
+}
 }
 \references{
 wru R package. Kabir Khanna, Kosuke Imai, Hubert Jin.  Imai and

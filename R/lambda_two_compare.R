@@ -19,6 +19,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #' # TOY DATA EXAMPLE
+#' \dontrun{
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
 #' white <- c(15, 12, 18, 6, 10)
@@ -34,6 +35,7 @@
 #'
 #' # Canda a over candb among black voters#
 #' # lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
+#' }
 #' @importFrom graphics abline hist par points
 #' @importFrom stats median
 #' @export lambda_two_compare

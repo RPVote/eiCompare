@@ -16,7 +16,7 @@ Matrix object, table of results
 Creates EI reg bayes tables with confidence bands
 }
 \examples{
-
+\dontrun{
 # Toy data example
 cand_a <- c(.1, .09, .85, .9, .92)
 cand_b <- 1 - cand_a
@@ -48,7 +48,6 @@ suppressWarnings(
 
 # Produce Table
 ei_reg_bayes_conf_int(ei_bayes)
-\donttest{
 # An example using real election. Warning: this example takes a while to run.
 # Load corona data
 data(corona)

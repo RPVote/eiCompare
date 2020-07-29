@@ -25,7 +25,7 @@ plotting!
 }
 \examples{
 
-
+\dontrun{
 # TOY DATA EXAMPLE
 canda <- c(.1, .09, .85, .9, .92)
 candb <- 1 - canda
@@ -65,7 +65,8 @@ ei_rc_combine
 
 # PLOT EI DIFFERENCES
 # plot(ei_rc_combine)
-\donttest{
+}
+\dontrun{
 # Warning: Takes a while to run
 # Load corona data
 data(corona)
