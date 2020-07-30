@@ -11,10 +11,10 @@ wru_predict_race_wrapper(
   voter_id = NULL,
   surname = "last_name",
   state = NULL,
-  county = "county",
-  tract = "tract",
-  block = "block",
-  census_geo = "block",
+  county = NULL,
+  tract = NULL,
+  block = NULL,
+  census_geo = NULL,
   use_surname = TRUE,
   surname_only = FALSE,
   surname_year = 2010,
@@ -33,7 +33,8 @@ potentially geographic information.}
 geographic information for units in the voter file.}
 
 \item{voter_id}{A string denoting the column containing voter ID. Default is
-NULL, if the}
+NULL, if there is no voter ID in the file. In this case, a voter ID will be
+assigned.}
 
 \item{surname}{A string denoting the column containing the surname.}
 
