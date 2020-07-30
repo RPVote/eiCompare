@@ -4,16 +4,19 @@ test_that("ei results table mungs results correctly", {
   input <- list(
     data.frame(
       "Candidate" = c("x", "se"),
-      "pct_race" = c(0.75, 0.25)
+      "pct_race" = c(0.75, 0.25),
+      "pct_other" = c(0.25, 0.2)
     ),
     data.frame(
       "Candidate" = c("y", "se"),
-      "pct_race" = c(0.70, 0.20)
+      "pct_race" = c(0.70, 0.20),
+      "pct_other" = c(.30, 0.1)
     )
   )
   expected <- data.frame(
     "Candidate" = c("x", "sd", "y", "sd", "Total"),
-    "pct_race" = c(0.75, 0.25, 0.70, 0.20, 1.45)
+    "pct_race" = c(0.75, 0.25, 0.70, 0.20, 1.45),
+    "other" = c(0.25, 0.2, 0.30, 0.1, 0.55)
   )
   output <- get_results_table(input,
     cand_col = c("x", "y"),

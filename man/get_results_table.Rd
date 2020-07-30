@@ -4,14 +4,23 @@
 \alias{get_results_table}
 \title{Get results dataframe from a list of results as from ei_est_gen}
 \usage{
-get_results_table(
-  district_results,
-  cand_col = cand_cols,
-  race_col = race_cols,
-  n_cand = n_cands,
-  n_race = n_races,
-  n_iter = n_iters
-)
+get_results_table(district_results, cand_col, race_col, n_cand, n_race, n_iter)
+}
+\arguments{
+\item{district_results}{A list of dataframes computed in the midst of ei_iter}
+
+\item{cand_col}{Passed through from ei_iter}
+
+\item{race_col}{Passed through from ei_iter}
+
+\item{n_cand}{Passed through from ei_iter}
+
+\item{n_race}{Passed through from ei_iter}
+
+\item{n_iter}{Passed through from ei_iter}
+}
+\value{
+a dataframe of results that will work with table comparison funcs.
 }
 \description{
 Get results dataframe from a list of results as from ei_est_gen

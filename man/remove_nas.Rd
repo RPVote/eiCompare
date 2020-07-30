@@ -6,6 +6,9 @@
 \usage{
 remove_nas(data)
 }
+\arguments{
+\item{data}{A dataframe on which ei is to be performed.}
+}
 \description{
 Remove missing values from dataset and return warning if any removed
 }

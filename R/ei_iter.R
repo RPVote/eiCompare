@@ -23,6 +23,8 @@
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
+#' @importFrom utils capture.output setTxtProgressBar
+#'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain
 #'

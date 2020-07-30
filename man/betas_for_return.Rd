@@ -6,6 +6,11 @@
 \usage{
 betas_for_return(precinct_results, race_cand_pairs)
 }
+\arguments{
+\item{precinct_results}{A list of betas from ei_iter()}
+
+\item{race_cand_pairs}{The set of race/candidate pairs tested in ei_iter}
+}
 \description{
 Manipulate precinct results to get betas as from ei_est_gen
 }
