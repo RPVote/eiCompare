@@ -37,7 +37,7 @@
 #' Predicting Individual Ethnicity from Voter Registration Records"
 #'
 #' @export wru_predict_race_wrapper
-#' @importFrom wru merge_surnames predict_race
+#' @import wru
 wru_predict_race_wrapper <- function(voter_file,
                                      census_data,
                                      voter_id = NULL,
@@ -149,7 +149,7 @@ wru_predict_race_wrapper <- function(voter_file,
     bisg[no_geocode_match, ] <- bisg_no_match
 
     # Store geocode match flag if requested
-    if (return_geocode_flag) {
+    if (return_geocode_flag & !surname_only) {
       voter_file$matched_geocode <- !no_geocode_match
     }
   }
