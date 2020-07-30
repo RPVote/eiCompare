@@ -103,7 +103,6 @@ wru_predict_race_wrapper <- function(voter_file,
         census.data = census_data,
         age = use_age,
         sex = use_sex,
-        party = use_party
       )
     )
   ))
