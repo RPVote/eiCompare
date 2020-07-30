@@ -10,7 +10,8 @@
 #' @param census_data A data frame containing Census data corresponding to the
 #'  geographic information for units in the voter file.
 #' @param voter_id A string denoting the column containing voter ID. Default is
-#'  NULL, if the
+#'  NULL, if there is no voter ID in the file. In this case, a voter ID will be
+#'  assigned.
 #' @param surname A string denoting the column containing the surname.
 #' @param state A string denoting the column containing the state FIPS code.
 #' @param county A string denoting the column containing the county FIPS code.
@@ -43,10 +44,10 @@ wru_predict_race_wrapper <- function(voter_file,
                                      voter_id = NULL,
                                      surname = "last_name",
                                      state = NULL,
-                                     county = "county",
-                                     tract = "tract",
-                                     block = "block",
-                                     census_geo = "block",
+                                     county = NULL,
+                                     tract = NULL,
+                                     block = NULL,
+                                     census_geo = NULL,
                                      use_surname = TRUE,
                                      surname_only = FALSE,
                                      surname_year = 2010,
@@ -55,20 +56,15 @@ wru_predict_race_wrapper <- function(voter_file,
                                      return_surname_flag = FALSE,
                                      return_geocode_flag = FALSE,
                                      verbose = FALSE) {
-  # Create voter file, making new voter IDs if necessary
-  if (is.null(voter_id)) {
-    voter_id <- seq_len(voter_file)
-  } else {
-    voter_id <- voter_file[, voter_id]
-  }
-  voter_file <- data.frame(
-    voterid = voter_id,
-    surname = tolower(voter_file[, surname]),
+  # Tidy up voter file according to WRU's specifications
+  voter_file <- tidy_voter_file_wru(
+    voter_file = voter_file,
+    voter_id = voter_id,
+    surname = surname,
     state = state,
-    county = as.character(voter_file[, county]),
-    tract = as.character(voter_file[, tract]),
-    block = as.character(voter_file[, block]),
-    stringsAsFactors = FALSE
+    county = county,
+    tract = tract,
+    block = block
   )
 
   # If necessary, check which surnames matched
@@ -153,6 +149,33 @@ wru_predict_race_wrapper <- function(voter_file,
       voter_file$matched_geocode <- !no_geocode_match
     }
   }
+
+  # Final check if there are no matches
+  no_match_final <- is.na(bisg$pred.whi)
+  if (sum(no_match_final) > 1) {
+    if (verbose) {
+      message(paste(
+        "Some surnames did not match at higher geographic level.",
+        "Using surname only for these cases."
+      ))
+    }
+    # Use probabilities from surnames only for those that don't match
+    invisible(capture.output(
+      no_match_surnames <- suppressWarnings(
+        wru::merge_surnames(
+          voter.file = voter_file[no_match_final, ],
+          surname.year = surname_year,
+          clean.surname = TRUE,
+          impute.missing = TRUE
+        )
+      )
+    ))
+    # Merge back into BISG estimates
+    p_cols <- c("p_whi", "p_bla", "p_his", "p_asi", "p_oth")
+    pred_cols <- c("pred.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth")
+    bisg[no_match_final, ][, pred_cols] <- no_match_surnames[, p_cols]
+  }
+
   if (verbose) {
     message("BISG complete.")
   }

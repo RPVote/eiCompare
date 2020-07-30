@@ -18,6 +18,59 @@ dedupe_voter_file <- function(voter_file, voter_id = "voter_id") {
 }
 
 
+#' Tidies a voter file for WRU.
+#'
+#' Checks if columns exist in the original voter file and renames them so that
+#' WRU can process the new voter file. Only extract the information needed,
+#' tossing the remaining columns.
+#'
+#' @param voter_file The voter file, as a data frame or tibble.
+#' @param voter_id A string denoting the column containing voter ID. Default is
+#'  NULL, when the voter file does not have an ID or registration number.
+#' @param surname A string denoting the column containing the surname.
+#' @param state A string denoting the column containing the state FIPS code.
+#' @param county A string denoting the column containing the county FIPS code.
+#' @param tract A string denoting the column containing the tract FIPS code.
+#' @param block A string denoting the column containing the block FIPS code.
+#' @return A new voter file that can be read in by WRU functions.
+#'
+#' @export tidy_voter_file_wru
+tidy_voter_file_wru <- function(voter_file,
+                                voter_id = NULL,
+                                surname = NULL,
+                                state = NULL,
+                                county = NULL,
+                                tract = NULL,
+                                block = NULL) {
+  # Create voter file, making new voter IDs if necessary
+  if (is.null(voter_id)) {
+    voter_id <- seq_len(voter_file)
+  } else {
+    voter_id <- voter_file[, voter_id]
+  }
+  # Create new voter file according to WRU's specifications. State is handled
+  # here because we assume that only one state is queried.
+  new_voter_file <- data.frame(voterid = voter_id, state = state)
+
+  # Add surnames to new voter file
+  if (!is.null(surname)) {
+    new_voter_file[["surname"]] <- tolower(voter_file[[surname]])
+  }
+
+  # Add geographic units
+  if (any(names(voter_file) == county)) {
+    new_voter_file[["county"]] <- as.character(voter_file[[county]])
+  }
+  if (any(names(voter_file) == tract)) {
+    new_voter_file[["tract"]] <- as.character(voter_file[[tract]])
+  }
+  if (any(names(voter_file) == block)) {
+    new_voter_file[["block"]] <- as.character(voter_file[[block]])
+  }
+  return(new_voter_file)
+}
+
+
 #' Merges a voter file to a shape file.
 #'
 #' This is achieved by determining the units (e.g., Census block, district,
