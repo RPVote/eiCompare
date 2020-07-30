@@ -27,7 +27,7 @@ A nested list which can be sent to the `predict_race` function in
 Census Bureau via the WRU package.
 }
 \usage{
-rockland_census
+data(rockland_census)
 }
 \description{
 This dataset contains the demographic information for Rockland County in New

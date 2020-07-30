@@ -20,6 +20,6 @@
 #'   \item{P005009}{Two or more races population}
 #'   \item{P005010}{Hispanic or Latino population}
 #' }
-#'
+#' @usage data(rockland_census)
 #' @source Census Bureau via the WRU package.
 "rockland_census"
