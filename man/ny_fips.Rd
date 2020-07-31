@@ -19,6 +19,5 @@ New York state FIPS codes example of 500 voters
 
 data(ny_fips)
 str(ny_fips)
-
 }
 \keyword{datasets}

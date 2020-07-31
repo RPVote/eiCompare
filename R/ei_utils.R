@@ -29,7 +29,7 @@ get_results_table <- function(
   results_table <- matrix(nrow = (n_cand * 2 + 1), ncol = (n_race + 1))
 
   # If only one race column, add an "other" column to matrix
-  single_race <- length(n_race) == 1
+  single_race <- n_race == 1
   if (single_race) results_table <- cbind(results_table, NA)
 
   # Add values from district_results list

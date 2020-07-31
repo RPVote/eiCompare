@@ -24,6 +24,5 @@ New York voter file sample; example of 500 voters
 
 data(ny_voter)
 str(ny_voter)
-
 }
 \keyword{datasets}

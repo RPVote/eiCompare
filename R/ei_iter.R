@@ -18,6 +18,8 @@
 #' precinct
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
 #' @param sample The number of samples used in ei estimation. Defaulted to 1000
+#' @param seed A numeric seed value for replicating estimate results across runs
+#' . Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
@@ -41,6 +43,7 @@ ei_iter <- function(
                     totals_col,
                     erho = 10,
                     sample = 1000,
+                    seed = NULL,
                     plots = FALSE,
                     betas = FALSE,
                     ...) {
@@ -84,6 +87,11 @@ ei_iter <- function(
 
     # Get formula
     formula <- stats::formula(paste(cand, "~", race), sep = " ")
+
+    # Set seed
+    if (!is.null(seed)) {
+      set.seed(seed)
+    }
 
     # Run 2x2 ei
     capture.output({
