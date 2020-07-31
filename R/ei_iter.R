@@ -21,8 +21,12 @@
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
+#' @param par_compute A boolean to conduct ei using parallel processing
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
+#' @import doSNOW
+#' @import doParallel
+#' @Import foreach
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -43,10 +47,38 @@ ei_iter <- function(
                     sample = 1000,
                     plots = FALSE,
                     betas = FALSE,
+                    par_compute = FALSE,
                     ...) {
+
+  # Preparation for parallel processing if user specifies parallelization
+  if (par_compute == TRUE) {
+    # Detect the number of cores you have
+    detectCores()
+
+    if (detectCores() < 4) {
+      stop("It is not recommended to run parallel ei with less than 4 cores")
+    } else if (detectCores() == 4) {
+      warning("4 cores is the minimum recommended to run parallel ei")
+    }
+
+    # Standard to use 1 less core for clusters
+    clust <- makeCluster(detectCores() - 1)
+
+    # Register parallel processing cluster
+    # registerDoParallel(clust)
+    doSNOW::registerDoSNOW(clust)
+
+    # Check to make sure that cores are set up correctly
+    getDoParWorkers()
+  }
+  # Set infix option for parallel or not parallel
+  `%myinfix%` <- ifelse(par_compute, `%dopar%`, `%do%`)
 
   # Check for valid arguments
   check_args(data, cand_cols, race_cols, totals_col)
+
+  # Save any additional arguments to pass into ei inside foreach
+  args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -72,13 +104,16 @@ ei_iter <- function(
     max = n_iters,
     style = 3
   )
-
-  # Create lists for storing loop results
-  district_results <- list()
-  precinct_results <- list()
+  progress <- function(n) setTxtProgressBar(pb, n)
+  opts <- list(progress = progress)
 
   # Loop through each 2x2 ei
-  for (i in 1:n_iters) {
+  ei_results <- foreach::foreach(
+    i = 1:n_iters,
+    .inorder = FALSE,
+    .packages = c("ei", "stats", "utils"),
+    .options.snow = opts
+  ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
     race <- race_cand_pairs[i, "race"]
 
@@ -86,16 +121,16 @@ ei_iter <- function(
     formula <- stats::formula(paste(cand, "~", race), sep = " ")
 
     # Run 2x2 ei
-    capture.output({
+    utils::capture.output({
       ei_out <-
         suppressMessages(
-          ei::ei(
+          purrr::lift(ei::ei)(
             data = data,
             formula = formula,
             total = totals_col,
             erho = erho,
             sample = sample,
-            ...
+            args_pass
           )
         )
     })
@@ -132,11 +167,23 @@ ei_iter <- function(
     precinct_res <- cbind(precinct_res[[1]], precinct_res[[3]])
     colnames(precinct_res) <- c("betab", "betaw")
 
-    # Store both in list
-    district_results <- append(district_results, list(district_res))
-    precinct_results <- append(precinct_results, list(precinct_res))
-
     setTxtProgressBar(pb, i)
+
+    list(district_res, precinct_res)
+  }
+
+  # close progress bar
+  close(pb)
+
+  # Separate out district level summary and precinct level results
+  district_results <- sapply(ei_results, function(x) x[1])
+  precinct_results <- sapply(ei_results, function(x) x[2])
+
+  if (par_compute == TRUE) {
+    # Stop clusters (always done between uses)
+    stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
   }
 
   # Put results in dataframe
@@ -149,7 +196,7 @@ ei_iter <- function(
     n_iter = n_iters
   )
 
-  # If betas == T, return a list with results plus df of betas
+  # If betas == TRUE, return a list with results plus df of betas
   if (betas) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
