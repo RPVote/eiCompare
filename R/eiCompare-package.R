@@ -1,64 +1,3 @@
-
-
-#' Corona 2006
-#'
-#' Precinct vote data from a Corona, CA 2006 election
-#'
-#'
-#' @name cor_06
-#' @docType data
-#' @format A data frame with 47 observations on the following 8 variables.
-#' \describe{ \item{list("precinct")}{a numeric vector}
-#' \item{list("totvote")}{a numeric vector} \item{list("pct_latino")}{a numeric
-#' vector} \item{list("pct_other")}{a numeric vector}
-#' \item{list("pct_breitenbucher")}{a numeric vector}
-#' \item{list("pct_montanez")}{a numeric vector} \item{list("pct_spiegel")}{a
-#' numeric vector} \item{list("pct_skipworth")}{a numeric vector} }
-#' @references Riverside County, CA board of elections
-#' @keywords datasets
-#' @examples
-#'
-#' data(cor_06)
-#' # Look at data
-#' head(cor_06)
-#' str(cor_06)
-NULL
-
-
-
-
-
-#' Corona Precinct Racial Bloc Voting Data
-#'
-#' Data taken from a 2014 California election, with precinct results and racial
-#' demographics for Corona, CA precincts
-#'
-#'
-#' @name corona
-#' @docType data
-#' @format A data frame with 46 observations on the following 12 variables.
-#' \describe{ \item{list("precinct")}{a numeric vector}
-#' \item{list("totvote")}{a numeric vector} \item{list("pct_husted")}{a numeric
-#' vector} \item{list("pct_spiegel")}{a numeric vector}
-#' \item{list("pct_ruth")}{a numeric vector} \item{list("pct_button")}{a
-#' numeric vector} \item{list("pct_montanez")}{a numeric vector}
-#' \item{list("pct_fox")}{a numeric vector} \item{list("pct_hisp")}{a numeric
-#' vector} \item{list("pct_asian")}{a numeric vector}
-#' \item{list("pct_white")}{a numeric vector} \item{list("pct_non_lat")}{a
-#' numeric vector} }
-#' @references Riverside County, CA board of elections
-#' @keywords datasets
-#' @examples
-#'
-#' data(corona)
-#' head(corona)
-#' str(corona)
-NULL
-
-
-
-
-
 #' Class \code{"ei_compare"}
 #'
 #' An S4 class object stemming from ei_rc_good_table(), used for plotting, and
@@ -148,9 +87,6 @@ NULL
 NULL
 
 
-
-
-
 #' Compares EI, Goodman, RxC Estimates
 #'
 #' Compares estimates from three ecological inferences routines, based on King
@@ -169,81 +105,4 @@ NULL
 #' Michael Kellerman. eiPack: Ecological Inference and Higher-Dimension Data
 #' Management
 #' @keywords package
-NULL
-
-
-
-
-
-#' Los Angeles County Data
-#'
-#' Los Angeles County precinct dataset from 2010 election
-#'
-#'
-#' @name lac_10
-#' @docType data
-#' @format A data frame with 4980 observations on the following 10 variables.
-#' \describe{ \item{list("precinct")}{a character vector}
-#' \item{list("tot_reg")}{a numeric vector} \item{list("i_jones")}{a numeric
-#' vector} \item{list("i_delatore")}{a numeric vector}
-#' \item{list("votescast")}{a numeric vector} \item{list("lat_voters")}{a
-#' numeric vector} \item{list("pct_latino")}{a numeric vector}
-#' \item{list("pct_delatorre")}{a numeric vector} \item{list("pct_jones")}{a
-#' numeric vector} \item{list("pct_other")}{a numeric vector} }
-#' @source Los Angeles county
-#' @keywords datasets
-#' @examples
-#'
-#' data(lac_10)
-#' head(lac_10)
-#' str(lac_10)
-NULL
-
-
-
-
-
-#' New York state FIPS codes
-#'
-#' New York state FIPS codes example of 500 voters
-#'
-#'
-#' @name ny_fips
-#' @docType data
-#' @format A data frame with 500 observations on the following 2 variables.
-#' \describe{ \item{list("row_id")}{unique id} \item{list("FIP")}{15 digit FIPS
-#' code including state, county, tract, block} }
-#' @source FCC
-#' @keywords datasets
-#' @examples
-#'
-#' data(ny_fips)
-#' str(ny_fips)
-NULL
-
-
-
-
-
-#' New York voter file sample
-#'
-#' New York voter file sample; example of 500 voters
-#'
-#'
-#' @name ny_voter
-#' @docType data
-#' @format A data frame with 500 observations on the following 10 variables.
-#' \describe{ \item{list("Voter.ID")}{Unique voter file id number, jumbled}
-#' \item{list("SD..Poll")}{Precinct id} \item{list("fips")}{15-digit fips code}
-#' \item{list("st")}{state fips code} \item{list("county")}{county fips code}
-#' \item{list("tract")}{tract fips code} \item{list("block")}{block fips code}
-#' \item{list("st_cty")}{state county fips code}
-#' \item{list("st_cty_tract")}{state county tract fips code}
-#' \item{list("Last.Name")}{Voters' surname} }
-#' @source ERCSD board of election
-#' @keywords datasets
-#' @examples
-#'
-#' data(ny_voter)
-#' str(ny_voter)
 NULL
