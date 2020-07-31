@@ -33,7 +33,9 @@ Imports:
   magrittr,
   stringr,
   sf,
-  mcmcse
+  mcmcse,
+  doParallel,
+  doSNOW
 NeedsCompilation: no
 Suggests: 
   testthat,

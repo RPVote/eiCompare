@@ -25,7 +25,6 @@ demographics for Corona, CA precincts
 data(corona)
 head(corona)
 str(corona)
-
 }
 \references{
 Riverside County, CA board of elections

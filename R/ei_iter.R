@@ -26,7 +26,7 @@
 #'
 #' @import doSNOW
 #' @import doParallel
-#' @Import foreach
+#' @import foreach
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
