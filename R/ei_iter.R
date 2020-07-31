@@ -53,23 +53,23 @@ ei_iter <- function(
   # Preparation for parallel processing if user specifies parallelization
   if (par_compute == TRUE) {
     # Detect the number of cores you have
-    detectCores()
+    parallel::detectCores()
 
-    if (detectCores() < 4) {
+    if (parallel::detectCores() < 4) {
       stop("It is not recommended to run parallel ei with less than 4 cores")
-    } else if (detectCores() == 4) {
+    } else if (parallel::detectCores() == 4) {
       warning("4 cores is the minimum recommended to run parallel ei")
     }
 
     # Standard to use 1 less core for clusters
-    clust <- makeCluster(detectCores() - 1)
+    clust <- parallel::makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
     # registerDoParallel(clust)
     doSNOW::registerDoSNOW(clust)
 
     # Check to make sure that cores are set up correctly
-    getDoParWorkers()
+    parallel::getDoParWorkers()
   }
   # Set infix option for parallel or not parallel
   `%myinfix%` <- ifelse(par_compute, `%dopar%`, `%do%`)
@@ -181,7 +181,7 @@ ei_iter <- function(
 
   if (par_compute == TRUE) {
     # Stop clusters (always done between uses)
-    stopCluster(clust)
+    parallel::stopCluster(clust)
     # Garbage collection (in case of leakage)
     gc()
   }
