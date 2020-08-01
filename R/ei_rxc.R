@@ -74,8 +74,8 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws,
-      ...
+      totaldraws = totaldraws # ,
+      # ...
     )
   )
 
@@ -89,8 +89,8 @@ ei_rxc <- function(
       thin = thin,
       burnin = burnin,
       ret.mcmc = TRUE,
-      tune.list = tune_nocov,
-      ...
+      tune.list = tune_nocov # ,
+      # ...
     )
   )
 
@@ -115,11 +115,24 @@ ei_rxc <- function(
   ci_upper <- 1 - ci_lower
 
   # Get point estimates and credible interval bounds
-  results_table <- cbind(
-    mcmcse::mcse.mat(chains_pr),
-    mcmcse::mcse.q.mat(chains_pr, q = ci_lower)[, 1],
-    mcmcse::mcse.q.mat(chains_pr, q = ci_upper)[, 1]
-  )
+  estimate <- mcmcse::mcse.mat(chains_pr)
+
+  # The upper and lower CI estimates also have standard errors. Here these
+  # errors are conservatively used to extend the 95% confidence bound further
+
+  # Lower CI estimate
+  lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
+  lower_est <- lower[, 1]
+  lower_se <- lower[, 2]
+  lower <- lower_est - lower_se
+
+  # Upper CI estimate
+  upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
+  upper_est <- upper[, 1]
+  upper_se <- upper[, 2]
+  upper <- upper_est + upper_se
+
+  results_table <- cbind(estimate, lower, upper)
   colnames(results_table) <- c("Mean", "SE", "CI_lower", "CI_upper")
   rownames(results_table) <- gsub("^.*?\\.", "", colnames(chains_raw))
 
