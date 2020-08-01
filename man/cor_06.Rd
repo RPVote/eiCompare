@@ -22,7 +22,6 @@ data(cor_06)
 # Look at data
 head(cor_06)
 str(cor_06)
-
 }
 \references{
 Riverside County, CA board of elections

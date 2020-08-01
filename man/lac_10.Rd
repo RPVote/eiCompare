@@ -25,6 +25,5 @@ Los Angeles County precinct dataset from 2010 election
 data(lac_10)
 head(lac_10)
 str(lac_10)
-
 }
 \keyword{datasets}

@@ -13,6 +13,7 @@ ei_iter(
   sample = 1000,
   plots = FALSE,
   betas = FALSE,
+  par_compute = FALSE,
   ...
 )
 }
@@ -37,6 +38,8 @@ precinct}
 tomography plots}
 
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
+
+\item{par_compute}{A boolean to conduct ei using parallel processing}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
