@@ -140,3 +140,39 @@ get_ei_ses <- function(aggs) {
   }
   return(ses)
 }
+
+
+#' Make rxc formula
+#' @param cand_cols Character vector of candidate column names, passed from
+#' ei_rxc
+#' @param race_cols Character vector of candidate race names, passed from
+#' ei_rxc
+rxc_formula <- function(cand_cols, race_cols) {
+  formula <- formula(
+    paste(
+      "cbind(",
+      paste(cand_cols, collapse = ", "),
+      ") ~ cbind(",
+      paste(race_cols, collapse = ", "),
+      ")",
+      sep = ""
+    )
+  )
+  return(formula)
+}
+
+#' Get md_bayes_gen() output from ei_rxc() output
+#' @param results_table A results table from
+#' @param race_cols Character vector of candidate race names, passed from
+#' ei_rxc
+get_md_bayes_gen_output <- function(results_table, race_cols) {
+  new_results <- list()
+  for (i in 1:length(race_cols)) {
+    race <- race_cols[i]
+    race_res <- results_table[grep(race, rownames(results_table)), ] * 100
+    rownames(race_res) <- gsub("^.*?\\.", "", rownames(race_res))
+    new_results[[i]] <- race_res
+  }
+  names(new_results) <- race_cols
+  return(new_results)
+}
