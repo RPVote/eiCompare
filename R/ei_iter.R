@@ -27,7 +27,7 @@
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
-#' @author Ari Decter-Frain
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack. Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press.
@@ -138,7 +138,7 @@ ei_iter <- function(
     colnames(district_res) <- c("Candidate", race, "other")
 
     # Put precinct betas in dataframe
-    precinct_res <- cbind(precinct_res[[1]], precinct_res[[3]])
+    precinct_res <- cbind(res[[1]], res[[3]])
     colnames(precinct_res) <- c("betab", "betaw")
 
     # Store both in list

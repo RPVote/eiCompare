@@ -1,4 +1,6 @@
 #' Remove missing values from dataset and return warning if any removed
+#'
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param data A dataframe on which ei is to be performed.
 remove_nas <- function(data) {
   out <- na.omit(data)
@@ -10,6 +12,7 @@ remove_nas <- function(data) {
 }
 
 #' Get results dataframe from a list of results as from ei_est_gen
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param district_results A list of dataframes computed in the midst of ei_iter
 #' @param cand_col Passed through from ei_iter
 #' @param race_col Passed through from ei_iter
@@ -24,12 +27,13 @@ get_results_table <- function(
                               race_col,
                               n_cand,
                               n_race,
-                              n_iter) {
+                              n_iter,
+                              add_other = TRUE) {
   # Build results matrix
   results_table <- matrix(nrow = (n_cand * 2 + 1), ncol = (n_race + 1))
 
   # If only one race column, add an "other" column to matrix
-  single_race <- n_race == 1
+  single_race <- n_race == 1 & add_other
   if (single_race) results_table <- cbind(results_table, NA)
 
   # Add values from district_results list
@@ -41,13 +45,13 @@ get_results_table <- function(
     sd_row <- mean_row + 1
     col <- match(race, race_col) + 1
 
-    results_table[mean_row, col] <- district_results[[i]][1, 2]
-    results_table[sd_row, col] <- district_results[[i]][2, 2]
+    results_table[mean_row, col] <- district_results[[i]][1, 2] * 100
+    results_table[sd_row, col] <- district_results[[i]][2, 2] * 100
 
     # Handle single race case
     if (single_race) {
-      results_table[mean_row, (col + 1)] <- district_results[[i]][1, 3]
-      results_table[sd_row, (col + 1)] <- district_results[[i]][2, 3]
+      results_table[mean_row, (col + 1)] <- district_results[[i]][1, 3] * 100
+      results_table[sd_row, (col + 1)] <- district_results[[i]][2, 3] * 100
     }
   }
 
@@ -73,9 +77,9 @@ get_results_table <- function(
       R.utils::insert(
         cand_col,
         ats = seq_split,
-        values = rep("sd", n_cand - 1)
+        values = rep("se", n_cand - 1)
       ),
-      "sd",
+      "se",
       "Total"
     )
   return(results_table)
@@ -83,6 +87,7 @@ get_results_table <- function(
 
 
 #' Check for missing essential arguments from an ei function
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param data A dataframe upon which EI is to be performed
 #' @param cand_cols A column of candidate names passed from ei functions
 #' @param race_rols A column of race names passed from ei functions
@@ -112,6 +117,7 @@ check_args <- function(data,
 }
 
 #' Manipulate precinct results to get betas as from ei_est_gen
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param precinct_results A list of betas from ei_iter()
 #' @param race_cand_pairs The set of race/candidate pairs tested in ei_iter
 betas_for_return <- function(precinct_results, race_cand_pairs) {
@@ -124,6 +130,7 @@ betas_for_return <- function(precinct_results, race_cand_pairs) {
 
 #' Get 2x2 ei standard errors from ei object
 #' Works according to the aggregate formula in King, 1997, section 8.3
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @param aggs A dataframe of aggregate value draws, taken from eiread()
 get_ei_ses <- function(aggs) {
@@ -143,6 +150,7 @@ get_ei_ses <- function(aggs) {
 
 
 #' Make rxc formula
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param cand_cols Character vector of candidate column names, passed from
 #' ei_rxc
 #' @param race_cols Character vector of candidate race names, passed from
@@ -162,6 +170,7 @@ rxc_formula <- function(cand_cols, race_cols) {
 }
 
 #' Get md_bayes_gen() output from ei_rxc() output
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param results_table A results table from
 #' @param race_cols Character vector of candidate race names, passed from
 #' ei_rxc

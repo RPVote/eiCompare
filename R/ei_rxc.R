@@ -1,4 +1,4 @@
-#' EI estimation for multiple races and candidates
+#' EI Bayesian simultaneous estimation for multiple races and candidates
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
@@ -21,14 +21,18 @@
 #' credible-interval bounds, defaulted to 0.95
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
 #'
-#' @author Loren Collingwood
-#' @author Ari Decter-Frain
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
 #'
 #' @value If ret_mcmc == TRUE, a list is returned containing results and a data
 #' frame of the full chains from the MCMC. If ret_mcmc == FALSE, results are
 #' returned in a dataframe
+#'
+#' @export
+#'
+#' @importFrom mcmcse mcse.mat mcse.q.mat
 #'
 #' @return A dataframe of ei results
 ei_rxc <- function(
@@ -42,7 +46,9 @@ ei_rxc <- function(
                    thin = 1,
                    burnin = 10000,
                    ci_size = 0.95,
-                   ret_mcmc = FALSE) {
+                   seed = NULL,
+                   ret_mcmc = FALSE,
+                   ...) {
 
   # Check for valid arguments
   check_args(data, cand_cols, race_cols, totals_col)
@@ -55,6 +61,11 @@ ei_rxc <- function(
 
   # Get RxC formula object
   formula <- rxc_formula(cand_cols, race_cols)
+
+  # Set seed
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
 
   # Tune MCMC
   suppressWarnings(
@@ -83,7 +94,7 @@ ei_rxc <- function(
     )
   )
 
-  # Extract district-level mcmc chains
+  # Extract district-level MCMC chains
   # These initially present raw population count estimates
   chains_raw <- md_out$draws$Cell.counts
 
@@ -91,6 +102,7 @@ ei_rxc <- function(
   chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
 
   # Loop through races to get proportion of race voting for each cand
+  # This loop is required to get proportions within races
   for (i in 1:length(race_cols)) {
     race_indices <- grep(race_cols[i], colnames(chains_raw))
     race_draws <- chains_raw[, race_indices]
@@ -102,7 +114,7 @@ ei_rxc <- function(
   ci_lower <- (1 - ci_size) / 2
   ci_upper <- 1 - ci_lower
 
-  # Get point estimates and credible intervals
+  # Get point estimates and credible interval bounds
   results_table <- cbind(
     mcmcse::mcse.mat(chains_pr),
     mcmcse::mcse.q.mat(chains_pr, q = ci_lower)[, 1],
