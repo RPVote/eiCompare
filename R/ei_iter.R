@@ -24,9 +24,9 @@
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @import doSNOW
-#' @import doParallel
-#' @import foreach
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach foreach getDoParWorkers
+#' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -65,11 +65,10 @@ ei_iter <- function(
     clust <- parallel::makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
-    # registerDoParallel(clust)
     doSNOW::registerDoSNOW(clust)
 
     # Check to make sure that cores are set up correctly
-    parallel::getDoParWorkers()
+    foreach::getDoParWorkers()
   }
   # Set infix option for parallel or not parallel
   `%myinfix%` <- ifelse(par_compute, `%dopar%`, `%do%`)
