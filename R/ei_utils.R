@@ -120,3 +120,23 @@ betas_for_return <- function(precinct_results, race_cand_pairs) {
   colnames(betas) <- paste(colnames(betas), col_ids, sep = "_")
   return(betas)
 }
+
+
+#' Get 2x2 ei standard errors from ei object
+#' Works according to the aggregate formula in King, 1997, section 8.3
+#'
+#' @param aggs A dataframe of aggregate value draws, taken from eiread()
+get_ei_ses <- function(aggs) {
+  ses <- c()
+  for (i in 1:ncol(aggs)) {
+    aggs_col <- aggs[, i]
+    m <- mean(aggs_col)
+    nsims <- length(aggs_col)
+    devs <- m - aggs_col
+    sq_devs <- devs^2
+    sum_sq_devs <- sum(sq_devs)
+    se <- sqrt(sum_sq_devs / nsims)
+    ses <- append(ses, se)
+  }
+  return(ses)
+}

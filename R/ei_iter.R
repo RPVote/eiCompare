@@ -17,7 +17,6 @@
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
-#' @param sample The number of samples used in ei estimation. Defaulted to 1000
 #' @param seed A numeric seed value for replicating estimate results across runs
 #' . Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
@@ -42,10 +41,10 @@ ei_iter <- function(
                     race_cols,
                     totals_col,
                     erho = 10,
-                    sample = 1000,
                     seed = NULL,
                     plots = FALSE,
                     betas = FALSE,
+                    orig_output = TRUE,
                     ...) {
 
   # Check for valid arguments
@@ -102,8 +101,7 @@ ei_iter <- function(
             formula = formula,
             total = totals_col,
             erho = erho,
-            sample = sample,
-            ...
+            # ...
           )
         )
     })
@@ -113,26 +111,29 @@ ei_iter <- function(
       do_nothing <- 3
     }
 
-    # Extract mean, standard error for each precinct
-    precinct_res <- ei::eiread(
+    # Extract mean, standard error for each precinct and district-wide
+    res <- ei::eiread(
       ei.object = ei_out,
       "betab",
       "sbetab",
       "betaw",
-      "sbetaw"
+      "sbetaw",
+      "aggs",
+      "maggs"
     )
 
-    # Extract district-wide means, sds
-    beta_b_mean <- summary(ei_out)[[10]][1, 1]
-    beta_w_mean <- summary(ei_out)[[10]][2, 1]
-    beta_b_sd <- summary(ei_out)[[10]][1, 2]
-    beta_w_sd <- summary(ei_out)[[10]][2, 2]
+    # get aggregate means
+    betab_district_mean <- res$maggs[1]
+    betaw_district_mean <- res$maggs[2]
+
+    # get aggregate ses
+    ses <- get_ei_ses(res$aggs)
 
     # Put district-wide estimates in dataframe
     district_res <- data.frame(
       c(cand, "se"),
-      c(beta_b_mean, beta_b_sd),
-      c(beta_w_mean, beta_w_sd)
+      c(betab_district_mean, ses[1]),
+      c(betaw_district_mean, ses[2])
     )
     colnames(district_res) <- c("Candidate", race, "other")
 
