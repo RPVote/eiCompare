@@ -44,16 +44,6 @@ ei_good <- function(
     stringsAsFactors = FALSE
   )
 
-  # Init progressbar
-  pb <- utils::txtProgressBar(
-    min = 0,
-    max = n_iters,
-    style = 3
-  )
-  progress <- function(t) {
-    setTxtProgressBar(pb, t)
-  }
-
   # Create lists for storing loop results
   district_results <- list()
 
@@ -100,14 +90,12 @@ ei_good <- function(
 
     # Store in list
     district_results <- append(district_results, list(res))
-
-    progress(i)
   }
 
   # Print warning if estimates were bounded
   if (bounded != 0) {
-    warning(paste(bounded, "estimate(s) exceeded the (0,1) bounds. They have been
-forced down to the bounds"))
+    warning(paste(bounded, "estimate(s) exceeded the (0,1) bounds. They have 
+been forced down to the bounds"))
   }
 
   # Put results in dataframe
