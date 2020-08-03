@@ -46,7 +46,11 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
+<<<<<<< HEAD
 utils::globalVariables(c("%dopar%", "%do%", "i"))
+=======
+utils::globalVariables(c("%dopar%", "%do%", "i", "betas_ei"))
+>>>>>>> integrate overlays and pass R CMD
 
 ei_iter <- function(
                     data,
@@ -58,11 +62,8 @@ ei_iter <- function(
                     plots = FALSE,
                     betas = FALSE,
                     par_compute = FALSE,
-<<<<<<< HEAD
                     verbose = FALSE,
-=======
                     plot_path = "",
->>>>>>> integrate density plot creation into ei iter
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -163,7 +164,6 @@ ei_iter <- function(
         )
     })
 
-<<<<<<< HEAD
     # Plots to be added here
     if (plots) {
       # Create tomography plots
@@ -186,12 +186,6 @@ ei_iter <- function(
       )
       grDevices::dev.off()
     }
-=======
-    # # Plots to be added here
-    # if (plots) {
-    #   do_nothing <- 3
-    # }
->>>>>>> integrate density plot creation into ei iter
 
     # Extract mean, standard error for each precinct and district-wide
     res <- ei::eiread(

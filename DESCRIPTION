@@ -40,10 +40,6 @@ Imports:
   tmvtnorm,
   ucminf,
   wru
-  sf,
-  mcmcse,
-  doParallel,
-  doSNOW,
   purrr,
   overlapping
 NeedsCompilation: no
