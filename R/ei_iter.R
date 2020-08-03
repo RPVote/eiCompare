@@ -23,7 +23,10 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+<<<<<<< HEAD
 #' @param verbose A boolean indicating whether to print out status messages.
+=======
+>>>>>>> integrate density plot creation into ei iter
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
@@ -260,7 +263,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-
+    
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
     race_cand_combined <- rep(race_cand_combined, each = 2)
@@ -275,7 +278,7 @@ ei_iter <- function(
 
 
   # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
+  if (betas == TRUE) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
