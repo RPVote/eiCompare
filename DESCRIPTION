@@ -40,11 +40,20 @@ Imports:
   tmvtnorm,
   ucminf,
   wru
+  sf,
+  mcmcse,
+  doParallel,
+  doSNOW,
+  purrr,
 NeedsCompilation: no
 Suggests:
   knitr,
   rmarkdown,
   testthat
+  overlapping,
+  RColorBrewer,
+  reshape2,
+  dplyr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr

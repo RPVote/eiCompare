@@ -44,6 +44,10 @@
 #' @export
 #'
 #' @return dataframe of results from iterative ei
+#'
+#'
+utils::globalVariables(c("%dopar%", "%do%", "i", "betas_ei"))
+
 ei_iter <- function(
                     data,
                     cand_cols,
