@@ -22,6 +22,7 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+#' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @importFrom doSNOW registerDoSNOW
@@ -48,6 +49,7 @@ ei_iter <- function(
                     plots = FALSE,
                     betas = FALSE,
                     par_compute = FALSE,
+                    plot_path = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -134,10 +136,10 @@ ei_iter <- function(
         )
     })
 
-    # Plots to be added here
-    if (plots) {
-      do_nothing <- 3
-    }
+    # # Plots to be added here
+    # if (plots) {
+    #   do_nothing <- 3
+    # }
 
     # Extract mean, standard error for each precinct
     precinct_res <- ei::eiread(
@@ -195,8 +197,16 @@ ei_iter <- function(
     n_iter = n_iters
   )
 
+  # Plots moved to here
+  # Density plots
+  if (plots) {
+    print("Creating density plots")
+    density_plots <- overlay_density_plot(betas_ei, plot_path, ei_type = "ei")
+  }
+
+
   # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
+  if (betas == TRUE) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
