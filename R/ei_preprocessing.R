@@ -1,3 +1,60 @@
+#' Remove or identify duplicated precincts
+#'
+#' Removes any rows in the dataset that are fully duplicated. If necessary, adds
+#'' duplicates' column indicating where precincts appear duplicated, for manual
+#' inspection by the user
+#'
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
+#'
+#' @param data A data.frame() object containing precinct-level turnout data by
+#' race and candidate
+#' @param precinct_id The name or index of the column in the data containing
+#' unique precinct identifiers.
+#' @param verbose A boolean. If true, messages are returned describing actions
+#' taken by the function.
+#'
+#' @export
+#'
+#' @return A new dataframe without duplicated rows, and (if any) a boolean
+#' column identifying duplicated precincts for further investigation.
+
+dedupe_precincts <- function(data, precinct_id, verbose = TRUE) {
+
+  # Remove any fully duplicated rows
+  init_rows <- nrow(data)
+  data <- unique(data)
+  rows <- nrow(data)
+  rows_removed <- init_rows - rows
+
+  # Inform user
+  if (rows_removed != 0 & verbose) {
+    message(paste("Removing", rows_removed, "identical rows..."))
+  }
+
+  # Check for duplicate precincts
+  # Check both directions to get every duplicate
+  dupes <- duplicated(data[, precinct_id]) | duplicated(data[, precinct_id],
+    fromLast = TRUE
+  )
+
+  # If duplicates found, add boolean column identifying them
+  if (sum(dupes) != 0 & verbose) {
+    data$duplicate <- dupes
+
+    # Inform user
+    warning("Precincts appear duplicated. Returning boolean column identifying
+duplicates...")
+  }
+
+  # Inform user
+  if ((rows_removed == 0) & (sum(dupes) == 0) & verbose) {
+    message("Data does not contain duplicates. Proceed...")
+  }
+
+  return(data)
+}
+
+
 #' Internal function that checks for adequate closeness between sums
 #' of race/candidate columns and provided vote totals.
 #'

@@ -1,5 +1,30 @@
 context("Testing performance of ei_propreprocessing functions")
 
+test_that("dedupe_precincts handles cases correctly", {
+
+  # unduplicated dataset returns the same result
+  input <- data.frame("p" = c(1, 2), "e" = c(1, 1))
+  expected <- input
+  output <- suppressMessages(dedupe_precincts(input, "p"))
+  expect_equal(output, expected)
+
+  # message from verbose, no duplicates
+  expect_message(dedupe_precincts(input, "p"))
+
+  # duplicated full rows returns single row
+  input$p[2] <- 1
+  expected <- input[1, ]
+  output <- suppressMessages(dedupe_precincts(input, "p"))
+  expect_equal(output, expected)
+
+  # duplicated precinct, different rows returns boolean column
+  input[1, 2] <- 2
+  expected <- cbind(input, data.frame("duplicate" = c(TRUE, TRUE)))
+  output <- suppressWarnings(dedupe_precincts(input, "p"))
+  expect_equal(output, expected)
+})
+
+
 test_that("standardize_votes() returns correct results", {
   votes <- empty_ei_df(2, 0, 2)
   votes$c1 <- c(1, 1)

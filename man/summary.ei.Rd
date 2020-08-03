@@ -40,7 +40,7 @@ results <- ei_est_gen(cands, race_group, "total",
   data = toy[c(1, 3, 5), ], table_names = table_names, sample = 100
 )
 results
-
+}
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference
