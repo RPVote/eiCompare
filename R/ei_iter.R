@@ -141,6 +141,7 @@ ei_iter <- function(
     set.seed(seed)
 
     # Run 2x2 ei
+    # ADD TRY CATCH SO THAT IF PARALLELIZATION=TRUE THEN KILL CLUSTERS
     utils::capture.output({
       ei_out <-
         suppressMessages(
