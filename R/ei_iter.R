@@ -23,7 +23,10 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+<<<<<<< HEAD
 #' @param verbose A boolean indicating whether to print out status messages.
+=======
+>>>>>>> integrate density plot creation into ei iter
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
@@ -55,7 +58,11 @@ ei_iter <- function(
                     plots = FALSE,
                     betas = FALSE,
                     par_compute = FALSE,
+<<<<<<< HEAD
                     verbose = FALSE,
+=======
+                    plot_path = "",
+>>>>>>> integrate density plot creation into ei iter
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -156,6 +163,7 @@ ei_iter <- function(
         )
     })
 
+<<<<<<< HEAD
     # Plots to be added here
     if (plots) {
       # Create tomography plots
@@ -178,6 +186,12 @@ ei_iter <- function(
       )
       grDevices::dev.off()
     }
+=======
+    # # Plots to be added here
+    # if (plots) {
+    #   do_nothing <- 3
+    # }
+>>>>>>> integrate density plot creation into ei iter
 
     # Extract mean, standard error for each precinct and district-wide
     res <- ei::eiread(
@@ -259,6 +273,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
+<<<<<<< HEAD
 
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
@@ -270,11 +285,14 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     density_plots <- overlay_density_plot(agg_betas, plot_path, ei_type = "ei")
+=======
+    density_plots <- overlay_density_plot(betas_ei, plot_path, ei_type = "ei")
+>>>>>>> integrate density plot creation into ei iter
   }
 
 
   # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
+  if (betas == TRUE) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,

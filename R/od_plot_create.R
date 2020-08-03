@@ -44,7 +44,6 @@ od_plot_create <- function(race, cand_comb, dens_data, out, plot_path = "", cand
     cand_colors[gsub("pct_", "", cand_comb[2])]
   )
   names(cols) <- c(gsub("pct_", "", cand_comb[1]), gsub("pct_", "", cand_comb[2]))
-
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
     scale_fill_manual(values = cols) +
