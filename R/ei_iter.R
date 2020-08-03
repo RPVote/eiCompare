@@ -157,7 +157,6 @@ ei_iter <- function(
         )
     })
 
-<<<<<<< HEAD
     # Plots to be added here
     if (plots) {
       # Create tomography plots
@@ -182,12 +181,6 @@ ei_iter <- function(
 
       grDevices::dev.off()
     }
-=======
-    # # Plots to be added here
-    # if (plots) {
-    #   do_nothing <- 3
-    # }
->>>>>>> integrate density plot creation into ei iter
 
     # Extract mean, standard error for each precinct and district-wide
     res <- ei::eiread(
@@ -272,7 +265,6 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-<<<<<<< HEAD
 
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
@@ -288,9 +280,6 @@ ei_iter <- function(
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
-=======
-    density_plots <- overlay_density_plot(betas_ei, plot_path, ei_type = "ei")
->>>>>>> integrate density plot creation into ei iter
   }
 
 
