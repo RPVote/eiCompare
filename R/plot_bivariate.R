@@ -9,7 +9,7 @@
 #' @param race_cols A character vector listing the column names for turnout by
 #' race
 #'
-#' @return ggplot object with bivariate plots faceted by
+#' @return ggplot object with bivariate plots faceted by candidate and race
 plot_bivariate <- function(data, cand_cols, race_cols) {
   cols <- length(race_cols)
   rows <- length(cand_cols)
