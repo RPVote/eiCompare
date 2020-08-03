@@ -13,13 +13,13 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Install libcurl
-        run: sudo apt-get install libcurl4-openssl-dev
+      - name: Install Linux Dependencies
+        run: sudo apt-get install libcurl4-openssl-dev libudunits2-dev
 
       - name: Setup R
         uses: r-lib/actions/setup-r@master
