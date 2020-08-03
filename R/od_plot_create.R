@@ -13,8 +13,14 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
 #'
-#' @retun overlay density plots comparing candidates for votes by race
+#' @return overlay density plot comparing candidates for votes by race
+#' @examples
+#'
+#'
+#' # EXAMPLE: NOT RUN #
+#' @export
 
+utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))
 
 
 od_plot_create <- function(m, i, race, cand_comb, dens_data, out, path, cand_colors) {
@@ -84,17 +90,17 @@ od_plot_create <- function(m, i, race, cand_comb, dens_data, out, path, cand_col
     linetype = "dashed", data = out_sub
     ) +
     # Add sigma label
-    ggplot2::geom_text(x = out_sub$sd_minus[1], y = .12, label = "std", size = 2) +
-    ggplot2::geom_text(x = out_sub$sd_minus[2], y = .08, label = "std", size = 2) +
+    ggplot2::geom_text(x = out_sub$sd_minus[1], y = .12, label = expression(sigma), size = 2) +
+    ggplot2::geom_text(x = out_sub$sd_minus[2], y = .08, label = expression(sigma), size = 2) +
     # Add text label for means
     ggplot2::geom_label(
       x = out_sub$mean_size[1],
-      y = 1.09, label = paste("µ =", round(out_sub$mean_size[1], 2), sep = " "),
+      y = 1.09, label = paste(expression(mu), "=", round(out_sub$mean_size[1], 2), sep = " "),
       size = 2, show.legend = NA, fill = "white"
     ) +
     ggplot2::geom_label(
       x = out_sub$mean_size[2],
-      y = 1.03, label = paste("µ =", round(out_sub$mean_size[2], 2), sep = " "),
+      y = 1.03, label = paste(expression(mu), "=", round(out_sub$mean_size[2], 2), sep = " "),
       size = 2, show.legend = NA, fill = "white"
     ) +
     # Set limits for plot
