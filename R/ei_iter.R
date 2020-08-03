@@ -168,10 +168,7 @@ ei_iter <- function(
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-<<<<<<< HEAD
 
-=======
->>>>>>> Updated for roxygen2 pass
       grDevices::dev.off()
 
       # Create denity plots
@@ -267,7 +264,6 @@ ei_iter <- function(
   if (plots) {
     print("Creating density plots")
 
-
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
     race_cand_combined <- rep(race_cand_combined, each = 2)
@@ -286,7 +282,7 @@ ei_iter <- function(
 
 
   # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
+  if (betas == TRUE) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
