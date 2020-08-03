@@ -122,6 +122,7 @@ ei_iter <- function(
     formula <- stats::formula(paste(cand, "~", race), sep = " ")
 
     # Run 2x2 ei
+    # ADD TRY CATCH SO THAT IF PARALLELIZATION=TRUE THEN KILL CLUSTERS
     utils::capture.output({
       ei_out <-
         suppressMessages(
