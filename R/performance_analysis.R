@@ -36,12 +36,14 @@
 #'
 #' @export performance_analysis
 #' @importFrom dplyr filter group_by_at inner_join rename select summarise
+#' @importFrom tidyselect all_of
 performance_analysis <- function(voter_file,
                                  district_shape,
                                  census_data,
                                  census_shape,
                                  state = NULL,
-                                 voter_id = "voter_id", surname = "last_name",
+                                 voter_id = "voter_id",
+                                 surname = "last_name",
                                  district = "district",
                                  census_state_col = "STATEFP10",
                                  census_county_col = "COUNTYFP10",
@@ -131,15 +133,23 @@ performance_analysis <- function(voter_file,
   voter_file_final <- voter_file_w_district %>%
     dplyr::rename(
       c(
-        "st" = all_of(census_state_col),
-        "county" = all_of(census_county_col),
-        "tract" = all_of(census_tract_col),
-        "block" = all_of(census_block_col),
-        "fips" = all_of(census_fips_col)
+        "st" = tidyselect::all_of(census_state_col),
+        "county" = tidyselect::all_of(census_county_col),
+        "tract" = tidyselect::all_of(census_tract_col),
+        "block" = tidyselect::all_of(census_block_col),
+        "fips" = tidyselect::all_of(census_fips_col)
       )
     ) %>%
     dplyr::select(
-      all_of(c(voter_id, surname, district, "st", "county", "tract", "block"))
+      tidyselect::all_of(c(
+        voter_id,
+        surname,
+        district,
+        "st",
+        "county",
+        "tract",
+        "block"
+      ))
     )
 
   # Apply BISG to the voter file to get race predictions
@@ -149,6 +159,9 @@ performance_analysis <- function(voter_file,
     voter_id = voter_id,
     surname = surname,
     state = state,
+    county = "county",
+    tract = "tract",
+    block = "block",
     census_geo = census_geo,
     use_surname = use_surname,
     surname_only = surname_only,
@@ -205,7 +218,7 @@ performance_analysis <- function(voter_file,
   }
 
   if (verbose) {
-    message("Functionality analysis complete.")
+    message("Performance analysis complete.")
   }
   return(list(
     voter_file = voter_file_final_w_race,

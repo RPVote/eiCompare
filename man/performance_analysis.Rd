@@ -7,9 +7,9 @@ district shape.}
 \usage{
 performance_analysis(
   voter_file,
+  district_shape,
   census_data,
   census_shape,
-  district_shape,
   state = NULL,
   voter_id = "voter_id",
   surname = "last_name",
@@ -34,14 +34,14 @@ performance_analysis(
 \arguments{
 \item{voter_file}{A dataframe containing the voter file.}
 
+\item{district_shape}{The shapefiles for the new districts or precincts to
+consider.}
+
 \item{census_data}{A dataframe containing the Census tracts or blocks in the
 region for the voter file.}
 
 \item{census_shape}{The shapefiles for the Census blocks or tracts for which
 the voter file will be geocoded against.}
-
-\item{district_shape}{The shapefiles for the new districts or precincts to
-consider.}
 
 \item{state}{The state in which the functionality analysis is performed, as
 a two character string.}
