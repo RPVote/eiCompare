@@ -36,12 +36,16 @@ Imports:
   mcmcse,
   doParallel,
   doSNOW,
-  purrr
+  purrr,
 NeedsCompilation: no
 Suggests: 
   testthat,
   knitr,
-  rmarkdown
+  rmarkdown,
+  overlapping,
+  RColorBrewer,
+  reshape2,
+  dplyr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
