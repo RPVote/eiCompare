@@ -29,6 +29,7 @@ separate candidates, or two separate groups' support for the same candidate.
 }
 \examples{
 # TOY DATA EXAMPLE
+\dontrun{
 canda <- c(10, 8, 10, 4, 8)
 candb <- 20 - canda
 white <- c(15, 12, 18, 6, 10)
@@ -44,6 +45,7 @@ form <- formula(cbind(canda, candb) ~ cbind(black, white))
 
 # Canda a over candb among black voters#
 # lambda_two_compare(lmd, cnames=cnames, cand1or2 = 1)
+}
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)

@@ -32,12 +32,16 @@ Imports:
   tidyr,
   magrittr,
   stringr,
+  sf,
   mcmcse,
+  doParallel,
+  doSNOW,
+  purrr
 NeedsCompilation: no
 Suggests: 
-    testthat,
-    knitr,
-    rmarkdown
+  testthat,
+  knitr,
+  rmarkdown
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr

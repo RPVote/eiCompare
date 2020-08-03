@@ -36,7 +36,7 @@ are interested in the EI vs. EI:RxC comparison
 }
 \examples{
 
-
+\dontrun{
 # TOY DATA EXAMPLE
 canda <- c(.1, .09, .85, .9, .92)
 candb <- 1 - canda
@@ -76,7 +76,7 @@ ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res,
 )
 # Produces data and character vector, which can be sent to plot()
 ei_rc_combine
-\donttest{
+
 # Warning: Takes a while to run
 # Load corona data
 data(corona)

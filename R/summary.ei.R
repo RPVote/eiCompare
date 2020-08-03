@@ -13,6 +13,7 @@
 #' Problem. Princeton: Princeton University Press.
 #' @examples
 #'
+#' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(.1, .09, .85, .9, .92)
 #' candb <- 1 - canda
@@ -32,6 +33,7 @@
 #'   data = toy[c(1, 3, 5), ], table_names = table_names, sample = 100
 #' )
 #' results
+#' }
 #' @importFrom stats weighted.mean sd cor
 #' @export summary.ei
 summary.ei <- function(object, ...) {

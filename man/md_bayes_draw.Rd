@@ -49,7 +49,7 @@ Tunes and estimates MD Bayes algorithm (ei.MD.bayes)
 }
 \examples{
 
-
+\dontrun{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
 candb <- 20 - canda
@@ -61,6 +61,7 @@ toy <- data.frame(canda, candb, white, black)
 form <- formula(cbind(canda, candb) ~ cbind(black, white))
 # Then excute md_bayes_draw(); not run here due to time
 # md_bayes_draw(toy, c(2,3), form )
+}
 }
 \references{
 eiPack, King et. al. (http://gking.harvard.edu/eiR)
