@@ -76,7 +76,9 @@ ei_good <- function(
     # Compute SE (needs fixing)
     ses <- coef(summary(res))[, 2]
 
-    # SE on sum of coefficients = sqrt(SE1^2 + SE2^2 +2COV(1,2))
+    # Compute with and without covariance term
+
+    # SE on sum of coefficients = sqrt(SE1^2 + SE2^2 + 2COV(1,2))
     se <- sqrt(ses[1]^2 + ses[2]^2 + 2 * vcov(res)[1, 2])
 
     # Create dataframe of results

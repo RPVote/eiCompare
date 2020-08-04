@@ -120,6 +120,8 @@ ei_rxc <- function(
   # The upper and lower CI estimates also have standard errors. Here these
   # errors are conservatively used to extend the 95% confidence bound further
 
+  # look for function that just finds the 95% CI
+
   # Lower CI estimate
   lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
   lower_est <- lower[, 1]
