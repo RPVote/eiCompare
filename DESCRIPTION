@@ -4,45 +4,46 @@ Title: Compares EI, Goodman, RxC Estimates
 Version: 3.0
 Author: Loren Collingwood
 Maintainer: Loren Collingwood <loren.collingwood@ucr.edu>
+URL: https://github.com/lorenc5/eiCompare
 Description: Compares estimates from three ecological inference routines, based on King (1997) <ISBN: 0691012407>, <http://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <http://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
-License: GPL (>= 2)
-Depends: 
+License: GPL-3
+Depends:
+  R (>= 3.5.0),
   eiPack,
   ei,
-Imports: 
-  graphics,
-  methods,
-  tmvtnorm,
-  foreach,
-  ggplot2,
-  RCurl,
-  RJSONIO,
-  sjmisc,
-  wru,
-  data.table,
-  ucminf,
-  R.utils,
-  mvtnorm,
-  msm,
-  mnormt,
+Imports:
   cubature,
-  ellipse,
-  plotrix,
-  plyr,
-  tidyr,
-  magrittr,
-  stringr,
-  stringi,
-  sf,
-  mcmcse,
+  data.table,
   doParallel,
   doSNOW,
-  purrr
+  ellipse,
+  foreach,
+  ggplot2,
+  graphics,
+  magrittr,
+  mcmcse,
+  methods,
+  mnormt,
+  msm,
+  mvtnorm,
+  plotrix,
+  plyr,
+  purrr,
+  R.utils,
+  RCurl,
+  RJSONIO,
+  sf,
+  sjmisc,
+  stringr,
+  tidyr,
+  tmvtnorm,
+  ucminf,
+  wru
 NeedsCompilation: no
-Suggests: 
-  testthat,
+Suggests:
   knitr,
   rmarkdown
+  testthat,
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
