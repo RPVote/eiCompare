@@ -178,7 +178,6 @@ ei_iter <- function(
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-
       grDevices::dev.off()
     }
 
