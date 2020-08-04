@@ -12,3 +12,6 @@ remove_nas(data)
 \description{
 Remove missing values from dataset and return warning if any removed
 }
+\author{
+Ari Decter-Frain <agd75@cornell.edu>
+}

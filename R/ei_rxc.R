@@ -26,7 +26,7 @@
 #'
 #' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
 #'
-#' @value If ret_mcmc == TRUE, a list is returned containing results and a data
+#' @return If ret_mcmc == TRUE, a list is returned containing results and a data
 #' frame of the full chains from the MCMC. If ret_mcmc == FALSE, results are
 #' returned in a dataframe
 #'
@@ -134,9 +134,19 @@ ei_rxc <- function(
   upper_se <- upper[, 2]
   upper <- upper_est + upper_se
 
-  results_table <- cbind(estimate, lower, upper)
-  colnames(results_table) <- c("Mean", "SE", "CI_lower", "CI_upper")
-  rownames(results_table) <- gsub("^.*?\\.", "", colnames(chains_raw))
+  # This gets uses base R to get the correct candidate and race names from the
+  # output of the chains
+  cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
+  cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
+  cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
+  race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
+
+  # Create, name an output table
+  results_table <- data.frame(cbind(estimate, lower, upper))
+  results_table <- cbind(cand_col, race_col, results_table)
+  colnames(results_table) <- c(
+    "cand", "race", "mean", "se", "ci_lower", "ci_upper"
+  )
 
   # Match expected output
   results_table <- get_md_bayes_gen_output(results_table, race_cols)

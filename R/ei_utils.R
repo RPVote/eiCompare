@@ -133,7 +133,7 @@ betas_for_return <- function(precinct_results, race_cand_pairs) {
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @param aggs A dataframe of aggregate value draws, taken from eiread()
-get_ei_ses <- function(aggs) {
+get_ei_iter_se <- function(aggs) {
   ses <- c()
   for (i in 1:ncol(aggs)) {
     aggs_col <- aggs[, i]
@@ -175,11 +175,25 @@ rxc_formula <- function(cand_cols, race_cols) {
 #' @param race_cols Character vector of candidate race names, passed from
 #' ei_rxc
 get_md_bayes_gen_output <- function(results_table, race_cols) {
+
+  # create list object output
   new_results <- list()
+
   for (i in 1:length(race_cols)) {
+
+    # get race name
     race <- race_cols[i]
-    race_res <- results_table[grep(race, rownames(results_table)), ] * 100
-    rownames(race_res) <- gsub("^.*?\\.", "", rownames(race_res))
+
+    # filter to where that race, then remove the race column
+    race_res <- results_table[which(results_table$race == race), -2]
+
+    # set rownames equal to the candidate column
+    rownames(race_res) <- race_res$cand
+
+    # remove the candidate column and multiple all numbers by 100
+    race_res <- race_res[, -1] * 100
+
+    # add to list
     new_results[[i]] <- race_res
   }
   names(new_results) <- race_cols

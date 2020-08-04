@@ -10,7 +10,6 @@ ei_iter(
   race_cols,
   totals_col,
   erho = 10,
-  sample = 1000,
   seed = NULL,
   plots = FALSE,
   betas = FALSE,
@@ -32,8 +31,6 @@ race}
 precinct}
 
 \item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
-
-\item{sample}{The number of samples used in ei estimation. Defaulted to 1000}
 
 \item{seed}{A numeric seed value for replicating estimate results across runs
 . Defaulted to NULL.}
@@ -67,5 +64,5 @@ Problem. Princeton: Princeton University Press.
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 
-Ari Decter-Frain
+Ari Decter-Frain <agd75@cornell.edu>
 }

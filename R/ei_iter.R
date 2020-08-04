@@ -160,8 +160,20 @@ ei_iter <- function(
     betab_district_mean <- res$maggs[1]
     betaw_district_mean <- res$maggs[2]
 
-    # get aggregate ses
-    ses <- get_ei_ses(res$aggs)
+    # Get aggregate ses
+    # This works according to the aggregate formula in King, 1997, section 8.3
+    aggs <- res$aggs
+    ses <- c()
+    for (i in 1:ncol(aggs)) {
+      aggs_col <- aggs[, i]
+      m <- mean(aggs_col)
+      nsims <- length(aggs_col)
+      devs <- m - aggs_col
+      sq_devs <- devs^2
+      sum_sq_devs <- sum(sq_devs)
+      se <- sqrt(sum_sq_devs / nsims)
+      ses <- append(ses, se)
+    }
 
     # Put district-wide estimates in dataframe
     district_res <- data.frame(
