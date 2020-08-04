@@ -23,10 +23,7 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
-<<<<<<< HEAD
 #' @param verbose A boolean indicating whether to print out status messages.
-=======
->>>>>>> integrate density plot creation into ei iter
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
