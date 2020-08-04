@@ -18,14 +18,19 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Install Linux Dependencies
-        run: sudo apt-get install libcurl4-openssl-dev libudunits2-dev libgdal-dev libgfortran3 libicu-dev
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
 
       - name: Setup R
         uses: r-lib/actions/setup-r@master
         with:
            r-version: 'release'
-  
+
       - name: Report R Version 
         run: |
           which R
