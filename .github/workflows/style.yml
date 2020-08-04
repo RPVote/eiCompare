@@ -14,7 +14,7 @@ name: Styler
 
 jobs:
   check-style:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -26,8 +26,8 @@ jobs:
         uses: r-lib/actions/setup-r@master
         with:
            r-version: 'release'
-  
-      - name: Report R Version 
+
+      - name: Report R Version
         run: |
           which R
           R --version

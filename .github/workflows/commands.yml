@@ -7,25 +7,22 @@ jobs:
   document:
     if: startsWith(github.event.comment.body, '/document')
     name: document
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      
+
       - uses: r-lib/actions/pr-fetch@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install libcurl
-        run: sudo apt-get install libcurl4-openssl-dev
 
       - name: Setup R
         uses: r-lib/actions/setup-r@master
         with:
            r-version: 'release'
-  
-      - name: Report R Version 
+
+      - name: Report R Version
         run: |
           which R
           R --version
@@ -43,14 +40,21 @@ jobs:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-      
-      
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
+
       - name: Install dependencies
         run: Rscript -e 'install.packages(c("remotes", "roxygen2"))' -e 'remotes::install_deps(dependencies = TRUE)'
-      
+
       - name: Document
         run: Rscript -e 'roxygen2::roxygenise()'
-      
+
       - name: commit
         run: |
           git add man/\* NAMESPACE
@@ -58,8 +62,8 @@ jobs:
       - uses: r-lib/actions/pr-push@master
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-  
-  
+
+
   style:
     if: startsWith(github.event.comment.body, '/style')
     name: style
@@ -68,7 +72,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
-      
+
       - uses: r-lib/actions/pr-fetch@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -96,10 +100,10 @@ jobs:
 
       - name: Install dependencies
         run: Rscript -e 'install.packages("styler")'
-      
+
       - name: Style
         run: Rscript -e 'styler::style_pkg()'
-      
+
       - name: commit
         run: |
           git add \*.R
