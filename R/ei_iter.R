@@ -23,10 +23,7 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
-<<<<<<< HEAD
 #' @param verbose A boolean indicating whether to print out status messages.
-=======
->>>>>>> integrate density plot creation into ei iter
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
@@ -167,24 +164,39 @@ ei_iter <- function(
     # Plots to be added here
     if (plots) {
       # Create tomography plots
+<<<<<<< HEAD
       grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
+=======
+      png(paste0(path, "tomography_", cand, "_", race, ".png"),
+>>>>>>> added tomography and beta comparison plots
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
+<<<<<<< HEAD
       grDevices::dev.off()
 
       # Create denity plots
       grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
+=======
+      dev.off()
+
+      # Create denity plots
+      png(paste0(path, "density_", cand, "_", race, ".png"),
+>>>>>>> added tomography and beta comparison plots
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
+<<<<<<< HEAD
       grDevices::dev.off()
+=======
+      dev.off()
+>>>>>>> added tomography and beta comparison plots
     }
 
     # Extract mean, standard error for each precinct and district-wide
