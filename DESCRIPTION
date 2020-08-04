@@ -10,7 +10,7 @@ License: GPL-3
 Depends:
   R (>= 3.5.0),
   eiPack,
-  ei,
+  ei
 Imports:
   cubature,
   data.table,
@@ -42,8 +42,8 @@ Imports:
 NeedsCompilation: no
 Suggests:
   knitr,
-  rmarkdown
-  testthat,
+  rmarkdown,
+  testthat
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
