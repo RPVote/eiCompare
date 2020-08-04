@@ -61,6 +61,8 @@ jobs:
       - name: Style
         run: Rscript -e 'styler::style_pkg()'
 
-      - name: Lint
-        run: lintr::lint_package()
-        shell: Rscript {0}
+# unable to load shared object '/home/runner/work/_temp/Library/stringi/libs/stringi.so':
+#  libicui18n.so.55: cannot open shared object file: No such file or directory
+#      - name: Lint
+#        run: lintr::lint_package()
+#        shell: Rscript {0}
