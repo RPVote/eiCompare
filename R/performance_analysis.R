@@ -2,22 +2,37 @@
 #' district shape.
 #'
 #' @param voter_file A dataframe containing the voter file.
-#' @param census_data A dataframe containing the Census tracts or blocks in the
-#' region for the voter file.
-#' @param census_shape The shapefiles for the Census blocks or tracts for which
-#' the voter file will be geocoded against.
 #' @param district_shape The shapefiles for the new districts or precincts to
 #' consider.
+#' @param census_shape The shapefiles for the Census blocks or tracts for which
+#'  the voter file will be geocoded against.
+#' @param census_data A dataframe containing the Census tracts or blocks in the
+#'  region for the voter file.
+#' @param join_district_shape A logical denoting whether the voter file already
+#'  has the district identity per voter. If TRUE, then a column names for the
+#'  district must be provided. If FALSE, then a distrct shape must be provided
+#'  in order to perform a spatial join.
+#' @param join_census_shape A logical denoting whether the voter file already
+#'  has the Census block, tract, and county information. If TRUE, then column
+#'  names for these items must be provided. If FALSE, then a Census shape must
+#'  be provided in order to perform a spatial join.
 #' @param state The state in which the functionality analysis is performed, as
 #'   a two character string.
 #' @param voter_id A string denoting the column name for the voter ID.
 #' @param surname A string denoting the column name for the surname.
 #' @param district A string denoting the column name for the district.
 #' @param census_state_col The column in the Census data that indicates state.
+#'  If the voter file already has Census information, this should denote the
+#'  column in the voter file containing the state FIPS code.
 #' @param census_county_col The column in the Census data that indicates county.
+#'  If the voter file already has Census information, this should denote the
+#'  column in the voter file containing the county FIPS code.
 #' @param census_tract_col The column in the Census data that indicates tract.
+#'  If the voter file already has Census information, this should denote the
+#'  column in the voter file containing the tract FIPS code.
 #' @param census_block_col The column in the Census data that indicates block.
-#' @param census_fips_col The column in the Census data for the FIPS code.
+#'  If the voter file already has Census information, this should denote the
+#'  column in the voter file containing the block FIPS code.
 #' @param crs A string denoting the PROJ4 string for projecting maps.
 #' @param coords The columns for the coordinates.
 #' @param census_geo The geographic level at which to perform BISG.
@@ -39,10 +54,9 @@
 #' @importFrom tidyselect all_of
 performance_analysis <- function(voter_file,
                                  district_shape,
-                                 census_data,
                                  census_shape,
+                                 census_data,
                                  join_census_shape = TRUE,
-                                 join_census_race = TRUE,
                                  join_district_shape = TRUE,
                                  state = NULL,
                                  voter_id = "voter_id",
@@ -52,7 +66,6 @@ performance_analysis <- function(voter_file,
                                  census_county_col = "COUNTYFP10",
                                  census_tract_col = "TRACTCE10",
                                  census_block_col = "BLOCKCE10",
-                                 census_fips_col = "GEOID10",
                                  crs = "+proj=longlat +ellps=GRS80",
                                  coords = c("lon", "lat"),
                                  census_geo = "block",
@@ -157,7 +170,6 @@ performance_analysis <- function(voter_file,
         "county" = tidyselect::all_of(census_county_col),
         "tract" = tidyselect::all_of(census_tract_col),
         "block" = tidyselect::all_of(census_block_col),
-        "fips" = tidyselect::all_of(census_fips_col)
       )
     ) %>%
     dplyr::select(

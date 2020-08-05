@@ -8,8 +8,10 @@ district shape.}
 performance_analysis(
   voter_file,
   district_shape,
-  census_data,
   census_shape,
+  census_data,
+  join_census_shape = TRUE,
+  join_district_shape = TRUE,
   state = NULL,
   voter_id = "voter_id",
   surname = "last_name",
@@ -18,7 +20,6 @@ performance_analysis(
   census_county_col = "COUNTYFP10",
   census_tract_col = "TRACTCE10",
   census_block_col = "BLOCKCE10",
-  census_fips_col = "GEOID10",
   crs = "+proj=longlat +ellps=GRS80",
   coords = c("lon", "lat"),
   census_geo = "block",
@@ -37,11 +38,21 @@ performance_analysis(
 \item{district_shape}{The shapefiles for the new districts or precincts to
 consider.}
 
+\item{census_shape}{The shapefiles for the Census blocks or tracts for which
+the voter file will be geocoded against.}
+
 \item{census_data}{A dataframe containing the Census tracts or blocks in the
 region for the voter file.}
 
-\item{census_shape}{The shapefiles for the Census blocks or tracts for which
-the voter file will be geocoded against.}
+\item{join_census_shape}{A logical denoting whether the voter file already
+has the Census block, tract, and county information. If TRUE, then column
+names for these items must be provided. If FALSE, then a Census shape must
+be provided in order to perform a spatial join.}
+
+\item{join_district_shape}{A logical denoting whether the voter file already
+has the district identity per voter. If TRUE, then a column names for the
+district must be provided. If FALSE, then a distrct shape must be provided
+in order to perform a spatial join.}
 
 \item{state}{The state in which the functionality analysis is performed, as
 a two character string.}
@@ -52,15 +63,21 @@ a two character string.}
 
 \item{district}{A string denoting the column name for the district.}
 
-\item{census_state_col}{The column in the Census data that indicates state.}
+\item{census_state_col}{The column in the Census data that indicates state.
+If the voter file already has Census information, this should denote the
+column in the voter file containing the state FIPS code.}
 
-\item{census_county_col}{The column in the Census data that indicates county.}
+\item{census_county_col}{The column in the Census data that indicates county.
+If the voter file already has Census information, this should denote the
+column in the voter file containing the county FIPS code.}
 
-\item{census_tract_col}{The column in the Census data that indicates tract.}
+\item{census_tract_col}{The column in the Census data that indicates tract.
+If the voter file already has Census information, this should denote the
+column in the voter file containing the tract FIPS code.}
 
-\item{census_block_col}{The column in the Census data that indicates block.}
-
-\item{census_fips_col}{The column in the Census data for the FIPS code.}
+\item{census_block_col}{The column in the Census data that indicates block.
+If the voter file already has Census information, this should denote the
+column in the voter file containing the block FIPS code.}
 
 \item{crs}{A string denoting the PROJ4 string for projecting maps.}
 
