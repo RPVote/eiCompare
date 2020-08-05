@@ -41,6 +41,9 @@ performance_analysis <- function(voter_file,
                                  district_shape,
                                  census_data,
                                  census_shape,
+                                 join_census_shape = TRUE,
+                                 join_census_race = TRUE,
+                                 join_district_shape = TRUE,
                                  state = NULL,
                                  voter_id = "voter_id",
                                  surname = "last_name",
@@ -83,50 +86,67 @@ performance_analysis <- function(voter_file,
     n_voters <- n_voters_new
   }
 
-  # Merge the voter file to census file, then pick out the right columns
-  voter_file_w_census <- merge_voter_file_to_shape(
-    voter_file = voter_file,
-    shape_file = census_shape,
-    crs = crs,
-    coords = coords,
-    voter_id = voter_id
-  )
-  # Filter out voters that didn't match on the block
-  voter_file_w_census <- dplyr::filter(
-    voter_file_w_census,
-    !is.na(.data[[census_block_col]])
-  )
-  if (verbose) {
-    n_voters_new <- nrow(voter_file_w_census)
-    message(paste(
-      "Matching by Census block removed", n_voters - n_voters_new,
-      "voters. Voter file now has", n_voters_new,
-      "rows.\nMerging voter file with district shape files."
-    ))
-    n_voters <- n_voters_new
+  # Merge the voter file to census shape file, then pick out the right columns
+  if (join_census_shape) {
+    voter_file_w_census <- merge_voter_file_to_shape(
+      voter_file = voter_file,
+      shape_file = census_shape,
+      crs = crs,
+      coords = coords,
+      voter_id = voter_id
+    )
+    # Filter out voters that didn't match on the block
+    voter_file_w_census <- dplyr::filter(
+      voter_file_w_census,
+      !is.na(.data[[census_block_col]])
+    )
+
+    if (verbose) {
+      n_voters_new <- nrow(voter_file_w_census)
+      message(paste(
+        "Matching by Census block removed", n_voters - n_voters_new,
+        "voters. Voter file now has", n_voters_new,
+        "rows.\nMerging voter file with district shape files."
+      ))
+      n_voters <- n_voters_new
+    }
+  } else {
+    # If we don't need to merge to Census shape file, then rename variable
+    if (verbose) {
+      message(paste("Voter file already matched to Census shapefile."))
+    }
+    voter_file_w_census <- voter_file
   }
 
-  # Merge the voter file with the district shape file
-  voter_file_w_district <- merge_voter_file_to_shape(
-    voter_file = voter_file_w_census,
-    shape_file = district_shape,
-    crs = crs,
-    coords = coords,
-    voter_id = voter_id
-  )
-  # Filter out voters that didn't match on a district
-  voter_file_w_district <- dplyr::filter(
-    voter_file_w_district,
-    !is.na(.data[[district]])
-  )
-  if (verbose) {
-    n_voters_new <- nrow(voter_file_w_district)
-    message(paste(
-      "Matching by district removed", n_voters - n_voters_new,
-      "voters. Voter file now has", n_voters_new,
-      "rows.\nApplying BISG."
-    ))
-    n_voters <- n_voters_new
+  if (join_district_shape) {
+    # Merge the voter file with the district shape file
+    voter_file_w_district <- merge_voter_file_to_shape(
+      voter_file = voter_file_w_census,
+      shape_file = district_shape,
+      crs = crs,
+      coords = coords,
+      voter_id = voter_id
+    )
+    # Filter out voters that didn't match on a district
+    voter_file_w_district <- dplyr::filter(
+      voter_file_w_district,
+      !is.na(.data[[district]])
+    )
+    if (verbose) {
+      n_voters_new <- nrow(voter_file_w_district)
+      message(paste(
+        "Matching by district removed", n_voters - n_voters_new,
+        "voters. Voter file now has", n_voters_new,
+        "rows.\nApplying BISG."
+      ))
+      n_voters <- n_voters_new
+    }
+  } else {
+    if (verbose) {
+      # If we don't need to merge to district shape file, then rename variable
+      message(paste("Voter file already matched to district shape."))
+      voter_file_w_district <- voter_file
+    }
   }
 
   # Select the final set of columns needed for BISG
