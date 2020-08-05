@@ -16,6 +16,7 @@ Imports:
   data.table,
   doParallel,
   doSNOW,
+  dplyr,
   ellipse,
   foreach,
   ggplot2,
@@ -36,6 +37,7 @@ Imports:
   sjmisc,
   stringr,
   tidyr,
+  tidyselect,
   tmvtnorm,
   ucminf,
   wru
