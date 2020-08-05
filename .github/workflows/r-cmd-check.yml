@@ -1,6 +1,6 @@
-# https://github.com/r-lib/actions/tree/master/examples#quickstart-ci-workflow
-# Run R-CMD-check on only Linux with Latest Released version of R
-
+# https://github.com/r-lib/actions/tree/master/examples#standard-ci-workflow
+# https://github.com/ITSLeeds/osmextract/blob/master/.github/workflows/R-CMD-check.yaml
+# Run R-CMD-check on Linux, Windows, MacOS on Released and Development verison of R
 on:
   push:
     branches:
@@ -13,25 +13,40 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    runs-on: ubuntu-16.04
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # - {os: macOS-latest,   r: 'devel'}
+          # - {os: macOS-latest,   r: 'release'}
+          # - {os: windows-latest, r: 'release'}
+          # - {os: windows-latest, r: '3.6'}
+          - {os: ubuntu-18.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+          # - {os: ubuntu-16.04,   r: 'oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+          # - {os: ubuntu-16.04,   r: '3.5',     rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+
+    # NOTE: RSPM is set to https://cloud.r-project.org by default
+    # https://github.com/r-lib/actions/issues/153
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-      - name: Install libcurl
-        run: sudo apt-get install libcurl4-openssl-dev
-
-      - name: Setup R
-        uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@master
         with:
-           r-version: 'release'
-  
-      - name: Report R Version 
-        run: |
-          which R
-          R --version
+          r-version: ${{ matrix.config.r }}
 
-      - name: Query dependencies for cache
+      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: Query dependencies
         run: |
           install.packages('remotes')
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
@@ -39,18 +54,52 @@ jobs:
         shell: Rscript {0}
 
       - name: Cache R packages
+        if: runner.os != 'Windows'
         uses: actions/cache@v1
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Install dependencies
+      - name: Install System dependencies
+        if: runner.os == 'Linux'
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
+          while read -r cmd
+          do
+            eval sudo $cmd --no-upgrade
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
+          # Additional installs for packages requiring system libraries
+          sudo apt-get install -y libgfortran3
+
+      # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
+      - name: Install Package dependencies
+        run: |
+          install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
-      - name: Run rcmdcheck
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+      - name: Session info
+        run: |
+          options(width = 100)
+          pkgs <- installed.packages()[, "Package"]
+          sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
+
+      - name: R-CMD-Check
+        env:
+          _R_CHECK_CRAN_INCOMING_: false
+        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
+        shell: Rscript {0}
+
+      - name: Show testthat output
+        if: always()
+        run: find check -name 'testthat.Rout*' -exec cat '{}' \; || true
+        shell: bash
+
+      - name: Upload Results
+        if: failure()
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+          path: check

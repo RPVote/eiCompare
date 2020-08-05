@@ -85,7 +85,7 @@ get_results_table <- function(
 #' Check for missing essential arguments from an ei function
 #' @param data A dataframe upon which EI is to be performed
 #' @param cand_cols A column of candidate names passed from ei functions
-#' @param race_rols A column of race names passed from ei functions
+#' @param race_cols A column of race names passed from ei functions
 #' @param totals_col The name of a column passed from ei functions
 #' @param totals_null A boolean. If TRUE, ignore totals_col argument
 check_args <- function(data,

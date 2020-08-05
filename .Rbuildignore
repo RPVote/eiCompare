@@ -1,3 +1,4 @@
+^\.github$
 ^\.pre-commit-config\.yaml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
