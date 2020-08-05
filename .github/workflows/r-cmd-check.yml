@@ -66,8 +66,6 @@ jobs:
           do
             eval sudo $cmd --no-upgrade
           done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
-          # Package 'ei' requires libgfortran
-          sudo apt-get install -y libgfortran3
 
       # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
       - name: Install Package dependencies
