@@ -17,7 +17,7 @@ jobs:
     env:
       RSPM: "https://cloud.r-project.org"
     if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd
-          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
 
       - name: Install dependencies
         run: |
