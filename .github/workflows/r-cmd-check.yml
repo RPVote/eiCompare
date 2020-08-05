@@ -71,8 +71,6 @@ jobs:
 
       - name: Install Package dependencies
         run: |
-      # Workaround if using https://packagemanager.rstudio.com (see https://github.com/r-lib/actions/issues/153)
-      #    install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
