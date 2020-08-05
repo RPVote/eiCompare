@@ -25,8 +25,8 @@ jobs:
           # - {os: macOS-latest,   r: 'release'}
           # - {os: windows-latest, r: 'release'}
           # - {os: windows-latest, r: '3.6'}
-          #- {os: ubuntu-20.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
-          - {os: ubuntu-18.04,   r: 'release', rspm: "https://cloud.r-project.org"}
+          - {os: ubuntu-20.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+          #- {os: ubuntu-18.04,   r: 'release', rspm: "https://cloud.r-project.org"}
           # - {os: ubuntu-16.04,   r: 'oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
           # - {os: ubuntu-16.04,   r: '3.5',     rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
@@ -65,14 +65,14 @@ jobs:
           while read -r cmd
           do
             eval sudo $cmd --no-upgrade
-          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
-          # Additional installs for packages requiring system libraries
+          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
+          # Package 'ei' requires libgfortran
           sudo apt-get install -y libgfortran3
 
       # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
       - name: Install Package dependencies
         run: |
-          install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
+          install.packages("stringi", type="source")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
