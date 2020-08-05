@@ -41,3 +41,6 @@ Now push your changes to github and create a PR from https://github.com/DSSG-eiC
 ```
 git push --set-upstream origin newfeature 
 ```
+
+## Continuous integration
+This project uses [GitHub Actions](https://docs.github.com/en/actions) for continuous integration. Workflows are run for every commit unless the commit message starts with '[skip-ci]'. For example `git commit -a -m "[skip-ci] added section to readme"`.
