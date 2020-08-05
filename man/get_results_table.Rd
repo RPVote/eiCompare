@@ -26,6 +26,10 @@ get_results_table(
 \item{n_race}{Passed through from ei_iter}
 
 \item{n_iter}{Passed through from ei_iter}
+
+\item{add_other}{A boolean. If true, adds an 'other' column to the output 
+when only one race group is included. Generally, set TRUE for ei_iter, FALSE 
+for ei_good.}
 }
 \value{
 a dataframe of results that will work with table comparison funcs.
