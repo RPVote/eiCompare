@@ -23,6 +23,7 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+#' @param verbose A boolean indicating whether to print out status messages.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @importFrom doSNOW registerDoSNOW
@@ -98,6 +99,14 @@ ei_iter <- function(
     stringsAsFactors = FALSE
   )
 
+  # Get seed if seed is null
+  if (is.null(seed)) {
+    seed <- sample(1:10e9, 1)
+    if (verbose) {
+      message(paste("Setting random seed equal to", seed))
+    }
+  }
+
   # Init progressbar
   pb <- utils::txtProgressBar(
     min = 0,
@@ -121,9 +130,7 @@ ei_iter <- function(
     formula <- stats::formula(paste(cand, "~", race), sep = " ")
 
     # Set seed
-    if (!is.null(seed)) {
-      set.seed(seed)
-    }
+    set.seed(seed)
 
     # Run 2x2 ei
     utils::capture.output({
