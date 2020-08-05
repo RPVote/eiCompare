@@ -1,6 +1,7 @@
 # https://github.com/r-lib/actions/tree/master/examples#standard-ci-workflow
-# https://github.com/ITSLeeds/osmextract/blob/master/.github/workflows/R-CMD-check.yaml
 # Run R-CMD-check on Linux, Windows, MacOS on Released and Development verison of R
+name: R-CMD-check
+
 on:
   push:
     branches:
@@ -9,11 +10,9 @@ on:
     branches:
       - master
 
-name: R-CMD-check
-
 jobs:
   R-CMD-check:
-    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -26,12 +25,11 @@ jobs:
           # - {os: macOS-latest,   r: 'release'}
           # - {os: windows-latest, r: 'release'}
           # - {os: windows-latest, r: '3.6'}
-          - {os: ubuntu-18.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+          #- {os: ubuntu-20.04,   r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
+          - {os: ubuntu-18.04,   r: 'release', rspm: "https://cloud.r-project.org"}
           # - {os: ubuntu-16.04,   r: 'oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
           # - {os: ubuntu-16.04,   r: '3.5',     rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
-    # NOTE: RSPM is set to https://cloud.r-project.org by default
-    # https://github.com/r-lib/actions/issues/153
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
@@ -71,10 +69,10 @@ jobs:
           # Additional installs for packages requiring system libraries
           sudo apt-get install -y libgfortran3
 
-      # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
       - name: Install Package dependencies
         run: |
-          install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
+      # Workaround if using https://packagemanager.rstudio.com (see https://github.com/r-lib/actions/issues/153)
+      #    install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
