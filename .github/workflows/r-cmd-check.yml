@@ -73,7 +73,7 @@ jobs:
       # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
       - name: Install Package dependencies
         run: |
-          install.packages("stringi", configure.args="--disable-icu-bundle")
+          install.packages("stringi", type="source", configure.args="--disable-icu-bundle")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
