@@ -1,6 +1,8 @@
 #' Plot bivariate relationships
 #'
 #' @import ggplot2
+#' @importFrom tidyr pivot_longer
+#' @importFrom plyr mutate
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
@@ -25,22 +27,22 @@ plot_bivariate <- function(data, cand_cols, race_cols) {
       names_to = "race",
       values_to = "pct_of_voters"
     ) %>%
-    mutate("candidate_by_race" = paste0(candidate, ", ", race)) %>%
-    ggplot(aes(x = pct_of_voters, y = pct_of_vote)) +
-    geom_point(alpha = 0.5, size = dot_size) +
-    facet_grid(candidate ~ race) + # , nrow = rows, ncol = cols) +
-    scale_x_continuous(
+    plyr::mutate("candidate_by_race" = paste0(candidate, ", ", race)) %>%
+    ggplot2::ggplot(aes(x = pct_of_voters, y = pct_of_vote)) +
+    ggplot2::geom_point(alpha = 0.5, size = dot_size) +
+    ggplot2::facet_grid(candidate ~ race) +
+    ggplot2::scale_x_continuous(
       limits = c(0, 1),
       name = "Race % of Total Turnout",
       expand = c(0.02, 0.02)
     ) +
-    scale_y_continuous(
+    ggplot2::scale_y_continuous(
       limits = c(0, 1),
       name = "Candidate % of Total Votes",
       expand = c(0.02, 0.02)
     ) +
-    theme_bw() +
-    theme(
+    ggplot2::theme_bw() +
+    ggplot2::theme(
       panel.grid.minor = element_blank(),
       axis.title = element_text(face = "bold"),
       panel.spacing = unit(0.5, "lines")

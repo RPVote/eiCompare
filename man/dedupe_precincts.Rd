@@ -10,19 +10,19 @@ dedupe_precincts(data, precinct_id, verbose = TRUE)
 \item{data}{A data.frame() object containing precinct-level turnout data by
 race and candidate}
 
-\item{precinct_id}{The name or index of the column in the data containing 
+\item{precinct_id}{The name or index of the column in the data containing
 unique precinct identifiers.}
 
-\item{verbose}{A boolean. If true, messages are returned describing actions 
+\item{verbose}{A boolean. If true, messages are returned describing actions
 taken by the function.}
 }
 \value{
-A new dataframe without duplicated rows, and (if any) a boolean 
+A new dataframe without duplicated rows, and (if any) a boolean
 column identifying duplicated precincts for further investigation.
 }
 \description{
 Removes any rows in the dataset that are fully duplicated. If necessary, adds
-'duplicates' column indicating where precincts appear duplicated, for manual
+' duplicates' column indicating where precincts appear duplicated, for manual
 inspection by the user
 }
 \author{

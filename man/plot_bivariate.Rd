@@ -17,7 +17,7 @@ each candidate}
 race}
 }
 \value{
-ggplot object with bivariate plots faceted by
+ggplot object with bivariate plots faceted by candidate and race
 }
 \description{
 Plot bivariate relationships

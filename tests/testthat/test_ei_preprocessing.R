@@ -24,6 +24,54 @@ test_that("dedupe_precincts handles cases correctly", {
   expect_equal(output, expected)
 })
 
+test_that("check_missing() handles cases correctly", {
+
+  # Base case, no NAs
+  input <- data.frame(
+    "x" = rep(1, 3),
+    "y" = rep(1, 3),
+    "t" = rep(1, 3)
+  )
+  cand_cols <- c("x")
+  race_cols <- c("y")
+  totals_col <- "t"
+
+  expected <- input
+  output <- check_missing(
+    data = input,
+    cand_cols = cand_cols,
+    race_cols = race_cols,
+    totals_col = totals_col,
+    verbose = FALSE
+  )
+  expect_equal(output, expected)
+
+  # NA in column imputes mean when na_action == "mean"
+  input$y[1] <- NA
+
+  output <- check_missing(
+    data = input,
+    cand_cols = cand_cols,
+    race_cols = race_cols,
+    totals_col = totals_col,
+    na_action = "mean",
+    verbose = FALSE
+  )
+  expect_equal(output, expected)
+
+  # NA in column removes column when na_action == "drop"
+  input$x[1] <- NA
+  expected <- expected[-1, ]
+  output <- check_missing(
+    data = input,
+    cand_cols = cand_cols,
+    race_cols = race_cols,
+    totals_col = totals_col,
+    verbose = FALSE
+  )
+  expect_equal(output, expected)
+})
+
 
 test_that("standardize_votes() returns correct results", {
   votes <- empty_ei_df(2, 0, 2)

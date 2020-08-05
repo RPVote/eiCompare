@@ -54,6 +54,95 @@ duplicates...")
   return(data)
 }
 
+#' Remove / Fill NAs in an EI dataset
+#'
+#' @param data A data.frame() object containing precinct-level turnout data by
+#' race and candidate
+#' @param cand_cols A character vector listing the column names for turnout for
+#' each candidate
+#' @param race_cols A character vector listing the column names for turnout by
+#' race
+#' @param totals_col The name of the column containing total votes cast in each
+#' precinct
+#' @param na_action A string indicating how to handle missing values in EI
+#' columns. Possible values are "drop" and "mean". "drop" drops all observations
+#' where variables are missing. "mean" imputes missing values as the mean of the
+#' column
+#' @param verbose A boolean indicating whether to return messages throughout the
+#' function.
+check_missing <- function(
+                          data,
+                          cand_cols,
+                          race_cols,
+                          totals_col,
+                          na_action = "drop",
+                          verbose = TRUE) {
+  cols <- c(cand_cols, race_cols, totals_col)
+
+  # If "drop" selected
+  if (na_action == "drop") {
+    n_rows <- nrow(data)
+
+    # Drop rows with NAs in any necessary column
+    data <- data[rowSums(is.na(data[, cols])) == 0, ]
+    n_rows_new <- nrow(data)
+    n_dropped <- n_rows - n_rows_new
+    if (verbose) {
+      if (n_dropped == 0) {
+        message(
+          "No missing values in key columns. Returning original dataframe..."
+        )
+      } else {
+        message(
+          paste(
+            "Removing", n_dropped, "rows with missing values in key columns..."
+          )
+        )
+      }
+    }
+
+    # If "mean" selected
+  } else if (na_action == "mean") {
+    ei_data <- data[, cols]
+    n_missing <- 0
+
+    for (i in 1:ncol(ei_data)) {
+      missing <- is.na(ei_data[, i])
+
+      # Update counter
+      n_missing <- n_missing + sum(missing)
+
+      # Replace missings with column mean
+      ei_data[missing, i] <- mean(ei_data[, i], na.rm = TRUE)
+    }
+
+    # Put imputed data back into dataset
+    data[, cols] <- ei_data
+
+    if (verbose) {
+      if (n_missing == 0) {
+        message(
+          "No missing values in key columns. Returning original dataframe..."
+        )
+      } else {
+        message(
+          paste(
+            "Imputing", n_missing, "missing values across key columns..."
+          )
+        )
+      }
+    }
+  } else {
+    stop(
+      paste(
+        "Invalid entry for na_action parameter.\nEnter either",
+        '"drop" or "mean"'
+      )
+    )
+  }
+  return(data)
+}
+
 
 #' Internal function that checks for adequate closeness between sums
 #' of race/candidate columns and provided vote totals.
