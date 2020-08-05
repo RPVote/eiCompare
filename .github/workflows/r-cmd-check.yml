@@ -30,9 +30,11 @@ jobs:
           # - {os: ubuntu-16.04,   r: 'oldrel',  rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
           # - {os: ubuntu-16.04,   r: '3.5',     rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
+    # NOTE: RSPM is set to https://cloud.r-project.org by default
+    # https://github.com/r-lib/actions/issues/153
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      #RSPM: ${{ matrix.config.rspm }}
+      RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
@@ -51,15 +53,14 @@ jobs:
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
 
-      # - name: Cache R packages
-      #   if: runner.os != 'Windows'
-      #   uses: actions/cache@v1
-      #   with:
-      #     path: ${{ env.R_LIBS_USER }}
-      #     key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-      #     restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+      - name: Cache R packages
+        if: runner.os != 'Windows'
+        uses: actions/cache@v1
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      # Added --no-upgrade in case libraries already loaded on GitHub Runner
       - name: Install System dependencies
         if: runner.os == 'Linux'
         run: |
@@ -67,15 +68,13 @@ jobs:
           do
             eval sudo $cmd --no-upgrade
           done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "18.04"), sep = "\n")')
-          # Additional installs for packages requiring linked libraries
+          # Additional installs for packages requiring system libraries
           sudo apt-get install -y libgfortran3
 
       # stringi needs special treatment on CI https://github.com/gagolews/stringi/issues/238
       - name: Install Package dependencies
         run: |
-          #still installs binary... bug?
-          #install.packages("stringi", type="source", configure.args="--disable-icu-bundle")
-          #remotes::install_cran("stringi", build_opts="--disable-icu-bundle")
+          install.packages("stringi", type="source", repos="https://cran.rstudio.com", configure.args="--disable-icu-bundle")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
