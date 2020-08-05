@@ -297,8 +297,10 @@ stdize_votes <- function(data,
     } else if (closeness == 1) {
       if (verbose) {
         message(
-          "Vote sums deviate from totals.\nDeviations are minor. 
-          Restandardizing vote columns..."
+          paste(
+            "Vote sums deviate from totals.\nDeviations are minor.",
+            "Restandardizing vote columns..."
+          )
         )
       }
       proportions <- standardize_votes(votes)
@@ -308,8 +310,10 @@ stdize_votes <- function(data,
       return(proportions)
     } else if (closeness == 0) {
       warning(
-        "Precinct vote sums are too far from totals.\n  
-        Returning boolean column identifying problematic rows..."
+        paste(
+          "Precinct vote sums are too far from totals.\n",
+          "Returning boolean column identifying problematic rows..."
+        )
       )
       return(data.frame("deviates" = diff_check$deviates))
     }
@@ -388,8 +392,12 @@ stdize_votes_all <- function(data,
     cand_totals_col <- totals_col
     race_totals_col <- totals_col
   } else {
-    stop("You must either define a totals column with totals_col, 
-       or set totals_from equal to 'cand' or 'race'")
+    stop(
+      paste(
+        "You must either define a totals column with totals_col,\n",
+        "or set totals_from equal to 'cand' or 'race'"
+      )
+    )
   }
 
   # If ignore devs, set to Inf to pass checks
