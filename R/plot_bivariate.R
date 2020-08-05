@@ -2,7 +2,6 @@
 #'
 #' @import ggplot2
 #' @importFrom tidyr pivot_longer
-#' @importFrom plyr mutate
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
@@ -18,7 +17,7 @@ plot_bivariate <- function(data, cand_cols, race_cols) {
   cols <- length(race_cols)
   rows <- length(cand_cols)
   dot_size <- min(4 / log(cols * rows), 3)
-  data %>%
+  data_for_plot <- data %>%
     tidyr::pivot_longer(
       cand_cols,
       names_to = "candidate",
@@ -28,9 +27,11 @@ plot_bivariate <- function(data, cand_cols, race_cols) {
       race_cols,
       names_to = "race",
       values_to = "pct_of_voters"
-    ) %>%
-    plyr::mutate("candidate_by_race" = paste0(candidate, ", ", race)) %>%
-    ggplot2::ggplot(aes(x = pct_of_voters, y = pct_of_vote)) +
+    )
+  ggplot2::ggplot(
+    data = data_for_plot,
+    aes(x = pct_of_voters, y = pct_of_vote)
+  ) +
     ggplot2::geom_point(alpha = 0.5, size = dot_size) +
     ggplot2::facet_grid(candidate ~ race) +
     ggplot2::scale_x_continuous(
