@@ -54,7 +54,7 @@ duplicates...")
   return(data)
 }
 
-#' Remove / Fill NAs in an EI dataset
+#' Remove / Impute NAs in an EI dataset
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
@@ -70,6 +70,8 @@ duplicates...")
 #' column
 #' @param verbose A boolean indicating whether to return messages throughout the
 #' function.
+#'
+#' @export
 check_missing <- function(
                           data,
                           cand_cols,
