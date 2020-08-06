@@ -88,7 +88,6 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
     cand_comb <- utils::combn(cands, 2)
 
     # Make density plot for each pair
-    print(race[k])
     for (m in 1:ncol(cand_comb)) {
       od_plot_create(
         race = race[k], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
