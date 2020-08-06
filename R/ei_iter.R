@@ -90,7 +90,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  # args_pass <- list(...)
+  args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -165,11 +165,7 @@ ei_iter <- function(
     # Plots to be added here
     if (plots) {
       # Create tomography plots
-<<<<<<< HEAD
       grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
-=======
-      png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
->>>>>>> Improving and cleaning plotting functions
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
@@ -180,11 +176,7 @@ ei_iter <- function(
       grDevices::dev.off()
 
       # Create denity plots
-<<<<<<< HEAD
       grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
-=======
-      png(paste0(plot_path, "density_", cand, "_", race, ".png"),
->>>>>>> Improving and cleaning plotting functions
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
@@ -239,8 +231,6 @@ ei_iter <- function(
     # Sabe out aggs
     aggs_b <- eiread(ei_out, "aggs")
 
-    # Sabe out aggs
-    aggs_b <- eiread(ei_out, "aggs")
 
     setTxtProgressBar(pb, i)
 
@@ -277,7 +267,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-<<<<<<< HEAD
+
 
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
@@ -293,10 +283,6 @@ ei_iter <- function(
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
-=======
-    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
-    density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
->>>>>>> formatting
   }
 
 
