@@ -1,4 +1,5 @@
 #' EI iterative estimation via Goodman's Regression
+#'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
@@ -21,8 +22,7 @@ ei_good <- function(
                     data,
                     cand_cols,
                     race_cols,
-                    totals_col,
-                    ...) {
+                    totals_col) {
   # Check for valid arguments
   check_args(data, cand_cols, race_cols, totals_col)
 
@@ -59,7 +59,7 @@ ei_good <- function(
     formula <- stats::formula(paste(cand, "~", race, "+", totals_col), sep = " ")
 
     # Estimate linear model
-    res <- stats::glm(data = data, formula = formula) # , ...)
+    res <- stats::glm(data = data, formula = formula)
 
     # Compute vote pct from coefficients
     vote_pct <- sum(stats::coef(res)[1:2])
@@ -79,7 +79,8 @@ ei_good <- function(
     # Compute with and without covariance term
 
     # SE on sum of coefficients = sqrt(SE1^2 + SE2^2 + 2COV(1,2))
-    se <- sqrt(ses[1]^2 + ses[2]^2 + 2 * vcov(res)[1, 2])
+    # Omit the 2COV(1,2) term because covariance here is spurious
+    se <- sqrt(ses[1]^2 + ses[2]^2)
 
     # Create dataframe of results
     # This is set up to match the procedure in ei_iter()
@@ -96,8 +97,13 @@ ei_good <- function(
 
   # Print warning if estimates were bounded
   if (bounded != 0) {
-    warning(paste(bounded, "estimate(s) exceeded the (0,1) bounds. They have 
-been forced down to the bounds"))
+    warning(
+      paste(
+        bounded,
+        "estimate(s) exceeded the (0,1) bounds. They have been forced down to the",
+        "bounds"
+      )
+    )
   }
 
   # Put results in dataframe

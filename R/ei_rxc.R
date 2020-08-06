@@ -19,7 +19,11 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
+#' @param seed A numeric seed value for replicating estimate results across
+#' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
+#' @param verbose A boolean indicating whether to print out status messages.
+#' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
@@ -48,6 +52,7 @@ ei_rxc <- function(
                    ci_size = 0.95,
                    seed = NULL,
                    ret_mcmc = FALSE,
+                   verbose = FALSE,
                    ...) {
 
   # Check for valid arguments
@@ -65,8 +70,16 @@ ei_rxc <- function(
   # Set seed
   if (!is.null(seed)) {
     set.seed(seed)
+  } else {
+    seed <- sample(1:10e9, 1)
+    if (verbose) {
+      message(paste("Setting random seed equal to", seed, "..."))
+    }
   }
 
+  if (verbose) {
+    message("Tuning parameters...")
+  }
   # Tune MCMC
   suppressWarnings(
     tune_nocov <- tuneMD(
@@ -74,11 +87,14 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws # ,
-      # ...
+      totaldraws = totaldraws,
+      ...
     )
   )
 
+  if (verbose) {
+    message("Collecting samples...")
+  }
   # Bayes model estimation
   suppressWarnings(
     md_out <- ei.MD.bayes(
@@ -89,8 +105,8 @@ ei_rxc <- function(
       thin = thin,
       burnin = burnin,
       ret.mcmc = TRUE,
-      tune.list = tune_nocov # ,
-      # ...
+      tune.list = tune_nocov,
+      ...
     )
   )
 
@@ -113,6 +129,11 @@ ei_rxc <- function(
   # Get upper, lower CI limits
   ci_lower <- (1 - ci_size) / 2
   ci_upper <- 1 - ci_lower
+
+  if (verbose) {
+    message(paste("Setting CI lower bound equal to", ci_lower))
+    message(paste("Setting CI upper bound equal to", ci_upper))
+  }
 
   # Get point estimates and credible interval bounds
   estimate <- mcmcse::mcse.mat(chains_pr)

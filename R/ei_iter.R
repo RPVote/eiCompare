@@ -17,8 +17,8 @@
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
-#' @param seed A numeric seed value for replicating estimate results across runs
-#' . Defaulted to NULL.
+#' @param seed A numeric seed value for replicating estimate results across
+#' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
@@ -50,10 +50,11 @@ ei_iter <- function(
                     plots = FALSE,
                     betas = FALSE,
                     par_compute = FALSE,
+                    verbose = FALSE,
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
-  if (par_compute == TRUE) {
+  if (par_compute) {
     # Detect the number of cores you have
     parallel::detectCores()
 
@@ -206,7 +207,7 @@ ei_iter <- function(
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
 
-  if (par_compute == TRUE) {
+  if (par_compute) {
     # Stop clusters (always done between uses)
     parallel::stopCluster(clust)
     # Garbage collection (in case of leakage)

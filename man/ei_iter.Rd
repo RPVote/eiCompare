@@ -14,6 +14,7 @@ ei_iter(
   plots = FALSE,
   betas = FALSE,
   par_compute = FALSE,
+  verbose = FALSE,
   ...
 )
 }
@@ -32,8 +33,8 @@ precinct}
 
 \item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
 
-\item{seed}{A numeric seed value for replicating estimate results across runs
-. Defaulted to NULL.}
+\item{seed}{A numeric seed value for replicating estimate results across 
+runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{plots}{A boolean indicating whether or not to include density and
 tomography plots}
@@ -41,6 +42,8 @@ tomography plots}
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{par_compute}{A boolean to conduct ei using parallel processing}
+
+\item{verbose}{A boolean indicating whether to print out status messages.}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }

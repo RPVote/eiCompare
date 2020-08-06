@@ -4,7 +4,7 @@
 \alias{ei_good}
 \title{EI iterative estimation via Goodman's Regression}
 \usage{
-ei_good(data, cand_cols, race_cols, totals_col, ...)
+ei_good(data, cand_cols, race_cols, totals_col)
 }
 \arguments{
 \item{data}{A data.frame() object containing precinct-level turnout data by
