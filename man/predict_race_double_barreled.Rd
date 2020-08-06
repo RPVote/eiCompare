@@ -6,21 +6,21 @@
 certain race by averaging over each "barrel" of the surname.}
 \usage{
 predict_race_double_barreled(
-  df,
+  voter_file,
   surname_col = "last_name",
   surname_only = TRUE,
   pattern = "[ -]+"
 )
 }
 \arguments{
+\item{voter_file}{The voter file, with each row consisting of a voter.}
+
 \item{surname_col}{A string denoting the surname column.}
 
 \item{surname_only}{Whether to obtain probabilities for surnames only.}
 
 \item{pattern}{What pattern to split surnames on. By default, surnames are
 split on a space(s), which assumes hyphens have already been removed.}
-
-\item{voter_file}{The voter file, with each row consisting of a voter.}
 }
 \value{
 A vector of probabilities for each surname.

@@ -78,6 +78,7 @@ get_special_character_surnames <- function(voter_file,
 #' @param surname_col A string denoting the surname column.
 #' @param regex A string denoting the regular expression to use for denoting the
 #'   the special characters.
+#' @param replace The replacement string for special characters.
 #' @return A dataframe of voters whose surname column is stripped of special
 #'  characters.
 #'
@@ -210,11 +211,14 @@ surname_summary <- function(voter_file, surname_col) {
 #' @return A vector of probabilities for each surname.
 #'
 #' @export predict_race_double_barreled
-predict_race_double_barreled <- function(df,
+predict_race_double_barreled <- function(voter_file,
                                          surname_col = "last_name",
                                          surname_only = TRUE,
                                          pattern = "[ -]+") {
-  surnames <- stringr::str_split(df[[surname_col]], pattern = pattern)[[1]]
+  surnames <- stringr::str_split(
+    voter_file[[surname_col]],
+    pattern = pattern
+  )[[1]]
   surnames <- data.frame(surname = surnames)
 
   if (surname_only) {

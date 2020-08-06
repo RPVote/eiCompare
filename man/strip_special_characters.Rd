@@ -18,6 +18,8 @@ strip_special_characters(
 
 \item{regex}{A string denoting the regular expression to use for denoting the
 the special characters.}
+
+\item{replace}{The replacement string for special characters.}
 }
 \value{
 A dataframe of voters whose surname column is stripped of special
