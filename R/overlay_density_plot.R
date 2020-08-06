@@ -3,11 +3,7 @@
 #' Internal
 #'
 #' @param betas Output for RxC and iterative ei
-<<<<<<< HEAD
 #' @param plot_path Path to save
-=======
-#' @param path Path to save
->>>>>>> Updated input for overlay_denisty_plot call
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
