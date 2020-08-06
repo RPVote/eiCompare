@@ -28,7 +28,6 @@ Imports:
   msm,
   mvtnorm,
   plotrix,
-  plyr,
   purrr,
   R.utils,
   RCurl,
