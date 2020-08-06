@@ -4,10 +4,13 @@
 \alias{standardize_votes}
 \title{Computes proportions for returning by clean_race and clean_cand}
 \usage{
-standardize_votes(votes)
+standardize_votes(votes, new_names = FALSE)
 }
 \arguments{
 \item{votes}{A dataframe of raw votes by race or candidates}
+
+\item{new_names}{A boolean indicating whether to return cand and race columns
+with the same names. If FALSE, names returned with "_prop" added on.}
 }
 \value{
 A dataframe of standardized proportions whose columns sum rowwise to
