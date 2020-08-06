@@ -84,7 +84,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  # args_pass <- list(...)
+  args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -220,9 +220,19 @@ ei_iter <- function(
     precinct_res <- cbind(res$betab, res$betaw)
     colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
 
+    # Sabe out aggs
+    aggs_b <- eiread(ei_out, "aggs")
+
     setTxtProgressBar(pb, i)
 
-    list(district_res, precinct_res)
+    list(district_res, precinct_res, aggs_b)
+  }
+
+  if (par_compute == TRUE) {
+    # Stop clusters (always done between uses)
+    parallel::stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
   }
 
   # close progress bar
@@ -231,13 +241,8 @@ ei_iter <- function(
   # Separate out district level summary and precinct level results
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
+  agg_results <- sapply(ei_results, function(x) x[3])
 
-  if (par_compute) {
-    # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
-  }
 
   # Put results in dataframe
   results_table <- get_results_table(
@@ -253,8 +258,17 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
-    density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
+
+    # Combine aggregate results for district level values into one data frame
+    race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
+    race_cand_combined <- rep(race_cand_combined, each = 2)
+    agg_colnames <- as.vector(sapply(agg_results, function(x) colnames(x)))
+    new_colnames <- paste(tolower(agg_colnames), race_cand_combined, sep = "_")
+
+    agg_betas <- data.frame(do.call(cbind, agg_results))
+    colnames(agg_betas) <- new_colnames
+
+    density_plots <- overlay_density_plot(agg_betas, plot_path, ei_type = "ei")
   }
 
 
