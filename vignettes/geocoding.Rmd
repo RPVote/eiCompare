@@ -1,0 +1,53 @@
+---
+title: "Geocoding: Voter Addresses"
+author: 
+date: "8/4/2020"
+output: html_document
+---
+
+
+## What is Geocoding?
+
+One of the first steps to performing ecological inference using eiCompare is geocoding your voter file addresses in order to perform Bayesian Improved Surname Geocoding (BISG).  Geocoding is the process of using an address or place of location to find geocographic coordinates (i.e. latitude/longitude) of that location on a map. In relation to performing BISG, the values of the geographic coordinates are compared to other census data containing self-reported race and ethnicity to determine the likelihood of an individual living in an ecological unit area (i.e. county, block, tract) being of a certain race given their address. BISG then uses this information to produce a prior probability and updates the prior probability by calculating the liklihood of the individual being of a certain race given their surname. 
+
+Below are some steps to help you walk through the process of performing geocoding on your voter file. 
+
+### Step 1: Load R libraries/packages
+Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
+```{r}
+# Load libraries
+suppressMessages(
+  c(
+    library(stringr), # US Census geocoding API package for R
+    library(readr), # for loading csv file
+    library(tidyverse), # for making a tibble from a dataframe,
+    library(foreach),
+    library(parallel),
+    library(doParallel),
+    library(data.table),
+    library(stringr)
+  )
+)
+```
+
+### Step 2: Load your voter data.
+We are using the East Ramapo dataset and geocoding all voter addresses.
+
+
+### Step 3: Prepare/Structure your voter data for geocoding.
+
+
+### Step 4: Select a geocoder and run the geocoder on the addresses in your file.
+
+Select the geocoder you are going to use to find the coordinates (i.e. latitude and longitude) for the addresses in the voter file. 
+
+Note: If you have more than 10000 voters in yoru file, we recommedn using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.
+We recommend first geocoding your data with the US Census Geocoder API via the R package, censusxy. 
+
+
+### Step 5: Re-run the geocoder on missing geocoded addresses.
+
+Determine if there are any missing geocoded addresses and re-run the geocoder on those missing geocoded addresses. Then, join the missing data back with the original voter file.
+
+
+### Step 6: Save your geocoded file 
