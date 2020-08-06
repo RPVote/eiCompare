@@ -88,8 +88,12 @@ overlay_density_plot <- function(betas, path, ei_type) {
     cand_comb <- utils::combn(levels(dens_data$Candidate), 2)
 
     # Make density plot for each pair
-    dens_plots <- foreach::foreach(m = seq(1:ncol(cand_comb)), .inorder = FALSE) %do% {
-      od_plot_create(m, i, race, cand_comb, dens_data, out, path, cand_colors)
+    dens_plots <- foreach::foreach(m = seq(1:ncol(cand_comb)), .inorder = FALSE, .verbose = TRUE) %do% {
+      print(c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]))
+      od_plot_create(
+        race = race[i], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
+        dens_data, out, path, cand_colors
+      )
     }
 
     setTxtProgressBar(pb, i)

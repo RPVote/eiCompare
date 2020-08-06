@@ -144,7 +144,7 @@ ei_iter <- function(
     # Plots to be added here
     if (plots) {
       # Create tomography plots
-      png(paste0(path, "tomography_", cand, "_", race, ".png"),
+      png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
@@ -154,7 +154,7 @@ ei_iter <- function(
       dev.off()
 
       # Create denity plots
-      png(paste0(path, "density_", cand, "_", race, ".png"),
+      png(paste0(plot_path, "density_", cand, "_", race, ".png"),
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
