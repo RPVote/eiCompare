@@ -161,7 +161,6 @@ ei_iter <- function(
     if (plots) {
       # Create tomography plots
       grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
-
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
@@ -173,7 +172,6 @@ ei_iter <- function(
 
       # Create denity plots
       grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
-
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
