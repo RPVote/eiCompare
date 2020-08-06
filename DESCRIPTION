@@ -35,39 +35,18 @@ Imports:
   sf,
   sjmisc,
   stringr,
-<<<<<<< HEAD
-<<<<<<< HEAD
   tidyr,
   tidyselect,
   tmvtnorm,
   ucminf,
   wru
-=======
-=======
->>>>>>> integrate overlays and pass R CMD
-  sf,
-  mcmcse,
-  doParallel,
-  doSNOW,
-<<<<<<< HEAD
->>>>>>> Updated for roxygen2 pass
   purrr,
   overlapping
-=======
-  purrr,
->>>>>>> integrate overlays and pass R CMD
 NeedsCompilation: no
 Suggests:
   knitr,
   rmarkdown,
-<<<<<<< HEAD
-<<<<<<< HEAD
   testthat
-=======
->>>>>>> Updated for roxygen2 pass
-=======
-  overlapping,
->>>>>>> integrate overlays and pass R CMD
   RColorBrewer,
   reshape2,
   dplyr

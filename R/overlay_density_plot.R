@@ -95,6 +95,11 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   # close progress bar
   close(pb)
 
+<<<<<<< HEAD
 
   return(dens_plots)
+=======
+  # Change functionalist to return plots later if needed
+  # return(dens_plots)
+>>>>>>> Updated for roxygen2 pass
 }
