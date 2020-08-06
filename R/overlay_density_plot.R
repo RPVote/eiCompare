@@ -14,7 +14,7 @@
 #'
 #' # EXAMPLE: NOT RUN #
 #' @export
-utils::globalVariables(c("m", "k"))
+utils::globalVariables(c("m", "k", "%do%"))
 
 overlay_density_plot <- function(betas, plot_path, ei_type) {
   if (tolower(ei_type) == "ei") {
@@ -100,5 +100,6 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
   # close progress bar
   close(pb)
 
-  return(dens_plots)
+  # Change functionalist to return plots later if needed
+  # return(dens_plots)
 }

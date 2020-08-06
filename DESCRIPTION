@@ -39,12 +39,12 @@ Imports:
   mcmcse,
   doParallel,
   doSNOW,
-  purrr
+  purrr,
+  overlapping
 NeedsCompilation: no
 Suggests:
   knitr,
   rmarkdown,
-  overlapping,
   RColorBrewer,
   reshape2,
   dplyr
