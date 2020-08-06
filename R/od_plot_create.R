@@ -23,15 +23,15 @@
 utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))
 
 
-od_plot_create <- function(race, cand_comb, dens_data, out, path = "", cand_colors) {
+od_plot_create <- function(race, cand_comb, dens_data, out, plot_path = "", cand_colors) {
   # Omit NAs and subset both density data and summmary table
-  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% cand_comb, ])
-  out_sub <- out[out$Candidate %in% cand_comb, ]
+  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_comb), ])
+  out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_comb), ]
 
   # Calculate overlap
   overlap_list <- list(
-    X1 = dens_data_sub[dens_data_sub$Candidate == cand_comb[1], "value"],
-    X2 = dens_data_sub[dens_data_sub$Candidate == cand_comb[2], "value"]
+    X1 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_comb[1]), "value"],
+    X2 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_comb[2]), "value"]
   )
   overlap_out <- overlapping::overlap(overlap_list, plot = FALSE)
   # Extract overlap percentage
@@ -40,16 +40,19 @@ od_plot_create <- function(race, cand_comb, dens_data, out, path = "", cand_colo
   overlap_point <- overlap_out$xpoints$`X1-X2`[[1]]
 
   # colors
-  cols <- c(cand_colors[cand_comb[1]], cand_colors[cand_comb[2]])
-  names(cols) <- c(cand_comb[1], cand_comb[2])
+  cols <- c(
+    cand_colors[gsub("pct_", "", cand_comb[1])],
+    cand_colors[gsub("pct_", "", cand_comb[2])]
+  )
+  names(cols) <- c(gsub("pct_", "", cand_comb[1]), gsub("pct_", "", cand_comb[2]))
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
     scale_fill_manual(values = cols) +
     # Add titles
     ggplot2::ggtitle(paste0(
-      cand_comb[1], " vs ",
-      cand_comb[2], " for ",
+      gsub("pct_", "", cand_comb[1]), " vs ",
+      gsub("pct_", "", cand_comb[2]), " for ",
       gsub("pct_", "", race), " voters (overlap: ",
       round(overlap_perc, 2), "%)"
     )) +
@@ -116,7 +119,7 @@ od_plot_create <- function(race, cand_comb, dens_data, out, path = "", cand_colo
 
   # Save out to user designated path
   ggplot2::ggsave(paste0(
-    path, cand_comb[[1]], "_", cand_comb[[2]], "_",
+    plot_path, cand_comb[1], "_", cand_comb[2], "_",
     gsub("pct_", "", race), ".png"
   ), height = 4, width = 6)
 
