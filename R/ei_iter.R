@@ -86,7 +86,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  args_pass <- list(...)
+  # args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
