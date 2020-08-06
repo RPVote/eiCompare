@@ -33,7 +33,7 @@ precinct}
 
 \item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
 
-\item{seed}{A numeric seed value for replicating estimate results across 
+\item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{plots}{A boolean indicating whether or not to include density and

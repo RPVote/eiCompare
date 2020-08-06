@@ -51,7 +51,7 @@ discarded, defaulted to 10000}
 \item{ci_size}{Numeric desired probability within the upper and lower
 credible-interval bounds, defaulted to 0.95}
 
-\item{seed}{A numeric seed value for replicating estimate results across 
+\item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{ret_mcmc}{Boolean. If true, the full sample chains are returned}
