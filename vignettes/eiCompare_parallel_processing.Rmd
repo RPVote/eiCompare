@@ -18,7 +18,7 @@ devtools::install_github("DSSG-eiCompare/eiCompare@density_visualization")
 # install.packages('eiCompare')
 library(eiCompare)
 
-# library(eiCompare)
+
 # Import corona data that is already included in the package
 data("corona")
 ```
