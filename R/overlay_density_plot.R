@@ -4,7 +4,7 @@
 #'
 #' @param betas Output for RxC and iterative ei
 #' @param path Path to save
-#' @param ei_type
+#' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
@@ -17,14 +17,16 @@
 utils::globalVariables(c("m"))
 
 overlay_density_plot <- function(betas, path, ei_type) {
-  if (ei_type == "ei") {
+  if (tolower(ei_type) == "ei") {
     race <- unique(stringr::str_match(names(betas), "beta[bw]_([a-z_]*)_pct")[, 2])
     cands <- unique(stringr::str_match(names(betas), "beta[bw]_[a-z_]*_(pct_[a-z]*)")[, 2])
     # Extract beta bs
     betas <- betas[, grep("betab", colnames(betas))]
-  } else if (ei_type == "rxc") {
+  } else if (tolower(ei_type) == "rxc") {
     race <- unique(stringr::str_match(names(betas), ".*\\.([a-z_]*)\\..*")[, 2])
     cands <- unique(stringr::str_match(names(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
+  } else {
+    stop("Specify ei_type as ei or rxc")
   }
 
   # Designate colors for each candidate

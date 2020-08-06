@@ -257,7 +257,8 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-    density_plots <- overlay_density_plot(betas_ei, plot_path, ei_type = "ei")
+    df_betas <- data.frame(betas_for_return(precinct_results, race_cand_pairs))
+    density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
   }
 
 
