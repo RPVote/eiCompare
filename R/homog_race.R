@@ -1,18 +1,41 @@
-# Function: homog_race #
-# Loren Collingwood, alpha version for eiCompare v2.5
-# loren.collingwood@ucr.edu; loren.collingwood@gmail.com
-# with input from Stephen Popick, stephenpopick@gmail.com 
+#' Homogeneous Precinct Analysis
+#'
+#' Creates matrix table of homogeneous precinct analysis results
+#' 
+#' homog_race
+#'
+#' @param x precinct-level dataset
+#' @param r character vector for race column names
+#' @param cands character vector for candidate column names
+#' @param total "character vector indicating precinct total column name
+#' @param cp numeric; homogeneous precinct cut-point, e.g., 0.80; default = 0.80
+#' @warn_row = threshold number of precincts necessary to conduct analysis; default = 5
+#' All racial groups need to have at least n number of precincts at or above warn_row level
+#' or error will be thrown.
+#' @return matrix with results
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; <loren.collingwood@@gmail.com>
+#' @author Stephen Popick
+#' @examples
+#' # Toy data example
+#' cand_a <- c( rep(.8, 10), rep(.2, 10))
+#' cand_b <- 1 - cand_a
+#' white <- c(rep(.7, 5), rep(.85, 5), rep(.1, 5), rep(.05, 5))
+#' black <- 1 - white
+#' total <- c ( rep(200, 5), rep(100, 5), rep(80, 5), rep(300, 5) )
+#' toy <- data.frame(cand_a, cand_b, white, black, total)
+#'
+#' # Create vectors for iterative EI function
+#' cands <- c("cand_a", "cand_b)
+#' 
+#' homog_race(x = toy,
+#'            r = c("white", "black"),
+#'            cands = c("cand_a", "cand_b"),
+#'            total = "total")
+#'
+#' @export homog_race
 
-# Goal: Conducts homogeneous analysis for multiple racial groups and candidates #
-# Function Params #
-# @ x = dataset; includes candidate percents; race; total vote by precinct
-# @ r = character vector for race column names
-# @ cands = character vector for candidate column names
-# @ cp = numeric; homogeneous threshold
-# @ warn_row = threshold number of precincts necessary to conduct analysis; 
-#   stops if not greater than this threshold for any of the racial groups
 
-homog_race <- function(x, r, cands, total, cp = 0.80, warn_row = 10) {
+homog_race <- function(x, r, cands, total, cp = 0.80, warn_row = 5) {
     
     # Set up Return Matrix #
     
@@ -49,20 +72,3 @@ homog_race <- function(x, r, cands, total, cp = 0.80, warn_row = 10) {
     return(mat_hold)
     
 }
-
-# Example from SMR data #
-
-#homog_race(x = lac_10,
-#           r = c("pct_latino", "pct_other"),
-#           cands = c("pct_delatorre", "pct_jones"),
-#           total = "votescast",
-#           cp = .90)
-
-# When at least one of the groups pct_X at .80 or higher has fewer than 10 rows
-# you'll get thrown an error and then lower the threshold.
-
-#homog_race(x = oc_12,
-#           r = c("pct_latino", "pct_asian", "pct_white"),
-#           cands = cands,
-#           total = "tot_vote",
-#           cp = .70)
