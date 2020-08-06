@@ -27,7 +27,8 @@
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @importFrom doSNOW registerDoSNOW getDoParWorkers foreach
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -42,7 +43,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
-utils::globalVariables(c("`%dopar%`", "`%do%`", "i"))
+utils::globalVariables(c("%dopar%", "%do%", "i"))
 
 ei_iter <- function(
                     data,
@@ -160,24 +161,24 @@ ei_iter <- function(
     # Plots to be added here
     if (plots) {
       # Create tomography plots
-      png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
+      grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-      dev.off()
+      grDevices::dev.off()
 
       # Create denity plots
-      png(paste0(plot_path, "density_", cand, "_", race, ".png"),
+      grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-      dev.off()
+      grDevices::dev.off()
     }
 
     # Extract mean, standard error for each precinct and district-wide
