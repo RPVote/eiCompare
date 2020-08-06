@@ -14,7 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-devtools::install_github("DSSG-eiCompare/eiCompare@master")
+devtools::install_github("DSSG-eiCompare/eiCompare@density_visualization")
+# install.packages('eiCompare')
 library(eiCompare)
 
 data("corona")
