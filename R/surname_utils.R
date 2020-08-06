@@ -12,9 +12,9 @@
 #' @export get_word_count
 #' @importFrom stringr str_count
 get_word_count <- function(voter_file,
-                           col = "last_name",
+                           surname_col = "last_name",
                            regex = "[ -]+") {
-  word_count <- 1 + stringr::str_count(voter_file[[col]], regex)
+  word_count <- 1 + stringr::str_count(voter_file[[surname_col]], regex)
   return(word_count)
 }
 
@@ -28,17 +28,22 @@ get_word_count <- function(voter_file,
 #'
 #' @param voter_file The voter file, with each row consisting of a voter.
 #' @param surname_col A string denoting the surname column.
-#' @param regex A string denoting the regular expression to use for querying the
-#'   the special characters.
+#' @param regex A string denoting the regular expression to use for identifying
+#'  non-special characters (by default, alphabetic characters).
 #' @return A vector of unique special characters found in the names.
 #'
 #' @export get_unique_special_characters
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_c str_replace_all str_split
 get_unique_special_characters <- function(voter_file,
                                           surname_col = "last_name",
-                                          regex = "[^A-Za-z]") {
-  special_surnames <- stringr::str_extract(voter_file[[surname_col]], regex)
-  characters <- unique(special_surnames)
+                                          regex = "[A-Za-z]") {
+  # Replace all alphabetic characters with empty strings
+  characters <- stringr::str_replace_all(voter_file[[surname_col]], regex, "")
+  # Combine all strings together
+  characters <- stringr::str_c(characters, collapse = "")
+  # Split up by individual character, taking unique ones
+  characters <- stringr::str_split(characters, pattern = "")[[1]]
+  characters <- sort(unique(characters))
   return(characters)
 }
 
@@ -55,7 +60,7 @@ get_unique_special_characters <- function(voter_file,
 #' @return A dataframe of voters whose surname has special characters.
 #'
 #' @export get_special_character_surnames
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_detect
 get_special_character_surnames <- function(voter_file,
                                            surname_col = "last_name",
                                            regex = "[^A-Za-z]") {
@@ -92,24 +97,28 @@ strip_special_characters <- function(voter_file,
 }
 
 
-#' Gets double-barreled surnames from a voter file.
+#' Gets multi-barreled surnames from a voter file.
 #'
-#' A double-barreled surname is one containing a dash or a space. This function
-#' finds all double-barreled surnames in a voter file.
+#' A multi-barreled surname is one containing a dash or a space. This function
+#' finds all multi-barreled surnames in a voter file.
 #'
 #' @param voter_file The voter file, with each row consisting of a voter.
 #' @param surname_col A string denoting the surname column.
 #' @param regex A string denoting the regular expression to use for denoting the
 #'   the special characters.
-#' @return A dataframe of voters whose surnames are double-barreled.
+#' @return A dataframe of voters whose surnames are multi-barreled.
 #'
-#' @export get_double_barreled_surnames
+#' @export get_multi_barreled_surnames
+#' @importFrom dplyr filter
 #' @importFrom stringr str_detect
-get_double_barreled_surnames <- function(voter_file,
-                                         surname_col = "last_name",
-                                         regex = "[ -]+") {
-  doubled_barreled <- stringr::str_detect(voter_file[[surname_col]], regex)
-  return(voter_file[doubled_barreled, ])
+get_multi_barreled_surnames <- function(voter_file,
+                                        surname_col = "last_name",
+                                        regex = "[ -]+") {
+  multi_barreled <- dplyr::filter(
+    voter_file,
+    stringr::str_detect(voter_file[[surname_col]], regex)
+  )
+  return(multi_barreled)
 }
 
 
