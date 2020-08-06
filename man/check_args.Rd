@@ -11,11 +11,11 @@ check_args(data, cand_cols, race_cols, totals_col, totals_null = FALSE)
 
 \item{cand_cols}{A column of candidate names passed from ei functions}
 
+\item{race_cols}{A column of race names passed from ei functions}
+
 \item{totals_col}{The name of a column passed from ei functions}
 
 \item{totals_null}{A boolean. If TRUE, ignore totals_col argument}
-
-\item{race_cols}{A column of race names passed from ei functions}
 }
 \description{
 Check for missing essential arguments from an ei function
