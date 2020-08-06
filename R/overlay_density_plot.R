@@ -16,7 +16,6 @@
 #' @export
 utils::globalVariables(c("m", "k", "%do%"))
 
-
 overlay_density_plot <- function(betas, plot_path, ei_type) {
   if (tolower(ei_type) == "ei") {
     race <- unique(stringr::str_match(colnames(betas), "b[bw]gg_([a-z_]*)_pct")[, 2])
