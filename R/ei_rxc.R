@@ -71,7 +71,7 @@ ei_rxc <- function(
   if (!is.null(seed)) {
     set.seed(seed)
   } else {
-    seed <- sample(1:10e9, 1)
+    seed <- sample(1:10e5, 1)
     if (verbose) {
       message(paste("Setting random seed equal to", seed, "..."))
     }

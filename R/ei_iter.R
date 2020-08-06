@@ -88,6 +88,9 @@ ei_iter <- function(
   # Check for missings
   data <- remove_nas(data)
 
+  # Force data to be a dataframe
+  data <- as.data.frame(data)
+
   # Get race and cand lengths
   n_races <- length(race_cols)
   n_cands <- length(cand_cols)
@@ -102,7 +105,7 @@ ei_iter <- function(
 
   # Get seed if seed is null
   if (is.null(seed)) {
-    seed <- sample(1:10e9, 1)
+    seed <- sample(1:10e5, 1)
     if (verbose) {
       message(paste("Setting random seed equal to", seed))
     }
@@ -141,9 +144,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho,
-            sample = sample,
-            args_pass
+            erho = erho # ,
+            # args_pass
           )
         )
     })
@@ -165,8 +167,8 @@ ei_iter <- function(
     )
 
     # get aggregate means
-    betab_district_mean <- res$maggs[1]
-    betaw_district_mean <- res$maggs[2]
+    betab_district_mean <- mean(res$aggs[1], na.rm = TRUE)
+    betaw_district_mean <- mean(res$aggs[2], na.rm = TRUE)
 
     # Get aggregate ses
     # This works according to the aggregate formula in King, 1997, section 8.3
@@ -192,8 +194,8 @@ ei_iter <- function(
     colnames(district_res) <- c("Candidate", race, "other")
 
     # Put precinct betas in dataframe
-    precinct_res <- cbind(res[[1]], res[[3]])
-    colnames(precinct_res) <- c("betab", "betaw")
+    precinct_res <- cbind(res$betab, res$betaw)
+    colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
 
     setTxtProgressBar(pb, i)
 
