@@ -27,8 +27,7 @@
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach foreach getDoParWorkers
+#' @importFrom doSNOW registerDoSNOW getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -43,7 +42,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
-utils::globalVariables(c("%dopar%", "%do%", "i", "betas_ei"))
+utils::globalVariables(c("%dopar%", "%do%", "i"))
 
 ei_iter <- function(
                     data,
@@ -86,7 +85,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  args_pass <- list(...)
+  # args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -151,7 +150,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho # ,
+            erho = erho,
+            sample = sample,
             # args_pass
           )
         )
@@ -255,7 +255,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-    df_betas <- data.frame(betas_for_return(precinct_results, race_cand_pairs))
+    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
   }
 

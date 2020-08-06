@@ -2,13 +2,12 @@
 #'
 #' Internal
 #'
-#' @param m
-#' @param i
-#' @param cand_comb
-#' @param dens_data
-#' @param out
-#' @param path
-#' @param cand_colors
+#' @param race Racial demographic of interest
+#' @param cand_comb All possible candidate pairing combinations
+#' @param dens_data Beta values long for each race and candidate pair
+#' @param out Summary table from overlay_density_plot for every race candidate pair
+#' @param path Path to save plots
+#' @param cand_colors Colors for every candidate
 #' @return Comparison density plots
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
@@ -16,6 +15,7 @@
 #' @return overlay density plot comparing candidates for votes by race
 #' @examples
 #'
+#' @importFrom overlapping overlay
 #'
 #' # EXAMPLE: NOT RUN #
 #' @export
@@ -25,8 +25,8 @@ utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_
 
 od_plot_create <- function(race, cand_comb, dens_data, out, path = "", cand_colors) {
   # Omit NAs and subset both density data and summmary table
-  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% myCands, ])
-  out_sub <- out[out$Candidate %in% myCands, ]
+  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% cand_comb, ])
+  out_sub <- out[out$Candidate %in% cand_comb, ]
 
   # Calculate overlap
   overlap_list <- list(
@@ -116,7 +116,7 @@ od_plot_create <- function(race, cand_comb, dens_data, out, path = "", cand_colo
 
   # Save out to user designated path
   ggplot2::ggsave(paste0(
-    path, myCands[[1]], "_", myCands[[2]], "_",
+    path, cand_comb[[1]], "_", cand_comb[[2]], "_",
     gsub("pct_", "", race), ".png"
   ), height = 4, width = 6)
 
