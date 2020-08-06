@@ -76,8 +76,8 @@
 #' ei_bayes_res
 #' }
 #'
-#' @import R.utils
-#' @import plyr
+#' @importFrom R.utils insert
+#' @importFrom data.table rbindlist
 #' @export bayes_table_make
 bayes_table_make <-
   function(ei_bayes_object, cand_vector, table_names) {
@@ -110,7 +110,7 @@ bayes_table_make <-
       list_holder[[i]] <- subs_data
     }
     # put lists together into table
-    out <- plyr::ldply(list_holder, rbind) * 100
+    out <- data.table::rbindlist(list_holder) * 100
     # add on column of names
     out <- data.frame(rn, out)
 
