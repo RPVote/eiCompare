@@ -3,10 +3,7 @@
 #' Internal
 #'
 #' @param betas Output for RxC and iterative ei
-<<<<<<< HEAD
 #' @param results_table Summary table for candidate race pair means and se's
-=======
->>>>>>> use aggregate values for plotting
 #' @param plot_path Path to save
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
@@ -20,7 +17,12 @@
 #' @export
 utils::globalVariables(c("m", "k", "%do%"))
 
+<<<<<<< HEAD
 overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
+=======
+
+overlay_density_plot <- function(betas, plot_path, ei_type) {
+>>>>>>> Updated input for overlay_denisty_plot call
   if (tolower(ei_type) == "ei") {
     race <- unique(stringr::str_match(colnames(betas), "b[bw]gg_([a-z_]*)_pct")[, 2])
     cands <- unique(stringr::str_match(colnames(betas), "b[bw]gg_[a-z_]*_(pct_[a-z]*)")[, 2])
@@ -95,11 +97,6 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   # close progress bar
   close(pb)
 
-<<<<<<< HEAD
-
-  return(dens_plots)
-=======
   # Change functionalist to return plots later if needed
   # return(dens_plots)
->>>>>>> Updated for roxygen2 pass
 }
