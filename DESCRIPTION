@@ -45,12 +45,12 @@ Imports:
   doParallel,
   doSNOW,
   purrr,
+  overlapping
 NeedsCompilation: no
 Suggests:
   knitr,
   rmarkdown,
   testthat
-  overlapping,
   RColorBrewer,
   reshape2,
   dplyr
