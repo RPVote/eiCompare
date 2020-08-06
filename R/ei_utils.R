@@ -124,9 +124,9 @@ check_args <- function(data,
 #' @param precinct_results A list of betas from ei_iter()
 #' @param race_cand_pairs The set of race/candidate pairs tested in ei_iter
 betas_for_return <- function(precinct_results, race_cand_pairs) {
-  betas <- do.call(cbind, precinct_results)
+  betas <- data.frame(do.call(cbind, precinct_results))
   col_ids <- paste(race_cand_pairs$race, race_cand_pairs$cand, sep = "_")
-  colnames(betas) <- paste(colnames(betas), col_ids, sep = "_")
+  colnames(betas) <- paste(sub("\\..*", "", colnames(betas)), col_ids, sep = "_")
   return(betas)
 }
 

@@ -23,15 +23,11 @@
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
-<<<<<<< HEAD
 #' @param verbose A boolean indicating whether to print out status messages.
-=======
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
->>>>>>> integrate density plot creation into ei iter
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach foreach getDoParWorkers
+#' @importFrom doSNOW registerDoSNOW getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -46,7 +42,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
-utils::globalVariables(c("%dopar%", "%do%", "i", "betas_ei"))
+utils::globalVariables(c("%dopar%", "%do%", "i"))
 
 ei_iter <- function(
                     data,
@@ -88,7 +84,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  args_pass <- list(...)
+  # args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -257,7 +253,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-    df_betas <- data.frame(betas_for_return(precinct_results, race_cand_pairs))
+    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
   }
 
