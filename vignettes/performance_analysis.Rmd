@@ -10,10 +10,10 @@ This vignette introduces the concept of a performance analysis and demonstrates 
 
 ```{r imports, echo=FALSE, message=FALSE, warning=FALSE}
 suppressMessages({
+  library(dplyr)
   library(eiCompare)
   library(ggplot2)
   library(sf)
-  library(tidyverse)
   library(wru)
 })
 ```
@@ -221,18 +221,33 @@ Lastly, we can get what we set out for: the racial makeup, per ward in the new m
 
 The entire performance analysis pipeline can be performed with the function `performance_analysis()`. This function handles all of the steps shown above, and outputs the racial turnout per district. Furthermore, it's equipped with a variety of messaging to provide updates as the analysis is conducted.
 
-To see this function in action, we'll use it on the East Ramapo voter file. Ordinarily, this voter file would have the same components as the toy voter file, at a minimum (voter id, surname, location). For privacy reasons, we've replaced the voter IDs with new one and have already performed the spatial joins between 
+To see this function in action, we'll use it on the East Ramapo voter file. Ordinarily, this voter file would, at the very least, have the same components as the toy voter file (voter id, surname, location). For privacy reasons, we've taken the following actions:
 
-The performance analysis function can handle all these edge cases: it will spatial join with district and Census (or it won't), depending on the user's needs. 
+* Replaced voter ID with new numbers
+* Replaced the surname with a "similar" surname, in terms of probability across racial groups (ultimately having little impact on the performance analysis). Surnames not found in the Census database are replaced with the string "NOTINCENSUS", with the same effect of probabilities being imputed according to the Census specification.
+* Spatially joined the location into the Census block and ward in an effort to not include latitude and longitude.
 
-```{r performance_analysis}
-load("ramapo2018.rda")
+Let's take a look at the voter file:
+
+```{r voter_file}
+# Load Ramapo 2018 voter file
+data("ramapo2018")
+print(head(ramapo2018, 10))
 ```
 
-```{r performance_analysis2}
+We can see that the voters already have the FIPS codes and wards identified. Furthermore, some surnames are "NOCENSUSMATCH", which indicate that these voters' surnames weren't found in the Census surname database.
+
+The performance analysis function can handle a variety of scenarios, provided a voter file. For example, if a voter file needs to be spatially joined with the Census shapefile or ward shapefile, it can perform those joins. If not, it will use information already stored in the voter file. To clarify the particular scenario, we need to specify the correct parameters in the function signature. In the Ramapo 2018 case, we specify `join_census_shape = FALSE` and `join_district_shape = FALSE`, since the voter file already has this information. This implies that we don't need to provide shapefiles. 
+
+Let's run the performance analysis:
+
+```{r performance_analysis}
+# Load Ramapo 2018 voter file
+data("ramapo2018")
+
+# Run Performance Analysis
 results <- eiCompare::performance_analysis(
   voter_file = ramapo2018,
-  district_shape = ersd_maps,
   census_data = rockland_census,
   join_census_shape = FALSE,
   join_district_shape = FALSE,
@@ -257,6 +272,8 @@ results <- eiCompare::performance_analysis(
 )
 ```
 
+Notice that the function outputted messages during the process, since we specified `verbose = TRUE`. 
+
 With the performance analysis complete, let's compare the predicted turnout of the minority aggregate to the CVAP fraction: 
 
 ```{r visualize_results, fig.height=5, fig.width=5, message=FALSE, warning=FALSE}
@@ -266,6 +283,7 @@ options(repr.plot.width = 5, repr.plot.height = 5)
 performance <- results$results
 ersd_maps$MIN_AGG_FRAC_TURNOUT <- performance$black + performance$hispanic
 
+# Run performance analysis
 performance_comparison <- ggplot(ersd_maps, aes(x = MIN_AGG_FRAC, y = MIN_AGG_FRAC_TURNOUT)) +
   geom_point(size = 3) +
   geom_abline(intercept = 0, slope = 1) +
@@ -284,11 +302,19 @@ performance_comparison <- ggplot(ersd_maps, aes(x = MIN_AGG_FRAC, y = MIN_AGG_FR
   ) +
   xlim(0, 1) +
   ylim(0, 1) +
-  xlab("CVAP Minority Aggregate Fraction") +
-  ylab("Performance Minority Aggregate Fraction") +
+  ggtitle("Minority Aggregate Voter Share") +
+  xlab("CVAP Prediction") +
+  ylab("Performance Analysis Prediction") +
   coord_fixed() +
-  theme_bw()
+  theme_bw() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 15, face = "bold"),
+    axis.text.x = element_text(size = 12),
+    axis.title.x = element_text(size = 15, face = "bold"),
+    axis.text.y = element_text(size = 12),
+    axis.title.y = element_text(size = 15, face = "bold")
+  )
 show(performance_comparison)
 ```
 
-We observe that the turnout is below the CVAP predictions (identity line). Furthermore, using turnout reveals that Districts 3 and 4, despite having a large enough CVAP population for minority seats, would have much lower minority vote given turnout (dashed purple line). Thus, the performance analysis demonstrates that using CVAP would exaggerate the number of seats awarded to minority candidates on the school board. In reality, only two seats would likely be awarded to minority-favored candidates, implying the need for a new map.
+We observe that the turnout is below the CVAP predictions (identity line). Furthermore, using turnout reveals that Districts 3 and 4, despite having a large enough CVAP population for minority seats (or close to it: dotted purple line), would have much lower minority vote given turnout (dashed red line). Thus, the performance analysis demonstrates that using CVAP would exaggerate the number of seats awarded to minority candidates on the school board. In reality, only two seats would likely be awarded to minority-favored candidates, implying the need for a new map.
