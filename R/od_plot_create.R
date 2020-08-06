@@ -15,9 +15,8 @@
 #' @return overlay density plot comparing candidates for votes by race
 #' @examples
 #'
-#' @importFrom overlapping overlay
+#' @importFrom overlapping overlap
 #'
-#' # EXAMPLE: NOT RUN #
 #' @export
 
 utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))

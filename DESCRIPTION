@@ -37,12 +37,12 @@ Imports:
   doParallel,
   doSNOW,
   purrr,
+  overlapping
 NeedsCompilation: no
 Suggests: 
   testthat,
   knitr,
   rmarkdown,
-  overlapping,
   RColorBrewer,
   reshape2,
   dplyr
