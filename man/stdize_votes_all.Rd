@@ -14,6 +14,7 @@ stdize_votes_all(
   max_dev_cand = 0.1,
   avg_dev_race = 0.025,
   avg_dev_cand = 0.025,
+  new_names = FALSE,
   ignore_devs = FALSE,
   verbose = TRUE,
   diagnostic = FALSE
@@ -47,6 +48,9 @@ of all precincts' sum of race columns from totals}
 
 \item{avg_dev_cand}{A numeric object setting the max allowable mean deviation
 of all precincts' sum of candidate columns from totals}
+
+\item{new_names}{A boolean indicating whether to return cand and race columns
+with the same names. If FALSE, names returned with "_prop" added on.}
 
 \item{ignore_devs}{A boolean. When true, columns are standardized ignoring
 all deviations from totals}
