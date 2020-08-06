@@ -85,7 +85,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  # args_pass <- list(...)
+  args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -222,6 +222,9 @@ ei_iter <- function(
     # Put precinct betas in dataframe
     precinct_res <- cbind(res$betab, res$betaw)
     colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
+
+    # Sabe out aggs
+    aggs_b <- eiread(ei_out, "aggs")
 
     # Sabe out aggs
     aggs_b <- eiread(ei_out, "aggs")
