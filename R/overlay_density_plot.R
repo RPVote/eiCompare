@@ -14,17 +14,17 @@
 #'
 #' # EXAMPLE: NOT RUN #
 #' @export
-utils::globalVariables(c("m"))
+utils::globalVariables(c("m", "k"))
 
 overlay_density_plot <- function(betas, path, ei_type) {
   if (tolower(ei_type) == "ei") {
-    race <- unique(stringr::str_match(names(betas), "beta[bw]_([a-z_]*)_pct")[, 2])
-    cands <- unique(stringr::str_match(names(betas), "beta[bw]_[a-z_]*_(pct_[a-z]*)")[, 2])
+    race <- unique(stringr::str_match(colnames(betas), "beta[bw]_([a-z_]*)_pct")[, 2])
+    cands <- unique(stringr::str_match(colnames(betas), "beta[bw]_[a-z_]*_(pct_[a-z]*)")[, 2])
     # Extract beta bs
     betas <- betas[, grep("betab", colnames(betas))]
   } else if (tolower(ei_type) == "rxc") {
-    race <- unique(stringr::str_match(names(betas), ".*\\.([a-z_]*)\\..*")[, 2])
-    cands <- unique(stringr::str_match(names(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
+    race <- unique(stringr::str_match(colnames(betas), ".*\\.([a-z_]*)\\..*")[, 2])
+    cands <- unique(stringr::str_match(colnames(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
   } else {
     stop("Specify ei_type as ei or rxc")
   }
@@ -44,17 +44,17 @@ overlay_density_plot <- function(betas, path, ei_type) {
   opts <- list(progress = progress)
 
   out_all <- foreach::foreach(
-    i = seq(1:length(race)),
+    k = 1:length(race),
     .combine = rbind,
     .inorder = FALSE,
     .packages = c("overlapping", "ggplot2"),
     .options.snow = opts
   ) %do% {
 
-    # Keep columns for race[i]
-    race_comb <- betas[, grep(race[i], colnames(betas))]
+    # Keep columns for race[k]
+    race_comb <- betas[, grep(race[k], colnames(betas))]
 
-    # Find total for race[i] in each row (so for each precinct)
+    # Find total for race[k] in each row (so for each precinct)
     total <- apply(race_comb, 1, sum)
 
     # Set up empty matrix
@@ -65,7 +65,7 @@ overlay_density_plot <- function(betas, path, ei_type) {
     }
 
     # Column titles
-    colnames(v_fill) <- gsub(paste("betab_", race[i], ".", sep = ""), "", colnames(race_comb))
+    colnames(v_fill) <- gsub(paste("betab_", race[k], ".", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
     colnames(v_fill) <- gsub("pct_", "", colnames(v_fill))
@@ -85,19 +85,21 @@ overlay_density_plot <- function(betas, path, ei_type) {
     out <- data.frame(out)
 
     # Create pairs of candidates to comapre
-    cand_comb <- utils::combn(levels(dens_data$Candidate), 2)
+    cand_comb <- utils::combn(cands, 2)
 
     # Make density plot for each pair
-    dens_plots <- foreach::foreach(m = seq(1:ncol(cand_comb)), .inorder = FALSE, .verbose = TRUE) %do% {
-      print(c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]))
+    dens_plots <- foreach::foreach(m = seq(1:ncol(cand_comb)), .inorder = FALSE) %do% {
+      print(paste(m, cand_comb[, m]))
       od_plot_create(
-        race = race[i], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
+        race = race[k], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
         dens_data, out, path, cand_colors
       )
     }
 
-    setTxtProgressBar(pb, i)
+    setTxtProgressBar(pb, k)
   }
+  # close progress bar
+  close(pb)
 
   return(dens_plots)
 }
