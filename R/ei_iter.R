@@ -25,7 +25,7 @@
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @importFrom doSNOW registerDoSNOW getDoParWorkers
+#' @importFrom doSNOW registerDoSNOW getDoParWorkers foreach
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -40,7 +40,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
-utils::globalVariables(c("%dopar%", "%do%", "i"))
+utils::globalVariables(c("`%dopar%`", "`%do%`", "i"))
 
 ei_iter <- function(
                     data,
