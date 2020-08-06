@@ -209,15 +209,19 @@ check_diffs <- function(vote_sums,
 #' @author Ari Decter-Frain
 #'
 #' @param votes A dataframe of raw votes by race or candidates
+#' @param new_names A boolean indicating whether to return cand and race columns
+#' with the same names. If FALSE, names returned with "_prop" added on.
 #'
 #' @keywords internal
 #'
 #' @return A dataframe of standardized proportions whose columns sum rowwise to
 #' 1
-standardize_votes <- function(votes) {
+standardize_votes <- function(votes, new_names = FALSE) {
   totals <- rowSums(votes)
   prps <- votes / totals
-  names(prps) <- paste(names(prps), "prop", sep = "_")
+  if (new_names) {
+    names(prps) <- paste(names(prps), "prop", sep = "_")
+  }
   output <- cbind(prps, data.frame("total" = totals))
   return(output)
 }
@@ -250,6 +254,8 @@ standardize_votes <- function(votes) {
 #' precinct's vote sum from totals
 #' @param avg_dev A numeric object setting the max allowable average deviation
 #' difference of all precints' vote sums from totals
+#' @param new_names A boolean indicating whether to return cand and race columns
+#' with the same names. If FALSE, names returned with "_prop" added on.
 #' @param verbose A boolean indicating whether to print status messages
 #' @param diagnostic A boolean. When true, an extra column of booleans is
 #' returned indicating whether each row had a deviation from totals
@@ -263,20 +269,24 @@ stdize_votes <- function(data,
                          totals_col = NULL,
                          max_dev = 0.1,
                          avg_dev = 0.025,
+                         new_names = FALSE,
                          verbose = TRUE,
                          diagnostic = FALSE) {
 
-  # get votes by race, sum of votes
+  # Set data as dataframe
+  data <- as.data.frame(data)
+
+  # Get votes by race, sum of votes
   votes <- data[, cols]
   vote_sums <- rowSums(votes)
 
   if (is.null(totals_col)) {
 
-    # if no vote totals_col passed, use vote_sums for totals
-    proportions <- standardize_votes(votes)
+    # If no vote totals_col passed, use vote_sums for totals
+    proportions <- standardize_votes(votes, new_names)
     return(proportions)
 
-    # else check the extent of deviation from provided totals
+    # Else check the extent of deviation from provided totals
   } else {
     vote_totals <- data[, totals_col]
     diff_check <- check_diffs(
@@ -289,7 +299,7 @@ stdize_votes <- function(data,
           "All columns sum correctly. Computing proportions..."
         )
       }
-      proportions <- standardize_votes(votes)
+      proportions <- standardize_votes(votes, new_names)
       if (diagnostic) {
         proportions$deviates <- diff_check$deviates
       }
@@ -303,7 +313,7 @@ stdize_votes <- function(data,
           )
         )
       }
-      proportions <- standardize_votes(votes)
+      proportions <- standardize_votes(votes, new_names)
       if (diagnostic) {
         proportions$deviates <- diff_check$deviates
       }
@@ -347,6 +357,8 @@ stdize_votes <- function(data,
 #' of all precincts' sum of race columns from totals
 #' @param avg_dev_cand A numeric object setting the max allowable mean deviation
 #' of all precincts' sum of candidate columns from totals
+#' @param new_names A boolean indicating whether to return cand and race columns
+#' with the same names. If FALSE, names returned with "_prop" added on.
 #' @param ignore_devs A boolean. When true, columns are standardized ignoring
 #' all deviations from totals
 #' @param verbose A boolean. When true, function returns progress messages.
@@ -366,6 +378,7 @@ stdize_votes_all <- function(data,
                              max_dev_cand = 0.1,
                              avg_dev_race = 0.025,
                              avg_dev_cand = 0.025,
+                             new_names = FALSE,
                              ignore_devs = FALSE,
                              verbose = TRUE,
                              diagnostic = FALSE) {
@@ -415,6 +428,7 @@ stdize_votes_all <- function(data,
     totals_col = cand_totals_col,
     max_dev = max_dev_cand,
     avg_dev = avg_dev_cand,
+    new_names = new_names,
     verbose = verbose,
     diagnostic = diagnostic
   )
@@ -426,6 +440,7 @@ stdize_votes_all <- function(data,
     totals_col = race_totals_col,
     max_dev = max_dev_race,
     avg_dev = avg_dev_race,
+    new_names = new_names,
     verbose = verbose,
     diagnostic = diagnostic
   )

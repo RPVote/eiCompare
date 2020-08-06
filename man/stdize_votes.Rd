@@ -10,6 +10,7 @@ stdize_votes(
   totals_col = NULL,
   max_dev = 0.1,
   avg_dev = 0.025,
+  new_names = FALSE,
   verbose = TRUE,
   diagnostic = FALSE
 )
@@ -29,6 +30,9 @@ precinct's vote sum from totals}
 
 \item{avg_dev}{A numeric object setting the max allowable average deviation
 difference of all precints' vote sums from totals}
+
+\item{new_names}{A boolean indicating whether to return cand and race columns
+with the same names. If FALSE, names returned with "_prop" added on.}
 
 \item{verbose}{A boolean indicating whether to print status messages}
 

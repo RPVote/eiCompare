@@ -84,7 +84,7 @@ test_that("standardize_votes() returns correct results", {
     "total" = c(2, 2)
   )
 
-  expect_equal(standardize_votes(votes), expected)
+  expect_equal(standardize_votes(votes, new_names = TRUE), expected)
 })
 
 test_that("check_diffs() gets conditions right", {
@@ -172,6 +172,7 @@ test_that("stdize_votes() handles all cases", {
     data = df,
     cols = c("r1", "r2"),
     totals_col = "t",
+    new_names = TRUE,
     verbose = FALSE,
     diagnostic = FALSE
   )
@@ -188,6 +189,7 @@ test_that("stdize_votes() handles all cases", {
       data = df,
       cols = c("r1", "r2"),
       totals_col = "t",
+      new_names = TRUE,
       verbose = TRUE,
       diagnostic = FALSE
     )
@@ -198,6 +200,7 @@ test_that("stdize_votes() handles all cases", {
     data = df,
     cols = c("r1", "r2"),
     totals_col = "t",
+    new_names = TRUE,
     verbose = F,
     diagnostic = T
   )
@@ -218,6 +221,7 @@ test_that("stdize_votes() handles all cases", {
       data = df,
       cols = c("r1", "r2"),
       totals_col = "t",
+      new_names = TRUE,
       verbose = TRUE,
       diagnostic = FALSE
     )
@@ -228,6 +232,7 @@ test_that("stdize_votes() handles all cases", {
     data = df,
     cols = c("r1", "r2"),
     totals_col = "t",
+    new_names = TRUE,
     verbose = TRUE,
     diagnostic = FALSE
   )
@@ -252,6 +257,7 @@ test_that("stdize_votes() handles all cases", {
       data = df,
       cols = c("r1", "r2"),
       totals_col = "t",
+      new_names = TRUE,
       verbose = TRUE,
       diagnostic = FALSE
     )
@@ -263,6 +269,7 @@ test_that("stdize_votes() handles all cases", {
       data = df,
       cols = c("r1", "r2"),
       totals_col = "t",
+      new_names = TRUE,
       verbose = FALSE,
       diagnostic = FALSE
     )
@@ -280,7 +287,8 @@ test_that("stdize_votes_all() handles all cases", {
   res <- stdize_votes_all(
     data = df,
     race_cols = c("r1", "r2"),
-    cand_cols = c("c1", "c2")
+    cand_cols = c("c1", "c2"),
+    new_names = TRUE
   )
   expected <- data.frame(
     "c1_prop" = rep(0.5, 2),
@@ -297,7 +305,8 @@ test_that("stdize_votes_all() handles all cases", {
     stdize_votes_all(
       data = df,
       race_cols = c("r1", "r2"),
-      cand_cols = c("c1", "c2")
+      cand_cols = c("c1", "c2"),
+      new_names = TRUE
     )
   })
   expected <- data.frame(
@@ -314,7 +323,8 @@ test_that("stdize_votes_all() handles all cases", {
       data = df,
       race_cols = c("r1", "r2"),
       cand_cols = c("c1", "c2"),
-      totals_from = "race"
+      totals_from = "race",
+      new_names = TRUE
     )
   })
   expected <- data.frame(
@@ -333,7 +343,8 @@ test_that("stdize_votes_all() handles all cases", {
       data = df,
       race_cols = c("r1", "r2"),
       cand_cols = c("c1", "c2"),
-      totals_from = "race"
+      totals_from = "race",
+      new_names = TRUE
     )
   })
   expected <- data.frame(
@@ -350,7 +361,8 @@ test_that("stdize_votes_all() handles all cases", {
       data = df,
       race_cols = c("r1", "r2"),
       cand_cols = c("c1", "c2"),
-      totals_from = "cand"
+      totals_from = "cand",
+      new_names = TRUE
     )
   })
   expected <- data.frame(
@@ -369,7 +381,8 @@ test_that("stdize_votes_all() handles all cases", {
       data = df,
       race_cols = c("r1", "r2"),
       cand_cols = c("c1", "c2"),
-      totals_col = "t"
+      totals_col = "t",
+      new_names = TRUE
     )
   })
   expected <- data.frame(
@@ -388,7 +401,8 @@ test_that("stdize_votes_all() handles all cases", {
       data = df,
       race_cols = c("r1", "r2"),
       cand_cols = c("c1", "c2"),
-      totals_col = "t"
+      totals_col = "t",
+      new_names = TRUE
     )
   })
   expected <- data.frame(
