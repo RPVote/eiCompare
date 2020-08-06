@@ -27,8 +27,12 @@
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
+<<<<<<< HEAD
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach getDoParWorkers
+=======
+#' @importFrom doSNOW registerDoSNOW getDoParWorkers
+>>>>>>> formatting
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -86,7 +90,7 @@ ei_iter <- function(
   check_args(data, cand_cols, race_cols, totals_col)
 
   # Save any additional arguments to pass into ei inside foreach
-  args_pass <- list(...)
+  # args_pass <- list(...)
 
   # Subset data
   data <- data[, c(cand_cols, race_cols, totals_col)]
@@ -151,7 +155,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho # ,
+            erho = erho,
+            sample = sample,
             # args_pass
           )
         )
@@ -272,6 +277,7 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
+<<<<<<< HEAD
 
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
@@ -287,6 +293,10 @@ ei_iter <- function(
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
+=======
+    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
+    density_plots <- overlay_density_plot(df_betas, plot_path, ei_type = "ei")
+>>>>>>> formatting
   }
 
 
