@@ -43,11 +43,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #'
-<<<<<<< HEAD
 utils::globalVariables(c("%dopar%", "%do%", "i"))
-=======
-utils::globalVariables(c("%dopar%", "%do%", "i", "betas_ei"))
->>>>>>> integrate overlays and pass R CMD
 
 ei_iter <- function(
                     data,
@@ -164,39 +160,28 @@ ei_iter <- function(
     # Plots to be added here
     if (plots) {
       # Create tomography plots
-<<<<<<< HEAD
       grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
-=======
-      png(paste0(path, "tomography_", cand, "_", race, ".png"),
->>>>>>> added tomography and beta comparison plots
+
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "tomogE")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-<<<<<<< HEAD
+
       grDevices::dev.off()
 
       # Create denity plots
       grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
-=======
-      dev.off()
 
-      # Create denity plots
-      png(paste0(path, "density_", cand, "_", race, ".png"),
->>>>>>> added tomography and beta comparison plots
         units = "in", height = 6, width = 6, res = 500
       )
       plot(ei_out, "betab", "betaw")
       graphics::mtext(paste(cand, race, sep = " "),
         outer = T, line = -1
       )
-<<<<<<< HEAD
+
       grDevices::dev.off()
-=======
-      dev.off()
->>>>>>> added tomography and beta comparison plots
     }
 
     # Extract mean, standard error for each precinct and district-wide
@@ -279,7 +264,6 @@ ei_iter <- function(
   # Density plots
   if (plots) {
     print("Creating density plots")
-<<<<<<< HEAD
 
     # Combine aggregate results for district level values into one data frame
     race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
@@ -291,9 +275,6 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     density_plots <- overlay_density_plot(agg_betas, plot_path, ei_type = "ei")
-=======
-    density_plots <- overlay_density_plot(betas_ei, plot_path, ei_type = "ei")
->>>>>>> integrate density plot creation into ei iter
   }
 
 

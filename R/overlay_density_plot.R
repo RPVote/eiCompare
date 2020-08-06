@@ -3,13 +3,8 @@
 #' Internal
 #'
 #' @param betas Output for RxC and iterative ei
-<<<<<<< HEAD
 #' @param plot_path Path to save
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
-=======
-#' @param path Path to save
-#' @param ei_type
->>>>>>> integrate overlays and pass R CMD
 #' @return Prep and run density plot creation iteratively
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
@@ -19,7 +14,6 @@
 #'
 #' # EXAMPLE: NOT RUN #
 #' @export
-<<<<<<< HEAD
 utils::globalVariables(c("m", "k", "%do%"))
 
 overlay_density_plot <- function(betas, plot_path, ei_type) {
@@ -33,20 +27,6 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
     cands <- unique(stringr::str_match(colnames(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
   } else {
     stop("Specify ei_type as ei or rxc")
-=======
-utils::globalVariables(c("m"))
-
-overlay_density_plot <- function(betas, path, ei_type) {
-  if (ei_type == "ei") {
-    race <- unique(stringr::str_match(names(betas), "beta[bw]_([a-z_]*)_pct")[, 2])
-    cands <- unique(stringr::str_match(names(betas), "beta[bw]_[a-z_]*_(pct_[a-z]*)")[, 2])
-    # Extract beta bs
-    betas <- betas[, grep("betab", colnames(betas))]
-  } else if (ei_type == "rxc") {
-    race <- unique(stringr::str_match(names(betas), ".*\\.([a-z_]*)\\..*")[, 2])
-    cands <- unique(stringr::str_match(names(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
->>>>>>> integrate overlays and pass R CMD
-  }
 
   # Designate colors for each candidate
   color_choice <- as.list(RColorBrewer::brewer.pal(length(unique(cands)), "Set2"))
@@ -63,11 +43,7 @@ overlay_density_plot <- function(betas, path, ei_type) {
   opts <- list(progress = progress)
 
   out_all <- foreach::foreach(
-<<<<<<< HEAD
     k = 1:length(race),
-=======
-    i = seq(1:length(race)),
->>>>>>> integrate overlays and pass R CMD
     .combine = rbind,
     .inorder = FALSE,
     .packages = c("overlapping", "ggplot2"),
