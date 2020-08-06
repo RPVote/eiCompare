@@ -35,18 +35,28 @@ Imports:
   sf,
   sjmisc,
   stringr,
+<<<<<<< HEAD
   tidyr,
   tidyselect,
   tmvtnorm,
   ucminf,
   wru
+=======
+  sf,
+  mcmcse,
+  doParallel,
+  doSNOW,
+>>>>>>> Updated for roxygen2 pass
   purrr,
   overlapping
 NeedsCompilation: no
 Suggests:
   knitr,
   rmarkdown,
+<<<<<<< HEAD
   testthat
+=======
+>>>>>>> Updated for roxygen2 pass
   RColorBrewer,
   reshape2,
   dplyr
