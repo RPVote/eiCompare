@@ -9,11 +9,12 @@ ei_iter(
   cand_cols,
   race_cols,
   totals_col,
-  erho = 10,
-  sample = 1000,
+  erho = 0.5,
+  seed = NULL,
   plots = FALSE,
   betas = FALSE,
   par_compute = FALSE,
+  verbose = FALSE,
   ...
 )
 }
@@ -30,9 +31,10 @@ race}
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
 
-\item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
+\item{erho}{A number passed directly to ei::ei(). Defaulted to 0.5}
 
-\item{sample}{The number of samples used in ei estimation. Defaulted to 1000}
+\item{seed}{A numeric seed value for replicating estimate results across
+runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{plots}{A boolean indicating whether or not to include density and
 tomography plots}
@@ -40,6 +42,8 @@ tomography plots}
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{par_compute}{A boolean to conduct ei using parallel processing}
+
+\item{verbose}{A boolean indicating whether to print out status messages.}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
@@ -63,5 +67,5 @@ Problem. Princeton: Princeton University Press.
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 
-Ari Decter-Frain
+Ari Decter-Frain <agd75@cornell.edu>
 }

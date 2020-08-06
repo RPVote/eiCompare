@@ -16,12 +16,14 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-#' @param erho A number passed directly to ei::ei(). Defaulted to 10
-#' @param sample The number of samples used in ei estimation. Defaulted to 1000
+#' @param erho A number passed directly to ei::ei(). Defaulted to 0.5
+#' @param seed A numeric seed value for replicating estimate results across
+#' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+#' @param verbose A boolean indicating whether to print out status messages.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @importFrom doSNOW registerDoSNOW
@@ -30,7 +32,7 @@
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
-#' @author Ari Decter-Frain
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack. Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press.
@@ -43,15 +45,16 @@ ei_iter <- function(
                     cand_cols,
                     race_cols,
                     totals_col,
-                    erho = 10,
-                    sample = 1000,
+                    erho = 0.5,
+                    seed = NULL,
                     plots = FALSE,
                     betas = FALSE,
                     par_compute = FALSE,
+                    verbose = FALSE,
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
-  if (par_compute == TRUE) {
+  if (par_compute) {
     # Detect the number of cores you have
     parallel::detectCores()
 
@@ -85,6 +88,9 @@ ei_iter <- function(
   # Check for missings
   data <- remove_nas(data)
 
+  # Force data to be a dataframe
+  data <- as.data.frame(data)
+
   # Get race and cand lengths
   n_races <- length(race_cols)
   n_cands <- length(cand_cols)
@@ -96,6 +102,14 @@ ei_iter <- function(
     "cand" = cand_cols,
     stringsAsFactors = FALSE
   )
+
+  # Get seed if seed is null
+  if (is.null(seed)) {
+    seed <- sample(1:10e5, 1)
+    if (verbose) {
+      message(paste("Setting random seed equal to", seed))
+    }
+  }
 
   # Init progressbar
   pb <- utils::txtProgressBar(
@@ -119,6 +133,9 @@ ei_iter <- function(
     # Get formula
     formula <- stats::formula(paste(cand, "~", race), sep = " ")
 
+    # Set seed
+    set.seed(seed)
+
     # Run 2x2 ei
     utils::capture.output({
       ei_out <-
@@ -127,9 +144,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho,
-            sample = sample,
-            args_pass
+            erho = erho # ,
+            # args_pass
           )
         )
     })
@@ -139,32 +155,47 @@ ei_iter <- function(
       do_nothing <- 3
     }
 
-    # Extract mean, standard error for each precinct
-    precinct_res <- ei::eiread(
+    # Extract mean, standard error for each precinct and district-wide
+    res <- ei::eiread(
       ei.object = ei_out,
       "betab",
       "sbetab",
       "betaw",
-      "sbetaw"
+      "sbetaw",
+      "aggs",
+      "maggs"
     )
 
-    # Extract district-wide means, sds
-    beta_b_mean <- summary(ei_out)[[10]][1, 1]
-    beta_w_mean <- summary(ei_out)[[10]][2, 1]
-    beta_b_sd <- summary(ei_out)[[10]][1, 2]
-    beta_w_sd <- summary(ei_out)[[10]][2, 2]
+    # get aggregate means
+    betab_district_mean <- mean(res$aggs[1], na.rm = TRUE)
+    betaw_district_mean <- mean(res$aggs[2], na.rm = TRUE)
+
+    # Get aggregate ses
+    # This works according to the aggregate formula in King, 1997, section 8.3
+    aggs <- res$aggs
+    ses <- c()
+    for (i in 1:ncol(aggs)) {
+      aggs_col <- aggs[, i]
+      m <- mean(aggs_col)
+      nsims <- length(aggs_col)
+      devs <- m - aggs_col
+      sq_devs <- devs^2
+      sum_sq_devs <- sum(sq_devs)
+      se <- sqrt(sum_sq_devs / nsims)
+      ses <- append(ses, se)
+    }
 
     # Put district-wide estimates in dataframe
     district_res <- data.frame(
       c(cand, "se"),
-      c(beta_b_mean, beta_b_sd),
-      c(beta_w_mean, beta_w_sd)
+      c(betab_district_mean, ses[1]),
+      c(betaw_district_mean, ses[2])
     )
     colnames(district_res) <- c("Candidate", race, "other")
 
     # Put precinct betas in dataframe
-    precinct_res <- cbind(precinct_res[[1]], precinct_res[[3]])
-    colnames(precinct_res) <- c("betab", "betaw")
+    precinct_res <- cbind(res$betab, res$betaw)
+    colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
 
     setTxtProgressBar(pb, i)
 
@@ -178,7 +209,7 @@ ei_iter <- function(
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
 
-  if (par_compute == TRUE) {
+  if (par_compute) {
     # Stop clusters (always done between uses)
     parallel::stopCluster(clust)
     # Garbage collection (in case of leakage)
