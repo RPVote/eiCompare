@@ -8,8 +8,10 @@
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
-#' @param precinct_id The name or index of the column in the data containing
-#' unique precinct identifiers.
+#' @param id_cols The name or index of the column in the data containing
+#' unique precinct identifiers. Can pass multiple column names or indices in
+#' a vector if precincts are identified over multiple columns
+#' (eg. c("precinctid", "countyid")).
 #' @param verbose A boolean. If true, messages are returned describing actions
 #' taken by the function.
 #'
@@ -18,7 +20,7 @@
 #' @return A new dataframe without duplicated rows, and (if any) a boolean
 #' column identifying duplicated precincts for further investigation.
 
-dedupe_precincts <- function(data, precinct_id, verbose = TRUE) {
+dedupe_precincts <- function(data, id_cols, verbose = TRUE) {
 
   # Remove any fully duplicated rows
   init_rows <- nrow(data)
@@ -33,9 +35,10 @@ dedupe_precincts <- function(data, precinct_id, verbose = TRUE) {
 
   # Check for duplicate precincts
   # Check both directions to get every duplicate
-  dupes <- duplicated(data[, precinct_id]) | duplicated(data[, precinct_id],
-    fromLast = TRUE
-  )
+  dupes <- duplicated(data[, id_cols]) |
+    duplicated(data[, id_cols],
+      fromLast = TRUE
+    )
 
   # If duplicates found, add boolean column identifying them
   if (sum(dupes) != 0 & verbose) {
@@ -46,7 +49,7 @@ dedupe_precincts <- function(data, precinct_id, verbose = TRUE) {
 duplicates...")
   }
 
-  # Inform user
+  # Inform user if no duplicates
   if ((rows_removed == 0) & (sum(dupes) == 0) & verbose) {
     message("Data does not contain duplicates. Proceed...")
   }
@@ -65,24 +68,24 @@ duplicates...")
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
 #' @param na_action A string indicating how to handle missing values in EI
-#' columns. Possible values are "drop" and "mean". "drop" drops all observations
-#' where variables are missing. "mean" imputes missing values as the mean of the
+#' columns. Possible values are "DROP" and "MEAN". "DROP" drops all rows
+#' where variables are missing. "MEAN" imputes missing values as the mean of the
 #' column
-#' @param verbose A boolean indicating whether to return messages throughout the
-#' function.
+#' @param verbose A boolean indicating whether to give status updates
 #'
 #' @export
-check_missing <- function(
-                          data,
-                          cand_cols,
-                          race_cols,
-                          totals_col,
-                          na_action = "drop",
-                          verbose = TRUE) {
+resolve_missing_vals <- function(
+                                 data,
+                                 cand_cols,
+                                 race_cols,
+                                 totals_col,
+                                 na_action = "DROP",
+                                 verbose = TRUE) {
   cols <- c(cand_cols, race_cols, totals_col)
+  na_action <- toupper(na_action)
 
   # If "drop" selected
-  if (na_action == "drop") {
+  if (na_action == "DROP") {
     n_rows <- nrow(data)
 
     # Drop rows with NAs in any necessary column
@@ -104,7 +107,7 @@ check_missing <- function(
     }
 
     # If "mean" selected
-  } else if (na_action == "mean") {
+  } else if (na_action == "MEAN") {
     ei_data <- data[, cols]
     n_missing <- 0
 
@@ -136,10 +139,7 @@ check_missing <- function(
     }
   } else {
     stop(
-      paste(
-        "Invalid entry for na_action parameter.\nEnter either",
-        '"drop" or "mean"'
-      )
+      "Invalid entry for na_action parameter.\nEnter either 'DROP' or 'MEAN'"
     )
   }
   return(data)

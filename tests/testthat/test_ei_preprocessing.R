@@ -24,7 +24,7 @@ test_that("dedupe_precincts handles cases correctly", {
   expect_equal(output, expected)
 })
 
-test_that("check_missing() handles cases correctly", {
+test_that("resolve_missing_vals() handles cases correctly", {
 
   # Base case, no NAs
   input <- data.frame(
@@ -37,7 +37,7 @@ test_that("check_missing() handles cases correctly", {
   totals_col <- "t"
 
   expected <- input
-  output <- check_missing(
+  output <- resolve_missing_vals(
     data = input,
     cand_cols = cand_cols,
     race_cols = race_cols,
@@ -49,7 +49,7 @@ test_that("check_missing() handles cases correctly", {
   # NA in column imputes mean when na_action == "mean"
   input$y[1] <- NA
 
-  output <- check_missing(
+  output <- resolve_missing_vals(
     data = input,
     cand_cols = cand_cols,
     race_cols = race_cols,
@@ -62,7 +62,7 @@ test_that("check_missing() handles cases correctly", {
   # NA in column removes column when na_action == "drop"
   input$x[1] <- NA
   expected <- expected[-1, ]
-  output <- check_missing(
+  output <- resolve_missing_vals(
     data = input,
     cand_cols = cand_cols,
     race_cols = race_cols,

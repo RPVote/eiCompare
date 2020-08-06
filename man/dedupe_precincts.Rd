@@ -4,14 +4,16 @@
 \alias{dedupe_precincts}
 \title{Remove or identify duplicated precincts}
 \usage{
-dedupe_precincts(data, precinct_id, verbose = TRUE)
+dedupe_precincts(data, id_cols, verbose = TRUE)
 }
 \arguments{
 \item{data}{A data.frame() object containing precinct-level turnout data by
 race and candidate}
 
-\item{precinct_id}{The name or index of the column in the data containing
-unique precinct identifiers.}
+\item{id_cols}{The name or index of the column in the data containing
+unique precinct identifiers. Can pass multiple column names or indices in
+a vector if precincts are identified over multiple columns
+(eg. c("precinctid", "countyid")).}
 
 \item{verbose}{A boolean. If true, messages are returned describing actions
 taken by the function.}

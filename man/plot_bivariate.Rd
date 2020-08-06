@@ -2,9 +2,10 @@
 % Please edit documentation in R/plot_bivariate.R
 \name{plot_bivariate}
 \alias{plot_bivariate}
-\title{Plot bivariate relationships}
+\title{Plot bivariate relationships between all combinations of candidates and 
+race/ethnicities}
 \usage{
-plot_bivariate(data, cand_cols, race_cols)
+plot_bivariate(data, cand_cols, race_cols, save = FALSE, path = "")
 }
 \arguments{
 \item{data}{A data.frame() object containing precinct-level turnout data by
@@ -15,10 +16,16 @@ each candidate}
 
 \item{race_cols}{A character vector listing the column names for turnout by
 race}
+
+\item{save}{A boolean indicating whether to save the plot to a file.}
+
+\item{path}{A string to specify plot save location. Defaulted to 
+working directory}
 }
 \value{
 ggplot object with bivariate plots faceted by candidate and race
 }
 \description{
-Plot bivariate relationships
+Plot bivariate relationships between all combinations of candidates and 
+race/ethnicities
 }

@@ -1,4 +1,5 @@
-#' Plot bivariate relationships
+#' Plot bivariate relationships between all combinations of candidates and
+#' race/ethnicities
 #'
 #' @import ggplot2
 #'
@@ -8,84 +9,78 @@
 #' each candidate
 #' @param race_cols A character vector listing the column names for turnout by
 #' race
+#' @param save A boolean indicating whether to save the plot to a file.
+#' @param path A string to specify plot save location. Defaulted to
+#' working directory
 #'
 #' @export
 #'
 #' @return ggplot object with bivariate plots faceted by candidate and race
-plot_bivariate <- function(data, cand_cols, race_cols) {
+plot_bivariate <- function(
+                           data,
+                           cand_cols,
+                           race_cols,
+                           save = FALSE,
+                           path = "") {
   data <- data[, c(cand_cols, race_cols)]
 
   n_races <- length(race_cols)
   n_cands <- length(cand_cols)
   dot_size <- min(4 / log(n_races * n_cands), 3)
 
-  # Lengthen data over candidates
-  cand_long <- as.data.frame(matrix(ncol = n_races + 2, nrow = 0))
-  for (i in 1:n_cands) {
-    cand <- cand_cols[i]
+  # Get data to long format for faceting
+  data_long <- data %>%
+    tidyr::pivot_longer(
+      cand_cols,
+      names_to = "candidate",
+      values_to = "pct_of_vote"
+    ) %>%
+    tidyr::pivot_longer(
+      race_cols,
+      names_to = "race",
+      values_to = "pct_of_voters"
+    )
 
-    # Drop other candidate columns
-    other_cands <- cand_cols[which(cand_cols != cand)]
-    temp <- data[, -which(names(data) %in% other_cands)]
+  # Change candidate, race cols to factor so their order matches
+  # cand_cols, race_cols order
+  data_long$candidate <- factor(data_long$candidate,
+    levels = cand_cols
+  )
 
-    # Get correct colname
-    colnames(temp)[which(colnames(temp) == cand)] <- "pct_of_vote"
-    temp$candidate <- cand
+  data_long$race <- factor(data_long$race,
+    levels = race_cols
+  )
 
-    # Add temp to dataframe
-    cand_long <- rbind(cand_long, temp)
-  }
-
-  # Lengthen data over races
-  data_long <- as.data.frame(matrix(ncol = 4, nrow = 0))
-  for (i in 1:n_races) {
-    race <- race_cols[i]
-
-    # Drop other race columns
-    other_races <- race_cols[which(race_cols != race)]
-    temp <- cand_long[, -which(names(cand_long) %in% other_races)]
-
-    # Get correct colname
-    colnames(temp)[which(colnames(temp) == race)] <- "pct_of_voters"
-    temp$race <- race
-
-    # Add temp to dataframe
-    data_long <- rbind(data_long, temp)
-  }
-
-
-  # data_for_plot <- data %>%
-  #  tidyr::pivot_longer(
-  #    cand_cols,
-  #    names_to = "candidate",
-  #    values_to = "pct_of_vote"
-  #  ) %>%
-  #  tidyr::pivot_longer(
-  #    race_cols,
-  #    names_to = "race",
-  #    values_to = "pct_of_voters"
-  #  )
-
-  ggplot2::ggplot(
+  bivariate_plot <- ggplot2::ggplot(
     data = data_long,
-    aes(x = pct_of_voters, y = pct_of_vote)
+    ggplot2::aes(x = pct_of_voters, y = pct_of_vote)
   ) +
     ggplot2::geom_point(alpha = 0.5, size = dot_size) +
     ggplot2::facet_grid(candidate ~ race) +
     ggplot2::scale_x_continuous(
       limits = c(0, 1),
-      name = "Race % of Total Turnout",
+      name = "Race % of Turnout",
       expand = c(0.02, 0.02)
     ) +
     ggplot2::scale_y_continuous(
       limits = c(0, 1),
-      name = "Candidate % of Total Votes",
+      name = "Candidate % of Votes",
       expand = c(0.02, 0.02)
     ) +
     ggplot2::theme_bw() +
     ggplot2::theme(
-      panel.grid.minor = element_blank(),
-      axis.title = element_text(face = "bold"),
-      panel.spacing = unit(0.5, "lines")
+      panel.grid.minor = ggplot2::element_blank(),
+      axis.title = ggplot2::element_text(face = "bold"),
+      panel.spacing = ggplot2::unit(1.25, "lines")
     )
+
+  if (save) {
+    ggplot2::ggsave(
+      paste0(path, "bivariate_plot_", n_cands, "x", n_races, ".png"),
+      bivariate_plot,
+      height = 2 * n_cands,
+      width = 2 * n_races
+    )
+  }
+  return(bivariate_plot)
 }
