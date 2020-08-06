@@ -298,7 +298,7 @@ ei_iter <- function(
 
 
   # If betas == TRUE, return a list with results plus df of betas
-  if (betas == TRUE) {
+  if (betas) {
     df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
