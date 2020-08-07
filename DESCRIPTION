@@ -37,8 +37,6 @@ Imports:
   stringr,
   sf,
   mcmcse,
-  doParallel,
-  doSNOW,
   purrr,
   overlapping
 NeedsCompilation: no
