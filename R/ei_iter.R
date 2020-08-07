@@ -239,7 +239,7 @@ ei_iter <- function(
     agg_betas <- data.frame(do.call(cbind, agg_results))
     colnames(agg_betas) <- new_colnames
 
-    density_plots <- overlay_density_plot(agg_betas, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(agg_betas, plot_path, results_table, ei_type = "ei")
   }
 
 
