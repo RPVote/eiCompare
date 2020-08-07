@@ -38,7 +38,7 @@
 #' Predicting Individual Ethnicity from Voter Registration Records"
 #'
 #' @export wru_predict_race_wrapper
-
+#' @import wru
 wru_predict_race_wrapper <- function(voter_file,
                                      census_data,
                                      voter_id = NULL,
