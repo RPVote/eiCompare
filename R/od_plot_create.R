@@ -6,7 +6,7 @@
 #' @param cand_comb All possible candidate pairing combinations
 #' @param dens_data Beta values long for each race and candidate pair
 #' @param out Summary table from overlay_density_plot for every race candidate pair
-#' @param path Path to save plots
+#' @param plot_path Path to save plots
 #' @param cand_colors Colors for every candidate
 #' @return Comparison density plots
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
