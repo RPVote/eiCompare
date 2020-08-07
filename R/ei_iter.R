@@ -226,9 +226,6 @@ ei_iter <- function(
     # Sabe out aggs
     aggs_b <- eiread(ei_out, "aggs")
 
-    # Sabe out aggs
-    aggs_b <- eiread(ei_out, "aggs")
-
     setTxtProgressBar(pb, i)
 
     list(district_res, precinct_res, aggs_b)
