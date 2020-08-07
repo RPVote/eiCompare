@@ -223,21 +223,21 @@ surname_summary <- function(voter_file, surname_col) {
 #'  list of barrels.
 #' @return A vector of probabilities for each surname.
 #'
-#' @export predict_race_double_barreled
-predict_race_double_barreled <- function(voter_file,
-                                         surname_col = "last_name",
-                                         surname_only = TRUE,
-                                         census_data = NULL,
-                                         census_geo = "block",
-                                         surname_year = 2010,
-                                         use_age = FALSE,
-                                         use_sex = FALSE,
-                                         state = NULL,
-                                         county = NULL,
-                                         tract = NULL,
-                                         block = NULL,
-                                         pattern = "[ -]+",
-                                         remove_patterns = NULL) {
+#' @export predict_race_multi_barreled
+predict_race_multi_barreled <- function(voter_file,
+                                        surname_col = "last_name",
+                                        surname_only = TRUE,
+                                        census_data = NULL,
+                                        census_geo = "block",
+                                        surname_year = 2010,
+                                        use_age = FALSE,
+                                        use_sex = FALSE,
+                                        state = NULL,
+                                        county = NULL,
+                                        tract = NULL,
+                                        block = NULL,
+                                        pattern = "[ -]+",
+                                        remove_patterns = NULL) {
   # Split up multi-barreled surnames
   surnames <- stringr::str_split(
     voter_file[[surname_col]],
