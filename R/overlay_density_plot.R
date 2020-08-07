@@ -3,6 +3,7 @@
 #' Internal
 #'
 #' @param betas Output for RxC and iterative ei
+#' @param results_table Summary table for candidate race pair means and se's
 #' @param plot_path Path to save
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
@@ -16,7 +17,7 @@
 #' @export
 utils::globalVariables(c("m", "k", "%do%"))
 
-overlay_density_plot <- function(betas, plot_path, ei_type) {
+overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   if (tolower(ei_type) == "ei") {
     race <- unique(stringr::str_match(colnames(betas), "b[bw]gg_([a-z_]*)_pct")[, 2])
     cands <- unique(stringr::str_match(colnames(betas), "b[bw]gg_[a-z_]*_(pct_[a-z]*)")[, 2])
@@ -54,29 +55,12 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
     # Keep columns for race[k]
     race_comb <- betas[, grep(race[k], colnames(betas))]
 
-    # # Find total for race[k] in each row (so for each precinct)
-    # total <- apply(race_comb, 1, sum)
-    #
-    # # Set up empty matrix
-    # v_fill <- matrix(NA, nrow = nrow(race_comb), ncol = ncol(race_comb))
-    # # For each candidate find percentage that voted for that candidate
-    # for (j in 1:ncol(v_fill)) {
-    #   v_fill[, j] <- race_comb[, j] / total
-    # }
-    # # Column titles
-    # colnames(v_fill) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
-    #
-    # # Set up data to create graphs
-    # colnames(v_fill) <- gsub("pct_", "", colnames(v_fill))
-    # dens_data <- reshape2::melt(v_fill)
-    # colnames(dens_data) <- c("Index", "Candidate", "value")
-
     # Column titles
     colnames(race_comb) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
     colnames(race_comb) <- gsub("pct_", "", colnames(race_comb))
-    dens_data <- reshape2::melt(race_comb)
+    dens_data <- reshape2::melt(race_comb, )
 
 
     colnames(dens_data) <- c("Candidate", "value")
@@ -84,14 +68,14 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
     out <- dens_data %>%
       dplyr::group_by(Candidate) %>%
       dplyr::summarize(
-        mean_size = mean(value * 100, na.rm = TRUE),
         sd_size = sd(value * 100, na.rm = TRUE),
-        sd_minus = mean(value * 100, na.rm = TRUE) - sd(value * 100, na.rm = TRUE),
-        sd_plus = mean(value * 100, na.rm = TRUE) + sd(value * 100, na.rm = TRUE),
         min_size = min(value * 100, na.rm = TRUE),
         max_size = max(value * 100, na.rm = TRUE), .groups = "drop"
       )
     out <- data.frame(out)
+    out$mean_size <- results_table[!(results_table$Candidate %in% c("se", "Total")), race[k]]
+    out$sd_minus <- out$mean_size - out$sd_size
+    out$sd_plus <- out$mean_size + out$sd_size
 
     # Create pairs of candidates to comapre
     cand_comb <- utils::combn(cands, 2)
