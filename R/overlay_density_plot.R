@@ -59,7 +59,8 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
 
     # Set up data to create graphs
     colnames(race_comb) <- gsub("pct_", "", colnames(race_comb))
-    dens_data <- reshape2::melt(race_comb, )
+
+    dens_data <- reshape2::melt(race_comb)
 
 
     colnames(dens_data) <- c("Candidate", "value")
