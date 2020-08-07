@@ -80,10 +80,10 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
     cand_comb <- utils::combn(cands, 2)
 
     # Make density plot for each pair
-    for (m in 1:ncol(cand_comb)) {
-      od_plot_create(
+    dens_plots <- foreach::foreach(m = 1:ncol(cand_comb)) %do% {
+      dens_plot <- od_plot_create(
         race = race[k], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
-        dens_data, out, plot_path, cand_colors
+        dens_data, out, plot_path = plot_path, cand_colors
       )
     }
 
@@ -93,5 +93,5 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   close(pb)
 
   # Change functionalist to return plots later if needed
-  # return(dens_plots)
+  return(dens_plots)
 }
