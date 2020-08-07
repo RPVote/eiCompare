@@ -16,7 +16,7 @@
 #'
 #' @export fips_extract
 #' @importFrom stringr str_length
-#' @importFrom tidyr replace_na separate
+
 fips_extract <- function(df, fips_col = NULL, geo = NULL) {
   # Store FIPS boundaries as variables
   state_idx <- 2

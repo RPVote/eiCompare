@@ -51,7 +51,7 @@
 #'
 #' @export performance_analysis
 #' @importFrom dplyr filter group_by_at inner_join rename select summarise
-#' @importFrom tidyselect all_of
+
 performance_analysis <- function(voter_file,
                                  district_shape,
                                  census_shape,
