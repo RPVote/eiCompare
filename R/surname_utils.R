@@ -206,31 +206,87 @@ surname_summary <- function(voter_file, surname_col) {
 #' @param voter_file The voter file, with each row consisting of a voter.
 #' @param surname_col A string denoting the surname column.
 #' @param surname_only Whether to obtain probabilities for surnames only.
+#' @param census_data A data frame containing Census data corresponding to the
+#'  geographic information for units in the voter file.
+#' @param census_geo The census level at which to apply BISG. Passed to WRU.
+#' @param surname_year Which Census year to use for surname matching. Passed to
+#'  WRU.
+#' @param use_age Whether to use the age in the BISG calculation. Passed to WRU.
+#' @param use_sex Whether to use the sex in the BISG calculation. Passed to WRU.
+#' @param state A string denoting the state for which the data is queried.
+#' @param county A string denoting the column containing the county FIPS code.
+#' @param tract A string denoting the column containing the tract FIPS code.
+#' @param block A string denoting the column containing the block FIPS code.
 #' @param pattern What pattern to split surnames on. By default, surnames are
 #'  split on a space(s), which assumes hyphens have already been removed.
+#' @param remove_patterns A list of strings which will be removed from the
+#'  list of barrels.
 #' @return A vector of probabilities for each surname.
 #'
 #' @export predict_race_double_barreled
 predict_race_double_barreled <- function(voter_file,
                                          surname_col = "last_name",
                                          surname_only = TRUE,
-                                         pattern = "[ -]+") {
+                                         census_data = NULL,
+                                         census_geo = "block",
+                                         surname_year = 2010,
+                                         use_age = FALSE,
+                                         use_sex = FALSE,
+                                         state = NULL,
+                                         county = NULL,
+                                         tract = NULL,
+                                         block = NULL,
+                                         pattern = "[ -]+",
+                                         remove_patterns = NULL) {
+  # Split up multi-barreled surnames
   surnames <- stringr::str_split(
     voter_file[[surname_col]],
     pattern = pattern
   )[[1]]
-  surnames <- data.frame(surname = surnames)
+  # Remove specific barrels
+  if (!is.null(remove_patterns)) {
+    surnames <- surnames[!(surnames %in% remove_patterns)]
+  }
 
+  # Use surname only
   if (surname_only) {
+    new_voter_file <- data.frame(surname = surnames)
+    # Calculate probabilities using surnames only
     probabilities <- suppressWarnings(
       wru::merge_surnames(
-        voter.file = surnames,
+        voter.file = new_voter_file,
         surname.year = 2010,
         clean.surname = FALSE,
         impute.missing = TRUE
       )
     )
     probabilities <- as.numeric(colMeans(probabilities[, c(-1, -2)]))
+  } else {
+    # Transfer geolocations
+    new_voter_file <- data.frame(
+      surname = surnames,
+      state = state,
+      county = voter_file[[county]],
+      tract = voter_file[[tract]],
+      block = voter_file[[block]]
+    )
+
+    # Predict race using full BISG
+    invisible(capture.output(
+      bisg <- suppressWarnings(
+        wru::predict_race(
+          voter.file = new_voter_file,
+          census.surname = TRUE,
+          surname.only = FALSE,
+          surname.year = surname_year,
+          census.geo = census_geo,
+          census.data = census_data,
+          age = use_age,
+          sex = use_sex,
+        )
+      )
+    ))
+    probabilities <- as.numeric(colMeans(bisg[, c(6:10)]))
   }
   return(probabilities)
 }
