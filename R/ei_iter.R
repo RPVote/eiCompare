@@ -274,6 +274,7 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
 
+    
     # Create density plots
     density_plots <- overlay_density_plot(agg_betas, results_table, plot_path, ei_type = "ei")
 
