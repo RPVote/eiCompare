@@ -54,23 +54,32 @@ overlay_density_plot <- function(betas, plot_path, ei_type) {
     # Keep columns for race[k]
     race_comb <- betas[, grep(race[k], colnames(betas))]
 
-    # Find total for race[k] in each row (so for each precinct)
-    total <- apply(race_comb, 1, sum)
-
-    # Set up empty matrix
-    v_fill <- matrix(NA, nrow = nrow(race_comb), ncol = ncol(race_comb))
-    # For each candidate find percentage that voted for that candidate
-    for (j in 1:ncol(v_fill)) {
-      v_fill[, j] <- race_comb[, j] / total
-    }
+    # # Find total for race[k] in each row (so for each precinct)
+    # total <- apply(race_comb, 1, sum)
+    #
+    # # Set up empty matrix
+    # v_fill <- matrix(NA, nrow = nrow(race_comb), ncol = ncol(race_comb))
+    # # For each candidate find percentage that voted for that candidate
+    # for (j in 1:ncol(v_fill)) {
+    #   v_fill[, j] <- race_comb[, j] / total
+    # }
+    # # Column titles
+    # colnames(v_fill) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
+    #
+    # # Set up data to create graphs
+    # colnames(v_fill) <- gsub("pct_", "", colnames(v_fill))
+    # dens_data <- reshape2::melt(v_fill)
+    # colnames(dens_data) <- c("Index", "Candidate", "value")
 
     # Column titles
-    colnames(v_fill) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
+    colnames(race_comb) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
-    colnames(v_fill) <- gsub("pct_", "", colnames(v_fill))
-    dens_data <- reshape2::melt(v_fill)
-    colnames(dens_data) <- c("Index", "Candidate", "value")
+    colnames(race_comb) <- gsub("pct_", "", colnames(race_comb))
+    dens_data <- reshape2::melt(race_comb)
+
+
+    colnames(dens_data) <- c("Candidate", "value")
 
     out <- dens_data %>%
       dplyr::group_by(Candidate) %>%
