@@ -19,7 +19,7 @@
 #'
 #' @export
 
-# utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))
+# utils::globalVariables(c("value", "Candidate", "..scaled..", "sd_minus", "sd_plus"))
 
 
 od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand_colors) {

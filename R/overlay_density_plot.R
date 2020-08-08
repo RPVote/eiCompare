@@ -17,7 +17,7 @@
 #' @export
 #'
 
-# utils::globalVariables(c("m", "k", "%do%"))
+# utils::globalVariables(c("m", "k", "%do%", "Candidate", "value"))
 
 overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type) {
   if (tolower(ei_type) == "ei") {
