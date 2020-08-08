@@ -28,6 +28,8 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
     cands <- unique(stringr::str_match(colnames(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
   } else {
     stop("Specify ei_type as ei or rxc")
+  }
+
 
   # Designate colors for each candidate
   color_choice <- as.list(RColorBrewer::brewer.pal(length(unique(cands)), "Set2"))
