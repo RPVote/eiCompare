@@ -10,6 +10,7 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
 #'
+#'
 #' @examples
 #'
 #'
