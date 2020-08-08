@@ -39,7 +39,8 @@ Imports:
   tidyselect,
   tmvtnorm,
   ucminf,
-  wru
+  wru,
+  overlapping
 NeedsCompilation: no
 Suggests:
   knitr,
