@@ -15,6 +15,7 @@
 #' @return overlay density plot comparing candidates for votes by race
 #'
 #' @importFrom overlapping overlap
+#' @import ggplot2
 #'
 #' @export
 

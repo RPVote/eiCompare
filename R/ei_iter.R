@@ -33,7 +33,6 @@
 #' @importFrom foreach getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
-#' @importFrom eiCompare betas_for_return check_args
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
@@ -288,7 +287,7 @@ ei_iter <- function(
 
   # If betas == TRUE, return a list with results plus df of betas
   if (betas) {
-    df_betas <- eiCompare::betas_for_return(precinct_results, race_cand_pairs)
+    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
       "all_betas" = df_betas
