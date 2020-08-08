@@ -3,7 +3,7 @@
 #' Internal
 #'
 #' @param race Racial demographic of interest
-#' @param cand_comb All possible candidate pairing combinations
+#' @param cand_pair All possible candidate pairing combinations
 #' @param dens_data Beta values long for each race and candidate pair
 #' @param out Summary table from overlay_density_plot for every race candidate pair
 #' @param plot_path Path to save plots
@@ -13,24 +13,22 @@
 #' @author Hikari Murayama
 #'
 #' @return overlay density plot comparing candidates for votes by race
-#' @examples
 #'
 #' @importFrom overlapping overlap
 #'
 #' @export
 
-utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))
+# utils::globalVariables(c("fips_col_temp", "value", "Candidate", "..scaled", "sd_minus", "sd_plus"))
 
 
-od_plot_create <- function(race, cand_comb, dens_data, out, plot_path = "", cand_colors) {
+od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand_colors) {
   # Omit NAs and subset both density data and summmary table
-  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_comb), ])
-  out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_comb), ]
-
+  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_pair), ])
+  out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_pair), ]
   # Calculate overlap
   overlap_list <- list(
-    X1 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_comb[1]), "value"],
-    X2 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_comb[2]), "value"]
+    X1 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_pair[1]), "value"],
+    X2 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_pair[2]), "value"]
   )
   overlap_out <- overlapping::overlap(overlap_list, plot = FALSE)
   # Extract overlap percentage
@@ -40,18 +38,18 @@ od_plot_create <- function(race, cand_comb, dens_data, out, plot_path = "", cand
 
   # colors
   cols <- c(
-    cand_colors[gsub("pct_", "", cand_comb[1])],
-    cand_colors[gsub("pct_", "", cand_comb[2])]
+    cand_colors[gsub("pct_", "", cand_pair[1])],
+    cand_colors[gsub("pct_", "", cand_pair[2])]
   )
-  names(cols) <- c(gsub("pct_", "", cand_comb[1]), gsub("pct_", "", cand_comb[2]))
+  names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
     scale_fill_manual(values = cols) +
     # Add titles
     ggplot2::ggtitle(paste0(
-      gsub("pct_", "", cand_comb[1]), " vs ",
-      gsub("pct_", "", cand_comb[2]), " for ",
+      gsub("pct_", "", cand_pair[1]), " vs ",
+      gsub("pct_", "", cand_pair[2]), " for ",
       gsub("pct_", "", race), " voters (overlap: ",
       round(overlap_perc, 2), "%)"
     )) +
@@ -118,7 +116,7 @@ od_plot_create <- function(race, cand_comb, dens_data, out, plot_path = "", cand
 
   # Save out to user designated path
   ggplot2::ggsave(paste0(
-    plot_path, cand_comb[1], "_", cand_comb[2], "_",
+    plot_path, cand_pair[1], "_", cand_pair[2], "_",
     gsub("pct_", "", race), ".png"
   ), height = 4, width = 6)
 

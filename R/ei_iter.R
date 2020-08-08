@@ -27,10 +27,13 @@
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
+#' @return dataframe of results from iterative ei
+#'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
+#' @importFrom eiCompare betas_for_return check_args
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
@@ -40,17 +43,16 @@
 #'
 #' @export
 #'
-#' @return dataframe of results from iterative ei
 #'
 #'
-utils::globalVariables(c("%dopar%", "%do%", "i"))
+# utils::globalVariables(c("%dopar%", "%do%", "i"))
 
 ei_iter <- function(
                     data,
                     cand_cols,
                     race_cols,
                     totals_col,
-                    erho = 0.5,
+                    erho = 10,
                     seed = NULL,
                     plots = FALSE,
                     betas = FALSE,
@@ -151,8 +153,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho,
-            sample = sample,
+            erho = erho
+            # sample = sample
             # args_pass
           )
         )
@@ -265,17 +267,19 @@ ei_iter <- function(
     print("Creating density plots")
 
     # Combine aggregate results for district level values into one data frame
-    race_cand_combined <- apply(race_cand_pairs, 1, function(x) paste0(x[1], "_", x[2]))
-    race_cand_combined <- rep(race_cand_combined, each = 2)
+    agg_race <- sapply(ei_results, function(x) colnames(x[[1]])[2])
+    agg_cand <- sapply(ei_results, function(x) x[[1]]$Candidate[1])
+    agg_race_cand <- paste0(agg_race, "_", agg_cand)
+    agg_race_cand_2 <- rep(agg_race_cand, each = 2)
+
     agg_colnames <- as.vector(sapply(agg_results, function(x) colnames(x)))
-    new_colnames <- paste(tolower(agg_colnames), race_cand_combined, sep = "_")
+    new_colnames <- paste(tolower(agg_colnames), agg_race_cand_2, sep = "_")
 
     agg_betas <- data.frame(do.call(cbind, agg_results))
     colnames(agg_betas) <- new_colnames
 
-
     # Create density plots
-    density_plots <- overlay_density_plot(agg_betas, results_table, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
@@ -284,7 +288,7 @@ ei_iter <- function(
 
   # If betas == TRUE, return a list with results plus df of betas
   if (betas) {
-    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
+    df_betas <- eiCompare::betas_for_return(precinct_results, race_cand_pairs)
     to_return <- list(
       "race_group_table" = results_table,
       "all_betas" = df_betas

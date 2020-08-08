@@ -2,8 +2,10 @@
 #'
 #' Internal
 #'
-#' @param betas Output for RxC and iterative ei
+#' @param agg_betas Output for RxC and iterative ei
 #' @param results_table Summary table for candidate race pair means and se's
+#' @param race_cols A character vector listing the column names for turnout by race
+#' @param cand_cols A character vector listing the column names for turnout for each candidate
 #' @param plot_path Path to save
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
@@ -11,22 +13,21 @@
 #' @author Hikari Murayama
 #'
 #'
-#' @examples
 #'
-#'
-#' # EXAMPLE: NOT RUN #
 #' @export
-utils::globalVariables(c("m", "k", "%do%"))
+#'
 
-overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
+# utils::globalVariables(c("m", "k", "%do%"))
+
+overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type) {
   if (tolower(ei_type) == "ei") {
-    race <- unique(stringr::str_match(colnames(betas), "b[bw]gg_([a-z_]*)_pct")[, 2])
-    cands <- unique(stringr::str_match(colnames(betas), "b[bw]gg_[a-z_]*_(pct_[a-z]*)")[, 2])
     # Extract beta bs
-    betas <- betas[, grep("bbgg", colnames(betas))]
+    race <- race_cols
+    cands <- cand_cols
+    agg_betas <- agg_betas[, grep("bbgg", colnames(agg_betas))]
   } else if (tolower(ei_type) == "rxc") {
-    race <- unique(stringr::str_match(colnames(betas), ".*\\.([a-z_]*)\\..*")[, 2])
-    cands <- unique(stringr::str_match(colnames(betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
+    race <- unique(stringr::str_match(colnames(agg_betas), ".*\\.([a-z_]*)\\..*")[, 2])
+    cands <- unique(stringr::str_match(colnames(agg_betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
   } else {
     stop("Specify ei_type as ei or rxc")
   }
@@ -49,21 +50,22 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   out_all <- foreach::foreach(
     k = 1:length(race),
     .combine = rbind,
-    .inorder = FALSE,
+    .inorder = TRUE,
     .packages = c("overlapping", "ggplot2"),
     .options.snow = opts
   ) %do% {
 
     # Keep columns for race[k]
-    race_comb <- betas[, grep(race[k], colnames(betas))]
+    race_comb <- agg_betas[, grep(race[k], colnames(agg_betas))]
 
     # Column titles
-    colnames(race_comb) <- gsub(paste("bbgg_", race[k], ".", sep = ""), "", colnames(race_comb))
+    colnames(race_comb) <- gsub(paste("bbgg_", race[k], "_", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
-    colnames(race_comb) <- gsub("pct_", "", colnames(race_comb))
 
-    dens_data <- reshape2::melt(race_comb)
+    suppressMessages({
+      dens_data <- reshape2::melt(race_comb, )
+    })
 
 
     colnames(dens_data) <- c("Candidate", "value")
@@ -73,12 +75,19 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
       dplyr::summarize(
         sd_size = sd(value * 100, na.rm = TRUE),
         min_size = min(value * 100, na.rm = TRUE),
-        max_size = max(value * 100, na.rm = TRUE), .groups = "drop"
+        max_size = max(value * 100, na.rm = TRUE), .groups = "drop",
       )
     out <- data.frame(out)
-    out$mean_size <- results_table[!(results_table$Candidate %in% c("se", "Total")), race[k]]
+
+    # Join with mean from results_table
+    rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
+    colnames(rt_sub) <- c("Candidate", "mean_size")
+    out <- inner_join(rt_sub, out, by = "Candidate")
     out$sd_minus <- out$mean_size - out$sd_size
     out$sd_plus <- out$mean_size + out$sd_size
+
+    dens_data$Candidate <- gsub("pct_", "", dens_data$Candidate)
+    out$Candidate <- gsub("pct_", "", out$Candidate)
 
     # Create pairs of candidates to comapre
     cand_comb <- utils::combn(cands, 2)
@@ -86,7 +95,7 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
     # Make density plot for each pair
     dens_plots <- foreach::foreach(m = 1:ncol(cand_comb)) %do% {
       dens_plot <- od_plot_create(
-        race = race[k], cand_comb = c(cand_comb[1, m][[1]], cand_comb[2, m][[1]]),
+        race = race[k], cand_pair = c(cand_comb[1, m], cand_comb[2, m]),
         dens_data, out, plot_path = plot_path, cand_colors
       )
     }
@@ -97,5 +106,5 @@ overlay_density_plot <- function(betas, results_table, plot_path, ei_type) {
   close(pb)
 
   # Change functionalist to return plots later if needed
-  return(dens_plots)
+  return(out_all)
 }
