@@ -136,7 +136,7 @@ gwinnett <- dedupe_precincts(
 ```
 Now we're sure that our dataset does not contain any missing values or duplicated precincts. We can proceed with standardizing the data. 
 
-To execute ecological inference cleanly, we need to make sure to represent our data in proportions that sum to one. Not doing this can cause the EI functions to break.
+To execute ecological inference cleanly, we need to make sure to represent our data in proportions that sum to one. Not doing this can cause the EI functions to break or behave unexpectedly.
 
 
 

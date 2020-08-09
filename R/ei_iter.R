@@ -238,6 +238,9 @@ ei_iter <- function(
     parallel::stopCluster(clust)
     # Garbage collection (in case of leakage)
     gc()
+    setTxtProgressBar(pb, i)
+
+    return(ei_out)
   }
 
   # close progress bar

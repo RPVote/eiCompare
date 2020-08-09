@@ -11,6 +11,90 @@ remove_nas <- function(data) {
   return(out)
 }
 
+#' Convert ei objects into ei_est_gen-style results tables
+#' @author Ari Decter-Frain <agd75@@cornell.edu>
+#'
+#' @param ei_objects A list of ei objects
+#' @param race_cand_pairs Passed from ei_iter
+#' @param beta Passed from ei_iter
+get_ei_est_gen_results <- function(
+                                   ei_objects,
+                                   race_cand_pairs,
+                                   betas) {
+  for (i in 1:length(ei_objects)) {
+    cand <- race_cand_pairs[i, "cand"]
+    race <- race_cand_pairs[i, "race"]
+
+    # Get current ei object
+    ei_out <- ei_objects[[i]]
+
+    # Extract necessary values
+    res <- ei::eiread(
+      ei.object = ei_out,
+      "betab",
+      "sbetab",
+      "betaw",
+      "sbetaw",
+      "aggs",
+      "maggs"
+    )
+
+    # get aggregate means
+    betab_district_mean <- mean(res$aggs[1], na.rm = TRUE)
+    betaw_district_mean <- mean(res$aggs[2], na.rm = TRUE)
+
+    # Get aggregate ses
+    # This works according to the aggregate formula in King, 1997, section 8.3
+    aggs <- res$aggs
+    ses <- c()
+    for (i in 1:ncol(aggs)) {
+      aggs_col <- aggs[, i]
+      m <- mean(aggs_col)
+      nsims <- length(aggs_col)
+      devs <- m - aggs_col
+      sq_devs <- devs^2
+      sum_sq_devs <- sum(sq_devs)
+      se <- sqrt(sum_sq_devs / nsims)
+      ses <- append(ses, se)
+    }
+
+    # Put district-wide estimates in dataframe
+    district_res <- data.frame(
+      c(cand, "se"),
+      c(betab_district_mean, ses[1]),
+      c(betaw_district_mean, ses[2])
+    )
+    colnames(district_res) <- c("Candidate", race, "other")
+
+    # Put precinct betas in dataframe
+    precinct_res <- cbind(res$betab, res$betaw)
+    colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
+
+    # Put results in dataframe
+    results_table <- get_results_table(
+      district_results,
+      cand_col = cand_cols,
+      race_col = race_cols,
+      n_cand = n_cands,
+      n_race = n_races,
+      n_iter = n_iters
+    )
+
+    # If betas == TRUE, return a list with results plus df of betas
+    if (betas) {
+      df_betas <- betas_for_return(precinct_results, race_cand_pairs)
+      to_return <- list(
+        "race_group_table" = results_table,
+        "all_betas" = df_betas
+      )
+      return(to_return)
+    } else {
+      return(results_table)
+    }
+  }
+}
+
+
 #' Get results dataframe from a list of results as from ei_est_gen
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param district_results A list of dataframes computed in the midst of ei_iter
