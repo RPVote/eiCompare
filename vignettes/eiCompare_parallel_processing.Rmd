@@ -1,7 +1,7 @@
 ---
 title: "eiCompare: Parallel Processing"
 author: "Hikari Murayama"
-output: rmarkdown::html_vignette
+output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{pp-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -11,19 +11,19 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   warning = FALSE,
-  collapse = TRUE,
-  comment = "#>",
-  include = FALSE
+  comment = "#>"
 )
 
 # devtools::install_github("DSSG-eiCompare/eiCompare@master")
-# library(eiCompare)
 library(eiCompare)
+# install.packages("doSNOW" )
+library(doSNOW)
 
 data("corona")
 ```
 
-This vignette aims to highlight the parallel processing capabilities within eiCompare. Functions that include this option are
+This vignette aims to highlight the parallel processing capabilities within eiCompare. Functions that include this option are:
+
 - `ei_iter()`
 
 - `ei_rxc()` (only for diagnostic)
