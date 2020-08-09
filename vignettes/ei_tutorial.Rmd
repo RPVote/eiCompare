@@ -198,6 +198,7 @@ ei_results_iter <- ei_iter(
   race_cols = races,
   totals_col = total
 )
+summary.eic(ei_results_iter)
 ```
 
 ```{r}
@@ -207,4 +208,16 @@ ei_results_rxc <- ei_rxc(
   race_cols = races,
   totals_col = total
 )
+summary.eic(ei_results_rxc)
+```
+
+```{r}
+# results <- list(ei_results_iter, ei_results_rxc)
+#
+# for (i in 1:length(list)) {
+#
+# }
+#
+# ei_results_iter$estimates
+# ei_results_rxc$estimates
 ```
