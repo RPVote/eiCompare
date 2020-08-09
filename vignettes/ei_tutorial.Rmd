@@ -29,12 +29,15 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+options(scipen = 999, digits = 4)
 ```
 
 ```{r}
 suppressPackageStartupMessages({
   library(eiCompare)
   library(tidyverse)
+  library(doParallel)
 })
 
 data("gwinnett")
@@ -90,10 +93,7 @@ gwinnett <- resolve_missing_vals(
   na_action = "DROP"
 )
 ```
-Looks like this dataset doesn't contain any missing values. We can proceed to the next step.
-
-
-We start by using `dedupe_precincts()` to check that the data does not contain any 
+Looks like this dataset doesn't contain any missing values. We can proceed to the next step. Next, we use `dedupe_precincts()` to check that the data does not contain any 
 duplicate precincts.
 
 ```{r}
@@ -134,12 +134,77 @@ gwinnett <- dedupe_precincts(
   id_cols = id
 )
 ```
-Now we're sure that our dataset does not contain any missing values or duplicated precincts. We can proceed with standardizing the data. 
-
-To execute ecological inference cleanly, we need to make sure to represent our data in proportions that sum to one. Not doing this can cause the EI functions to break or behave unexpectedly.
-
+Now we're sure that our dataset does not contain any missing values or duplicated precincts. We can proceed with standardizing the data. To execute ecological inference cleanly, we need to make sure to represent our data in proportions that sum to one. Not doing this can cause the EI functions to break or behave unexpectedly. For this, we can use `stdize_votes_all()`. 
 
 
 ```{r}
+gwinnett_ei <- stdize_votes_all(
+  data = gwinnett,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total
+)
+```
+```{r}
+head(gwinnett_ei)
+```
 
+This function has produced a new dataframe where each column is a proportion. We can check that for each row, the candidate columns sum to one and the race columns sum to one using the following code.
+
+```{r}
+sum_over_cols <- function(data, cols) {
+  return(rowSums(data[, cols]))
+}
+
+cand_sums <- sum_over_cols(data = gwinnett_ei, cols = cands)
+race_sums <- sum_over_cols(data = gwinnett_ei, cols = races)
+table(cand_sums, race_sums)
+```
+Here we see that, for each row in the dataset, the sum of the race columns equals one, and the sum of the candidate columns also equals one. We *always* need to satisfy this condition before running the EI functions.
+
+We now have a new dataframe without missing values, with no duplicated precincts, and with standardized candidate and racial vote proportion colums. We can begin conducting ecological inference.
+
+## Descriptive Analysis
+
+Now that we've cleaned and prepared the data, we're ready to begin analyzing it. Before running ecological inference, it's useful to conduct some simple descriptive analyses. First, let's plot the precinct-level bivariate relationships between all the different combinations of racial and candidate turnout proportions.
+
+```{r fig.height = 5, fig.width = 7, fig.align = "center"}
+plot_bivariate(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races
+)
+```
+
+
+The `plot_bivariate()` function returns a `ggplot2` object plotting the relationships between each candidate's precinct-level vote share and the precinct-level turnout share of each race group. These plots can tell us a lot about what to expect from the EI analysese to come. In particular, we can observe the following two trends.
+
+1. We observe what looks like racially polarized voting in the top left corner of this figure. The panel in the upper left corner shows that as the proportion of white voters in a precinct rises, so does the proportion of votes for Brian Kemp. The plot just below shows that the opposite is true for Stacey Abrams. Meanwhile, the second column reveals the opposite pattern for black voters. This is a sign that racially polarized voting might be going on in this election. We can use EI to back this up statistically.
+
+2. The bottom row shows that Jim Metz received very few votes across precincts. Because there is so little variation in levels of vote share for this candidate, our EI estimates probably will not detect racially polarized voting for this candidate. We can expect similarly from the 'hispanic' and 'other' race categories, since few districts have very high proportions of these groups.
+
+These basic descriptive checks help us understand our data and give us a sense of what to expect in our final results. Next, we turn to executing and comparing the different EI techniques.
+
+## Ecological Inference
+
+`eiCompare` enables users to analyze and compare three different approaches to EI, The three approaches are Goodman's EI, Iterative EI, and RxC EI. For more information about these techniques, see the [technical details](technical.details.com) page of our website.
+
+We can run these methods easily with their respective functions. `ei_rxc()` and `ei_iter` may take some time to run, since they both run simulations to compute their estimates. 
+
+```{r}
+ei_results_iter <- ei_iter(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total
+)
+```
+
+```{r}
+ei_results_rxc <- ei_rxc(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total
+)
 ```

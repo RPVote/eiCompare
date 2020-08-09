@@ -21,6 +21,7 @@
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
+#' @param pare_class default = TRUE
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param verbose A boolean indicating whether to print out status messages.
@@ -31,6 +32,7 @@
 #'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach getDoParWorkers
+#' @importFrom bayestestR ci
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -55,6 +57,7 @@ ei_iter <- function(
                     erho = 0.5,
                     seed = NULL,
                     plots = FALSE,
+                    pare_class = TRUE,
                     betas = FALSE,
                     par_compute = FALSE,
                     verbose = FALSE,
@@ -153,8 +156,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho,
-            args_pass
+            erho = erho # ,
+            # args_pass
           )
         )
     })
@@ -230,7 +233,7 @@ ei_iter <- function(
 
     setTxtProgressBar(pb, i)
 
-    list(district_res, precinct_res, aggs_b)
+    list(district_res, precinct_res, aggs_b, ei_out)
   }
 
   if (par_compute == TRUE) {
@@ -250,6 +253,7 @@ ei_iter <- function(
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
   agg_results <- sapply(ei_results, function(x) x[3])
+  ei_objects <- sapply(ei_results, function(x) x[4])
 
   if (par_compute) {
     # Stop clusters (always done between uses)
@@ -292,16 +296,94 @@ ei_iter <- function(
     rpv_distribution <- rpv_density(agg_betas, plot_path)
   }
 
+  if (pare_class) {
 
-  # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
-    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
-    to_return <- list(
-      "race_group_table" = results_table,
-      "all_betas" = df_betas
+    # Set up containers
+    means <- c()
+    ses <- c()
+    ci_lowers <- c()
+    ci_uppers <- c()
+
+    district_samples <- as.data.frame(matrix(ncol = 0, nrow = 99))
+    precinct_samples <- list()
+
+    for (i in 1:length(ei_objects)) {
+      ei_object <- ei_objects[[i]]
+      cand <- race_cand_pairs[i, "cand"]
+      race <- race_cand_pairs[i, "race"]
+
+      # Get estimates
+      aggs <- ei::eiread(ei_object, "aggs")[, 1]
+
+      # Both CIs
+      cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+      ci_lowers <- append(ci_lowers, cis$CI_low)
+      ci_uppers <- append(ci_uppers, cis$CI_high)
+
+      # Mean
+      mean <- mean(aggs, na.rm = TRUE)
+      means <- append(means, mean)
+
+      # Standard error
+      nsims <- length(aggs)
+      devs <- mean - aggs
+      sq_devs <- devs^2
+      sum_sq_devs <- sum(sq_devs)
+      se <- sqrt(sum_sq_devs / nsims)
+      ses <- append(ses, se)
+
+      # Add district chains to dataframe
+      district_name <- paste(cand, race, sep = "_")
+      district_samples[[district_name]] <- aggs
+
+      # Get samples of precinct-level estimates
+      prec_res <- ei::eiread(
+        ei.object = ei_out,
+        "betab",
+        "sbetab",
+        "betaw",
+        "sbetaw"
+      )
+
+      # Put precinct betas in dataframe
+      precinct_res <- cbind(
+        prec_res$betab,
+        prec_res$sbetab,
+        prec_res$betaw,
+        prec_res$sbetaw
+      )
+      colnames(precinct_res) <- c("betab", "sbetab", "betaw", "sbetaw")
+
+      precinct_samples[[district_name]] <- precinct_res
+    }
+
+    # Make estimates table
+    estimates <- data.frame(cbind(means, ses, ci_lowers, ci_uppers))
+    estimates <- cbind(race_cand_pairs[, 2], race_cand_pairs[, 1], estimates)
+    colnames(estimates) <- c(
+      "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
     )
-    return(to_return)
+
+    output <- list(
+      "type" = "iter",
+      "estimates" = estimates,
+      "district_samples" = district_samples,
+      "precinct_samples" = precinct_samples,
+      "stat_objects" = ei_objects
+    )
+    class(output) <- "pare"
+    return(output)
   } else {
-    return(results_table)
+    # If betas == TRUE, return a list with results plus df of betas
+    if (betas) {
+      df_betas <- betas_for_return(precinct_results, race_cand_pairs)
+      to_return <- list(
+        "race_group_table" = results_table,
+        "all_betas" = df_betas
+      )
+      return(to_return)
+    } else {
+      return(results_table)
+    }
   }
 }

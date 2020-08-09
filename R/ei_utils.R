@@ -261,15 +261,16 @@ rxc_formula <- function(cand_cols, race_cols) {
 #' @param results_table A results table from
 #' @param race_cols Character vector of candidate race names, passed from
 #' ei_rxc
-get_md_bayes_gen_output <- function(results_table, race_cols) {
+get_md_bayes_gen_output <- function(results_table) {
+  races <- unique(results_table$race)
 
   # create list object output
   new_results <- list()
 
-  for (i in 1:length(race_cols)) {
+  for (i in 1:length(races)) {
 
     # get race name
-    race <- race_cols[i]
+    race <- races[i]
 
     # filter to where that race, then remove the race column
     race_res <- results_table[which(results_table$race == race), -2]
@@ -283,6 +284,6 @@ get_md_bayes_gen_output <- function(results_table, race_cols) {
     # add to list
     new_results[[i]] <- race_res
   }
-  names(new_results) <- race_cols
+  names(new_results) <- races
   return(new_results)
 }

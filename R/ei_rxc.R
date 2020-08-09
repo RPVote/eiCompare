@@ -174,7 +174,7 @@ ei_rxc <- function(
   # Create, name an output table
   results_table <- data.frame(cbind(estimate, lower, upper))
   results_table <- cbind(cand_col, race_col, results_table)
-  if (eiCompare_class) {
+  if (!eiCompare_class) {
     colnames(results_table) <- c(
       "cand", "race", "mean", "se", "ci_lower", "ci_upper"
     )
@@ -186,7 +186,7 @@ ei_rxc <- function(
 
   if (!eiCompare_class) {
     # Match expected output
-    results_table <- get_md_bayes_gen_output(results_table, race_cols)
+    results_table <- get_md_bayes_gen_output(results_table)
 
     # Return results and chains if requested
     if (ret_mcmc) {
