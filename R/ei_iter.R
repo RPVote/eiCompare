@@ -24,10 +24,13 @@
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param verbose A boolean indicating whether to print out status messages.
+#' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
+#' @return dataframe of results from iterative ei
+#'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach foreach getDoParWorkers
+#' @importFrom foreach getDoParWorkers
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -39,7 +42,11 @@
 #'
 #' @export
 #'
-#' @return dataframe of results from iterative ei
+#'
+#'
+
+# utils::globalVariables(c("%dopar%", "%do%", "i"))
+
 ei_iter <- function(
                     data,
                     cand_cols,
@@ -51,6 +58,7 @@ ei_iter <- function(
                     betas = FALSE,
                     par_compute = FALSE,
                     verbose = FALSE,
+                    plot_path = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -137,6 +145,7 @@ ei_iter <- function(
     set.seed(seed)
 
     # Run 2x2 ei
+    # ADD TRY CATCH SO THAT IF PARALLELIZATION=TRUE THEN KILL CLUSTERS
     utils::capture.output({
       ei_out <-
         suppressMessages(
@@ -144,15 +153,34 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho # ,
-            # args_pass
+            erho = erho,
+            args_pass
           )
         )
     })
 
     # Plots to be added here
     if (plots) {
-      do_nothing <- 3
+      # Create tomography plots
+      grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),
+        units = "in", height = 6, width = 6, res = 500
+      )
+      plot(ei_out, "tomogE")
+      graphics::mtext(paste(cand, race, sep = " "),
+        outer = T, line = -1
+      )
+
+      grDevices::dev.off()
+
+      # Create denity plots
+      grDevices::png(paste0(plot_path, "density_", cand, "_", race, ".png"),
+        units = "in", height = 6, width = 6, res = 500
+      )
+      plot(ei_out, "betab", "betaw")
+      graphics::mtext(paste(cand, race, sep = " "),
+        outer = T, line = -1
+      )
+      grDevices::dev.off()
     }
 
     # Extract mean, standard error for each precinct and district-wide
@@ -197,9 +225,19 @@ ei_iter <- function(
     precinct_res <- cbind(res$betab, res$betaw)
     colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
 
+    # Save out aggs
+    aggs_b <- eiread(ei_out, "aggs")
+
     setTxtProgressBar(pb, i)
 
-    list(district_res, precinct_res)
+    list(district_res, precinct_res, aggs_b)
+  }
+
+  if (par_compute == TRUE) {
+    # Stop clusters (always done between uses)
+    parallel::stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
   }
 
   # close progress bar
@@ -208,6 +246,7 @@ ei_iter <- function(
   # Separate out district level summary and precinct level results
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
+  agg_results <- sapply(ei_results, function(x) x[3])
 
   if (par_compute) {
     # Stop clusters (always done between uses)
@@ -225,6 +264,31 @@ ei_iter <- function(
     n_race = n_races,
     n_iter = n_iters
   )
+
+  # Plots moved to here
+  # Density plots
+  if (plots) {
+    print("Creating density plots")
+
+    # Combine aggregate results for district level values into one data frame
+    agg_race <- sapply(ei_results, function(x) colnames(x[[1]])[2])
+    agg_cand <- sapply(ei_results, function(x) x[[1]]$Candidate[1])
+    agg_race_cand <- paste0(agg_race, "_", agg_cand)
+    agg_race_cand_2 <- rep(agg_race_cand, each = 2)
+
+    agg_colnames <- as.vector(sapply(agg_results, function(x) colnames(x)))
+    new_colnames <- paste(tolower(agg_colnames), agg_race_cand_2, sep = "_")
+
+    agg_betas <- data.frame(do.call(cbind, agg_results))
+    colnames(agg_betas) <- new_colnames
+
+    # Create density plots
+    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
+
+    # Create degree of racially polarized voting
+    rpv_distribution <- rpv_density(agg_betas, plot_path)
+  }
+
 
   # If betas == TRUE, return a list with results plus df of betas
   if (betas) {

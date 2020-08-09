@@ -15,6 +15,7 @@ ei_iter(
   betas = FALSE,
   par_compute = FALSE,
   verbose = FALSE,
+  plot_path = "",
   ...
 )
 }
@@ -44,6 +45,8 @@ tomography plots}
 \item{par_compute}{A boolean to conduct ei using parallel processing}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
+
+\item{plot_path}{A string to specify plot save location. Defaulted to working directory}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
