@@ -16,6 +16,7 @@ ei_rxc(
   burnin = 10000,
   ci_size = 0.95,
   seed = NULL,
+  eiCompare_class = TRUE,
   ret_mcmc = FALSE,
   verbose = FALSE,
   ...
