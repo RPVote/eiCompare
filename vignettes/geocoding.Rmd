@@ -1,8 +1,10 @@
 ---
-title: "Geocoding: Voter Addresses"
-author: 
+title: 'Geocoding: Voter Addresses'
+author: "null"
 date: "8/4/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 In this vignette, we will walk-through how to geocode a dataset that includes addresses in order to estimate race using BISG.
@@ -17,26 +19,20 @@ Below are some steps to help you walk through the process of performing geocodin
 Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
 ```{r}
 # Load libraries
-suppressMessages(
-  c(
-    install.packages("stringr"),
-    library(stringr), # US Census geocoding API package for R
-    install.packages("readr"),
-    library(readr), # for loading csv file
-    install.packages("tidyverse"),
-    library(tidyverse), # for making a tibble from a dataframe,
-    install.packages("foreach"),
-    library(foreach),
-    install.packages("parallel"),
-    library(parallel),
-    install.packages("doParallel"),
-    library(doParallel),
-    install.packages("data.table"),
-    library(data.table),
-    install.packages("gmodels"),
-    library(gmodels)
-  )
-)
+suppressMessages(c(
+  library(stringr),
+  library(readr),
+  library(tidyverse),
+  library(foreach),
+  library(parallel),
+  library(doParallel),
+  library(data.table),
+  library(gmodels),
+  library(plyr),
+  library(censusxy),
+  library(tidycensus),
+  library(sf)
+))
 ```
 
 ### Step 2: Load your voter data.
@@ -44,106 +40,73 @@ We are using the Georgia and Fulton county voter registration dataset and geocod
 
 ```{r}
 # Load full dataset for all registered voters in Georgia
-ga_full <- read_csv("~/shared/BISG_datasets/georgia_full_voterfile.csv")
+path <- "~/shared/BISG_datasets/"
 
-# Load county code data
-ga_county_codes <- read_csv("~/shared/BISG_datasets/georgia-counties.csv")
+ga_5k <- read_csv(paste(path, "ga_5k_voter_file.csv", sep = ""))
 ```
 
+### Load Functions
+```{r}
+source("~/github/geocodeCompare/geocoder_format.R")
+source("~/github/eiCompare/R/run_geocoder.R")
+```
+
+### Loading Voter Files
 *First, check the full GA voter registration file, `ga_full`, to make sure the dataset has properly downloaded.*
-```{r}
-# Check first 6 rows
-head(ga_full, 6)
-```
-
-```{r}
-# Check the column names of the file
-names(ga_full)
-```
-
+*We will be working with a subset 5000 observations for the Gwinett and Fulton County data.*
 ```{r}
 # Check dimensions of the ga_full dataset
-dim(ga_full)
+dim(ga_5k)
 ```
 
-
-*Now, check the Georgia county code reference table to make sure the file has been properly loaded.*
 ```{r}
 # Check first 6 rows
-head(ga_county_codes, 6)
+head(ga_5k, 6)
 ```
 
 ```{r}
 # Check the column names of the file
-names(ga_county_codes)
-```
-
-
-*There should be 159 counties in the state of Georgia.*
-```{r}
-# Check dimensions of the county code dataset
-dim(ga_county_codes)
-```
-### *Merge the `ga_full` dataset with county names in the `ga_county_codes` table*
-```{r}
-# Merge `ga_full` and `ga_county_codes`
-ga_full_counties <- merge(ga_full, ga_county_codes, by = "county_code")
-```
-
-*Next, we will subset the `ga_full` voter registration dataframe to only include information on people from Gwinnett and Fulton counties, using the column name `county_code`. `county code` is an array that assigns a number to each county name. For Fulton County, the county_code is 60 and Gwinnett County, the county_code is 67.*
-
-*Note: This code is different than the FIPS code used to identify counties within census data.*
-
-```{r}
-ga_gwin_fulton <- ga_full_counties[which(ga_full_counties$county_code == 60 | ga_full_counties$county_code == 67), ]
-
-# Check the first 6 rows of the dataset
-head(ga_gwin_fulton)
-```
-
-```{r}
-# Obtain column names for the ga_gwin_fulton dataset
-names(ga_gwin_fulton)
+names(ga_5k)
 ```
 
 ```{r}
 # Change column name for the `name` column to `county_name`
-names(ga_gwin_fulton)[colnames(ga_gwin_fulton) == "name"] <- "county_name"
-names(ga_gwin_fulton)
+names(ga_5k)[colnames(ga_5k) == "name"] <- "county_name"
+names(ga_5k)
 ```
 
 *All voters should be from Gwinnett and Fulton counties or have county_codes 60 and 67.*
 ```{r}
 # Check that the data only has Gwinnett and Fulton county data
 # Frequency count
-CrossTable(ga_gwin_fulton$county_code, ga_gwin_fulton$county_name, digits = 0)
+CrossTable(ga_5k$county_code, ga_5k$county_name, digits = 0)
 ```
 
 ```{r}
 # Get the dimensions of the dataset
-dim(ga_gwin_fulton)
+dim(ga_5k)
 ```
 *There are 1,411,782 million registered voters in Gwinnett and Fulton counties.*
 
 ```{r}
 # Recode names for location varibles to easily use for geocoding.
-names(ga_gwin_fulton)[names(ga_gwin_fulton) == "residence_house_number"] <- "street_number"
-names(ga_gwin_fulton)[names(ga_gwin_fulton) == "residence_street_name"] <- "street_name"
-names(ga_gwin_fulton)[names(ga_gwin_fulton) == "residence_city"] <- "city"
-names(ga_gwin_fulton)[names(ga_gwin_fulton) == "residence_zipcode"] <- "zipcode"
-names(ga_gwin_fulton)[names(ga_gwin_fulton) == "residence_street_suffix"] <- "street_suffix"
+names(ga_5k)[names(ga_5k) == "residence_house_number"] <- "street_number"
+names(ga_5k)[names(ga_5k) == "residence_street_name"] <- "street_name"
+names(ga_5k)[names(ga_5k) == "residence_city"] <- "city"
+names(ga_5k)[names(ga_5k) == "residence_zipcode"] <- "zipcode"
+names(ga_5k)[names(ga_5k) == "residence_street_suffix"] <- "street_suffix"
 ```
 
 *Check each address variable for voter's residence to clean data if needed.*
 ```{r}
 # Get the number of missing street numbers
-length(which(is.na(ga_gwin_fulton$street_number)))
+length(which(is.na(ga_5k$street_number)))
 ```
-*There are 625 voters that are missing a street number for their address. We will now put these voters with missing street numbers in a separate dataframe.*
+*There are 5 voters that are missing a street number for their address. We will now put these voters with missing street numbers in a separate dataframe.*
 
 ```{r}
 # Select the addresses without a street number
-street_num_miss <- ga_gwin_fulton[which(is.na(ga_gwin_fulton$street_number)), ]
+street_num_miss <- ga_5k[which(is.na(ga_5k$street_number)), ]
 ```
 
 ```{r}
@@ -156,37 +119,41 @@ If you are able to readily locate addresses that have typos or errors, great! Ho
 # Check the frequency of specific addresses
 tail(names(sort(table(street_num_miss$street_name))), 1)
 ```
-It looks like 304 addresses have street names that have been labeled, "MISSING ADDRESS". This may be a data entry error from the voter registration office. We will use the geocoder, OpenStreetMaps to relocate these addresses in the `street_num_miss` dataframe since it takes in addresses later in the tutorial.
+It looks like 2 addresses have street names that have been labeled, "MISSING ADDRESS". This may be a data entry error from the voter registration office. We will use the geocoder, OpenStreetMaps to relocate these addresses in the `street_num_miss` dataframe since it takes in addresses later in the tutorial.
 
 Next, we will look at patterns in city, state, and zipcode.
 ```{r}
 # Check the frequency of city names
-table(sort(ga_gwin_fulton$city))
+table(sort(ga_5k$city))
 ```
 ```{r}
 # Check the frequency of zipcodes
-head(table(sort(ga_gwin_fulton$zipcode)), 100)
+head(table(sort(ga_5k$zipcode)), 100)
 ```
 
 ```{r}
-length(which(is.na(ga_gwin_fulton$zipcode) == TRUE))
+length(which(is.na(ga_5k$zipcode) == TRUE))
 ```
-```{r}
-length(which(is.na(ga_gwin_fulton$zipcode) == TRUE & ga_gwin_fulton$street_name == "MISSING ADDRESS"))
-```
+11 voters are missing zipcodes.
 
 ```{r}
-zip_miss <- which(is.na(ga_gwin_fulton$zipcode) == TRUE & ga_gwin_fulton$street_name == "MISSING ADDRESS")
-ga_gwin_fulton <- ga_gwin_fulton[-zip_miss, ]
-nrow(ga_gwin_fulton)
+length(which(is.na(ga_5k$zipcode) == TRUE & ga_5k$street_name == "MISSING ADDRESS"))
 ```
-There are now 1,409,811 registered voters in the voter file.
+6 voters are missing zipcodes and street names.
 
-There are also 9 digit zipcodes without hyphens in the viter file. Having zipcodes as hyphens may help the goeocoder be more accurate when trying to find an individual's corrdinates.
 ```{r}
+zip_miss <- which(is.na(ga_5k$zipcode) == TRUE & ga_5k$street_name == "MISSING ADDRESS")
+ga_5k <- ga_5k[-zip_miss, ]
+nrow(ga_5k)
+```
+There are now 4,989 registered voters in the voter file.
+
+There are also 9-digit zipcodes without hyphens in the voter file. Having zipcodes as hyphens may help the goeocoder be more accurate when trying to find an individual's corrdinates.
+```{r}
+source("~/github/geocodeCompare/geocoder_format.R")
 # Format zipcodes that are 9 digits long and treated as character variables
-ga_gwin_fulton <- zip_hyphen(
-  voter_file = ga_gwin_fulton,
+ga_5k <- zip_hyphen(
+  voter_file = ga_5k,
   voter_id = "registration_number",
   zipcode = "zipcode"
 )
@@ -195,59 +162,189 @@ ga_gwin_fulton <- zip_hyphen(
 
 ```{r}
 # Check that zzipcodes have been properly formatted
-head(table(ga_gwin_fulton$zipcode), 6)
+head(table(ga_5k$zipcode), 6)
 ```
 
 ### Step 3: Prepare/Structure your voter data for geocoding.
 
 *Concatenate columns for street address.*
 ```{r}
-ga_gwin_fulton <- concat_streetname(
-  voter_file = ga_gwin_fulton,
+ga_5k <- concat_streetname(
+  voter_file = ga_5k,
   voter_id = "registration_number",
   street_number = "street_number",
   street_suffix = "street_suffix"
 )
 
-head(ga_gwin_fulton$street_address, 6)
+head(ga_5k$street_address, 6)
 ```
 
 *Create a column for the final address in the voter file.*
 ```{r}
-ga_gwin_fulton <- concat_final_address(
-  voter_file = ga_gwin_fulton,
+# Create a column for state. The GA voter registration dataset does not have a state column.
+ga_5k$state <- "GA"
+
+ga_5k <- concat_final_address(
+  voter_file = ga_5k,
   voter_id = "registration_number",
   street_address = "street_address",
   city = "city",
-  state = "GA",
+  state = "state",
   zipcode = "zipcode"
 )
 ```
 
-*
 ```{r}
 # convert dataframe into a tibble
-ga_gwin_fulton <- as_tibble(ga_gwin_fulton)
+ga_5k <- as_tibble(ga_5k)
 
-head(ga_gwin_fulton, 6)
+head(ga_5k, 6)
 ```
 
-### Step 4: Select a geocoder and run the geocoder on the addresses in your file.
 
-*Select the geocoder you are going to use to find the coordinates (i.e. latitude and longitude) for the addresses in the voter file.* 
+### Step 4: run_geocoder() Function 
+### Select a geocoder and run the geocoder on the addresses in your file.
+
+*Select the geocoder you are going to use to find the geographies like coordinates (i.e. latitude and longitude) and FIPS codes for the addresses in the voter file.* 
+
+#### There are several options for geocoding your data using a geocoding API.  The eiCompare package utilizes the US Census Geocding API via a R package called censusxy.
+
 
 *Note: If you have more than 10000 voters in yoru file, we recommedn using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.*
 
-*We recommend first geocoding your data with the US Census Geocoder API via the R package, censusxy.* 
+#### Let's start geocoding our data*
+*We recommend first geocoding your data with the US Census Geocoder API via the R package, censusxy.*
 
-#### Using the Census Geocoder API
+voter file: A data frame contain the voter addresses, separated into columns for street, city, state, and zipcode
 
-*Let's start geocoding our data*
+geocoder: The options for selecting geocoders are "censusxy" and "opencage".
+
+parallel: TRUE or FALSE. The option to run parallel processing on the data. This is dependent on whether your dataset exceeds 10,000 observations (i.e. addresses). Geocoding a batch of 10000 addresses is also the limit for addresses to be geocoded with the US Census Geocoder API.
+
+voter_id: the unique identifier 
+
+street: the street number, street name, and/or street suffix. Ex. 555 Main Street SW
+
+city: the location/town
+
+state: the abbreviated state (U.S. state categories such as "GA")
+
+zipcode: the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
+
+country: the abbreviated a nation or territory
+
+census_return: either "locations" or "geographies". "locations" returns the latitude and longitude coordinates. "geographies" returns the latitude, longitude, and FIPS codes for county, state, tract, and block.
+
+census_benchmark: a dataset of the snapshot of the US Census data. Data is collected two times a year. Public_AR_Current is the time period when we created the snapshot of the data (usually done twice yearly). For example, Public_AR_Current is the most recent snapshot of our dataset. Other options can be found at: _____<insert link>____________________.
+
+census_vintage: a dataset based on the census
 
 
-### Step 5: Re-run the geocoder on missing geocoded addresses.
+We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
 
-Determine if there are any missing geocoded addresses and re-run the geocoder on those missing geocoded addresses. Then, join the missing data back with the original voter file.
 
+
+*If there are any missing geocoded addresses, the run_geocoder() function will re-run the geocoder on those missing geocoded addresses. Then, join the missing data back in with the original voter file.*
+
+```{r}
+geocoded_data <- run_geocoder(
+  voter_file = ga_5k,
+  geocoder = "census",
+  parallel = FALSE,
+  voter_id = "registration_number",
+  street = "street_address",
+  city = "city",
+  state = "state",
+  zipcode = "zipcode",
+  country = "US",
+  census_return = "geographies",
+  census_benchmark = "Public_AR_Current",
+  census_output = "full",
+  census_class = "sf",
+  census_vintage = 4,
+  opencage_key = NULL
+)
+```
+
+Check the column names of the geocoded dataset. There should be an additional column called `geometry` with latitude, longitude coordinates.
+```{r}
+
+# Check the column names of the geocoded_dataset object
+names(geocoded_data)
+```
+
+```{r}
+# Check the first six rows of the geocoded_dataset object
+head(geocoded_data)
+```
+
+```{r}
+# The number of rows missing in new dataframe
+num_miss_geo <- nrow(ga_5k) - nrow(geocoded_data)
+
+# Only re-run the geocoder if missing data is present.
+if (num_miss_geo > 0) {
+
+  # Find non-geocoded data
+  missing_lonlat_df <- anti_join(ga_5k, as.data.frame(geocoded_data))
+
+  # Run the geocoder on the missing data
+  rerun_data <- run_geocoder(
+    voter_file = missing_lonlat_df,
+    geocoder = "census",
+    parallel = FALSE,
+    voter_id = "registration_number",
+    street = "street_address",
+    city = "city",
+    state = "state",
+    zipcode = "zipcode",
+    country = "US",
+    census_return = "geographies",
+    census_benchmark = "Public_AR_Current",
+    census_output = "full",
+    census_vintage = 4,
+    census_class = "sf",
+    opencage_key = NULL
+  )
+}
+```
+
+*Combine the newly geocoded data from the `rerun_data` object and the original geocoded data, `geocoded_data`, object.*
+```{r}
+geo_combined <- rbind(geocoded_data, rerun_data)
+```
+
+```{r}
+# Check the number of observations in the combined geocoded voter registration dataset
+nrow(geo_combined)
+```
+
+```{r}
+# Check the dimensions of the combined geocoded voter registration dataset
+dim(geo_combined)
+```
+```{r}
+# rename columns
+names(geo_combined)[names(geo_combined) == "cxy_state_id"] <- "STATEFP10"
+names(geo_combined)[names(geo_combined) == "cxy_county_id"] <- "COUNTYFP10"
+names(geo_combined)[names(geo_combined) == "cxy_tract_id"] <- "TRACTCE10"
+names(geo_combined)[names(geo_combined) == "cxy_block_id"] <- "BLOCKCE10"
+```
 
 ### Step 6: Save your geocoded file 
+```{r}
+write_csv(geo_combined, "~/shared/BISG_datasets/gwin_fulton_5k_fullgeo.csv")
+```
+
+### Step 7: Plot your geocoded data
+```{r}
+# interactive map
+library(mapview)
+mapview::mapview(geo_combined)
+```
+
+### Step 8: Mapping more data
+```{r}
+# J to Insert interactive map function here.
+```
+      
