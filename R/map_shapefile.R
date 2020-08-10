@@ -5,7 +5,10 @@
 #' @param crs the Coordinate reference system, default is crs="+proj=latlong +ellps=GRS80 +no_defs"
 #' @param title the tile of the map
 #'
-#' @export
+#' @export shape_file
+#' @export shape_list
+#'
+#' @return Plots of mapped ecological units desired and voter latitude and longitudes
 #'
 #' @importFrom sf
 #' @importFrom ggplot2
