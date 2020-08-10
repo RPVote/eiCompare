@@ -2,6 +2,8 @@
 #'
 #' @param eic_object An eiCompare object, outputted from ei_iter() or ei_rxc()
 #'
+#' @export
+#'
 #' @return A nicely formatted dataframe for printing results
 summary.eic <- function(eic_object) {
   estimates <- eic_object$estimates
