@@ -202,52 +202,74 @@ head(ga_5k, 6)
 ```
 
 
-### Step 4: run_geocoder() Function 
+### <u>Step 4: run_geocoder() Function<u>
+
 ### Select a geocoder and run the geocoder on the addresses in your file.
 
-*Select the geocoder you are going to use to find the geographies like coordinates (i.e. latitude and longitude) and FIPS codes for the addresses in the voter file.* 
+Select the geocoder you are going to use to find the geographies like coordinates (i.e. latitude and longitude) and FIPS codes for the addresses in the voter file. There are several options for geocoding your data using a geocoding API.  The eiCompare package utilizes the US Census Geocding API via a R package called censusxy. For an alternative commerically available geocoder, we recommend using Opencage Geocoder API which has limits of 2500 requests per day.
 
-#### There are several options for geocoding your data using a geocoding API.  The eiCompare package utilizes the US Census Geocding API via a R package called censusxy.
+*Note: If you have more than 10000 voters in your file, we recommend using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.*
 
-
-*Note: If you have more than 10000 voters in yoru file, we recommedn using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.*
-
-#### Let's start geocoding our data*
+#### Let's start geocoding our data
 *We recommend first geocoding your data with the US Census Geocoder API via the R package, censusxy.*
 
-voter file: A data frame contain the voter addresses, separated into columns for street, city, state, and zipcode
+The US Census Geocoder has two options for geocoding output: "simple" and "full".
++ "simple" returns coordinates of latitude (lat) and longitude. 
++ "full" returns coordinates, and other variables for geographies from Federal Information Processing Standards (FIPS) codes.
 
-geocoder: The options for selecting geocoders are "censusxy" and "opencage".
-
-parallel: TRUE or FALSE. The option to run parallel processing on the data. This is dependent on whether your dataset exceeds 10,000 observations (i.e. addresses). Geocoding a batch of 10000 addresses is also the limit for addresses to be geocoded with the US Census Geocoder API.
-
-voter_id: the unique identifier 
-
-street: the street number, street name, and/or street suffix. Ex. 555 Main Street SW
-
-city: the location/town
-
-state: the abbreviated state (U.S. state categories such as "GA")
-
-zipcode: the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
-
-country: the abbreviated a nation or territory
-
-census_return: either "locations" or "geographies". "locations" returns the latitude and longitude coordinates. "geographies" returns the latitude, longitude, and FIPS codes for county, state, tract, and block.
-
-census_benchmark: a dataset of the snapshot of the US Census data. Data is collected two times a year. Public_AR_Current is the time period when we created the snapshot of the data (usually done twice yearly). For example, Public_AR_Current is the most recent snapshot of our dataset. Other options can be found at: _____<insert link>____________________.
-
-census_vintage: a dataset based on the census
-
-
-We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
-
-
-
-*If there are any missing geocoded addresses, the run_geocoder() function will re-run the geocoder on those missing geocoded addresses. Then, join the missing data back in with the original voter file.*
+To get the latitude and longitude only, we will set the `census_return` variable to "simple" and assign each census variable to a desired value. We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
 
 ```{r}
-geocoded_data <- run_geocoder(
+# Getting the latitude and longitude coordinates only.
+geocoded_data_simple <- run_geocoder(
+  voter_file = ga_5k,
+  geocoder = "census",
+  parallel = FALSE,
+  voter_id = "registration_number",
+  street = "street_address",
+  city = "city",
+  state = "state",
+  zipcode = "zipcode",
+  country = "US",
+  census_return = "geographies",
+  census_benchmark = "Public_AR_Current",
+  census_output = "simple",
+  census_class = "sf",
+  census_vintage = 4,
+  opencage_key = NULL
+)
+```
+Check the column names of the geocoded dataset. There should be an additional column called `geometry` with latitude, and longitude coordinates.
+
+```{r}
+colnames(geocoded_data_simple)
+```
+
+Next, we will use parallel processing to make our geocoder run faster by setting `parallel`=TRUE and obtain simple geographies.
+```{r}
+# Getting the latitude and longitude coordinates only.
+geocoded_data_simple <- run_geocoder(
+  voter_file = ga_5k,
+  geocoder = "census",
+  parallel = TRUE,
+  voter_id = "registration_number",
+  street = "street_address",
+  city = "city",
+  state = "state",
+  zipcode = "zipcode",
+  country = "US",
+  census_return = "geographies",
+  census_benchmark = "Public_AR_Current",
+  census_output = "simple",
+  census_class = "sf",
+  census_vintage = 4,
+  opencage_key = NULL
+)
+```
+
+We will now demonstarte how to add the the coordinates and FIPS codes by setting the `census_return` variable to "full".
+```{r}
+geocoded_data_full_geo <- run_geocoder(
   voter_file = ga_5k,
   geocoder = "census",
   parallel = FALSE,
@@ -266,21 +288,23 @@ geocoded_data <- run_geocoder(
 )
 ```
 
-Check the column names of the geocoded dataset. There should be an additional column called `geometry` with latitude, longitude coordinates.
+Check the column names of the geocoded dataset. There should be an additional column called `geometry` with latitude, longitude coordinates, and other variables for geographies.
 ```{r}
 
 # Check the column names of the geocoded_dataset object
-names(geocoded_data)
+colnames(geocoded_data_full_geo)
 ```
 
 ```{r}
 # Check the first six rows of the geocoded_dataset object
-head(geocoded_data)
+head(geocoded_data_full_geo)
 ```
 
+
+If there are any missing geocoded addresses, use the run_geocoder() function to re-run the geocoder on those missing geocoded addresses. We will use the `geocoded_data_full_geo` data to demonstrate how to re-run the geocoder on missing addresses.
 ```{r}
 # The number of rows missing in new dataframe
-num_miss_geo <- nrow(ga_5k) - nrow(geocoded_data)
+num_miss_geo <- nrow(ga_5k) - nrow(geocoded_data_full_geo)
 
 # Only re-run the geocoder if missing data is present.
 if (num_miss_geo > 0) {
@@ -309,9 +333,9 @@ if (num_miss_geo > 0) {
 }
 ```
 
-*Combine the newly geocoded data from the `rerun_data` object and the original geocoded data, `geocoded_data`, object.*
+Some of the missing addresses were able to be geocoded. Next, we will combine the newly geocoded data from the `rerun_data` object and the original geocoded data, `geocoded_data`, object.
 ```{r}
-geo_combined <- rbind(geocoded_data, rerun_data)
+geo_combined <- rbind(geocoded_data_full_geo, rerun_data)
 ```
 
 ```{r}
@@ -323,8 +347,9 @@ nrow(geo_combined)
 # Check the dimensions of the combined geocoded voter registration dataset
 dim(geo_combined)
 ```
+
 ```{r}
-# rename columns
+# rename columns to US Census FIPS code variable names
 names(geo_combined)[names(geo_combined) == "cxy_state_id"] <- "STATEFP10"
 names(geo_combined)[names(geo_combined) == "cxy_county_id"] <- "COUNTYFP10"
 names(geo_combined)[names(geo_combined) == "cxy_tract_id"] <- "TRACTCE10"
