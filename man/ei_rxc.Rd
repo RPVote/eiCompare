@@ -11,7 +11,7 @@ ei_rxc(
   totals_col,
   ntunes = 10,
   totaldraws = 10000,
-  samples = 100000,
+  samples = 1e+05,
   thin = 1,
   burnin = 10000,
   ci_size = 0.95,

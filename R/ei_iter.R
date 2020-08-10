@@ -338,7 +338,7 @@ ei_iter <- function(
 
       # Get samples of precinct-level estimates
       prec_res <- ei::eiread(
-        ei.object = ei_out,
+        ei.object = ei_object,
         "betab",
         "sbetab",
         "betaw",
