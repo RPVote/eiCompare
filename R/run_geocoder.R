@@ -100,7 +100,7 @@ run_geocoder <- function(voter_file,
 
       start_time_2 <- Sys.time()
 
-      census_voter_file <- foreach(i = 1:n_loops, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
+      census_voter_file <- foreach(i = 1:1, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
         census_voter_file <- cxy_geocode(
           .data = voter_file,
           id = voter_id,
