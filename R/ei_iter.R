@@ -236,15 +236,15 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, ei_out)
   }
 
-  if (par_compute == TRUE) {
-    # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
-    setTxtProgressBar(pb, i)
-
-    return(ei_out)
-  }
+  # if (par_compute == TRUE) {
+  #  # Stop clusters (always done between uses)
+  #  parallel::stopCluster(clust)
+  #  # Garbage collection (in case of leakage)
+  #  gc()
+  #  #setTxtProgressBar(pb, i)
+  #
+  #  return(ei_out)
+  # }
 
   # close progress bar
   close(pb)

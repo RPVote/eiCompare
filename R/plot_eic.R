@@ -10,10 +10,10 @@
 
 plot_eic <- function(eic_objects) {
   data <- as.data.frame(matrix(nrow = 0, ncol = 7))
-  for (i in 1:length(results)) {
-    object <- results[[i]]
+  for (i in 1:length(eic_objects)) {
+    object <- eic_objects[[i]]
     samples <- as.data.frame(object$estimates)
-    samples["estimate"] <- names(results)[i]
+    samples["estimate"] <- names(eic_objects)[i]
     data <- rbind(data, samples)
   }
 

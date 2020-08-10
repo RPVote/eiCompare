@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Ecological Inference"
-output: rmarkdown::github_document
+output: rmarkdown::latex
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,16 +24,10 @@ using election results and information about voter turnout. We often end up with
 datasets like the following, which contains aggregate election results and turnout 
 information for each election precinct in Gwinnett County, Georgia:
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
 
-options(scipen = 999, digits = 4)
-```
 
-```{r}
+
+```r
 suppressPackageStartupMessages({
   library(eiCompare)
   library(tidyverse)
@@ -42,6 +36,13 @@ suppressPackageStartupMessages({
 
 data("gwinnett")
 head(gwinnett)
+#>   precinct turnout kemp abrams metz white black hispanic other
+#> 1      001    3718 1835   1842   41  1862  1247      211   522
+#> 2      002    2251  434   1805   12   455  1447       68   268
+#> 3      003    2721 1156   1532   33  1147   850      220   399
+#> 4      004     875  402    456   17   522   188       36   134
+#> 5      005    1765  963    783   19  1004   477       36   222
+#> 6      006    2116  841   1248   27   915   520      255   394
 ```
 
 This dataset contains the following columns:
@@ -75,7 +76,8 @@ process.
 
 First, let's set up our column vectors. Most `eiCompare` functions for ecological inference require these as parameters.
 
-```{r}
+
+```r
 cands <- c("kemp", "abrams", "metz")
 races <- c("white", "black", "hispanic", "other")
 total <- "turnout"
@@ -84,7 +86,8 @@ id <- "precinct"
 
 We start by dealing with all the missing values in the our dataset. For this, we can use the function `resolve_missing_vals()` from the `eiCompare` package.
 
-```{r}
+
+```r
 gwinnett <- resolve_missing_vals(
   data = gwinnett,
   cand_cols = cands,
@@ -92,21 +95,29 @@ gwinnett <- resolve_missing_vals(
   totals_col = total,
   na_action = "DROP"
 )
+#> No missing values in key columns. Returning original dataframe...
 ```
 Looks like this dataset doesn't contain any missing values. We can proceed to the next step. Next, we use `dedupe_precincts()` to check that the data does not contain any 
 duplicate precincts.
 
-```{r}
+
+```r
 gwinnett <- dedupe_precincts(
   data = gwinnett,
   id_cols = id
 )
+#> Warning in dedupe_precincts(data = gwinnett, id_cols = id): Precincts appear duplicated. Returning boolean column identifying
+#> duplicates...
 ```
 We got a warning indicating that some rows of the data do appear to belong to the same precinct. When `dedupe_precincts()` identifies duplicates that it does not know how to resolve, the function returns a column called `duplicate` that highlights the duplicated rows. This helps us investigate the duplicates and try to figure out where they came from. Let's take a look at these now.
 
-```{r}
+
+```r
 gwinnett %>%
   filter(duplicate)
+#>   precinct turnout kemp abrams metz white black hispanic other duplicate
+#> 1      035    1658  803    835   20  1100   525       81   362      TRUE
+#> 2      035     368  159    207    2  1100   525       81   362      TRUE
 ```
 
 Here we see that precinct `035` appears to have entered the data twice. This anomaly has at least two possible explanations:
@@ -117,7 +128,8 @@ Here we see that precinct `035` appears to have entered the data twice. This ano
 
 In this case, we have confidence that this duplicate has emerged through an error in precinct reporting. We can combine the two columns using this code:
 
-```{r}
+
+```r
 missing_inds <- which(gwinnett$duplicate)
 columns_to_add <- c(total, cands)
 gwinnett[missing_inds[1], columns_to_add] <-
@@ -125,40 +137,59 @@ gwinnett[missing_inds[1], columns_to_add] <-
   gwinnett[missing_inds[2], columns_to_add]
 gwinnett <- gwinnett[-missing_inds[2], ]
 gwinnett[missing_inds[1], ]
+#>    precinct turnout kemp abrams metz white black hispanic other duplicate
+#> 35      035    2026  962   1042   22  1100   525       81   362      TRUE
 ```
 Now we see the vote totals from the previous two columns have been summed together in this new row. We can double check that this eliminated all duplicates be running `dedupe_precints()` again.
 
-```{r}
+
+```r
 gwinnett <- dedupe_precincts(
   data = gwinnett,
   id_cols = id
 )
+#> Data does not contain duplicates. Proceed...
 ```
 Now we're sure that our dataset does not contain any missing values or duplicated precincts. We can proceed with standardizing the data. To execute ecological inference cleanly, we need to make sure to represent our data in proportions that sum to one. Not doing this can cause the EI functions to break or behave unexpectedly. For this, we can use `stdize_votes_all()`. 
 
 
-```{r}
+
+```r
 gwinnett_ei <- stdize_votes_all(
   data = gwinnett,
   cand_cols = cands,
   race_cols = races,
   totals_col = total
 )
+#> Using provided totals...
+#> Standardizing candidate columns...
+#> All columns sum correctly. Computing proportions...
+#> Standardizing race columns...
+#> Vote sums deviate from totals.
+#> Deviations are minor. Restandardizing vote columns...
 ```
-```{r}
+
+```r
 head(gwinnett_ei)
+#>     kemp abrams     metz  white  black hispanic  other turnout
+#> 1 0.4935 0.4954 0.011027 0.4846 0.3246  0.05492 0.1359    3842
+#> 2 0.1928 0.8019 0.005331 0.2033 0.6466  0.03038 0.1197    2238
+#> 3 0.4248 0.5630 0.012128 0.4385 0.3249  0.08410 0.1525    2616
+#> 4 0.4594 0.5211 0.019429 0.5932 0.2136  0.04091 0.1523     880
+#> 5 0.5456 0.4436 0.010765 0.5773 0.2743  0.02070 0.1277    1739
+#> 6 0.3974 0.5898 0.012760 0.4391 0.2495  0.12236 0.1891    2084
 ```
 
 This function has produced a new dataframe where each column is a proportion. We can check that for each row, the candidate columns sum to one and the race columns sum to one using the following code.
 
-```{r}
-sum_over_cols <- function(data, cols) {
-  return(rowSums(data[, cols]))
-}
 
+```r
 cand_sums <- sum_over_cols(data = gwinnett_ei, cols = cands)
 race_sums <- sum_over_cols(data = gwinnett_ei, cols = races)
 table(cand_sums, race_sums)
+#>          race_sums
+#> cand_sums   1
+#>         1 156
 ```
 Here we see that, for each row in the dataset, the sum of the race columns equals one, and the sum of the candidate columns also equals one. We *always* need to satisfy this condition before running the EI functions.
 
@@ -168,13 +199,16 @@ We now have a new dataframe without missing values, with no duplicated precincts
 
 Now that we've cleaned and prepared the data, we're ready to begin analyzing it. Before running ecological inference, it's useful to conduct some simple descriptive analyses. First, let's plot the precinct-level bivariate relationships between all the different combinations of racial and candidate turnout proportions.
 
-```{r fig.height = 5, fig.width = 7, fig.align = "center"}
+
+```r
 plot_bivariate(
   data = gwinnett_ei,
   cand_cols = cands,
   race_cols = races
 )
 ```
+
+<img src="figure/unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
 
 
 The `plot_bivariate()` function returns a `ggplot2` object plotting the relationships between each candidate's precinct-level vote share and the precinct-level turnout share of each race group. These plots can tell us a lot about what to expect from the EI analysese to come. In particular, we can observe the following two trends.
@@ -191,18 +225,44 @@ These basic descriptive checks help us understand our data and give us a sense o
 
 We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution. First, we conduct iterative EI using `ei_iter()`.
 
-```{r}
+
+```r
 ei_results_iter <- ei_iter(
   data = gwinnett_ei,
   cand_cols = cands,
   race_cols = races,
   totals_col = total
 )
+#>   |                                                                             |                                                                     |   0%  |                                                                             |============                                                         |  17%
 summary_eic(ei_results_iter)
+#> $white
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp   86.85 0.29       86.36       87.55
+#> abrams 11.19 0.32       10.60       11.84
+#> metz    1.96 0.04        1.87        2.05
+#> 
+#> $black
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp    1.22 0.52        0.64        2.55
+#> abrams 99.08 0.36       98.24       99.49
+#> metz    1.64 0.08        1.53        1.83
+#> 
+#> $hispanic
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp    0.68 0.60        0.07        2.04
+#> abrams 95.11 2.85       87.22       98.25
+#> metz    0.46 0.16        0.25        0.84
+#> 
+#> $other
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp    1.33 1.99        0.05        7.96
+#> abrams 98.69 1.13       95.81       99.76
+#> metz    4.14 0.13        3.88        4.40
 ```
 
 Next, we conduct RxC EI using `ei_rxc()`. 
-```{r}
+
+```r
 ei_results_rxc <- ei_rxc(
   data = gwinnett_ei,
   cand_cols = cands,
@@ -210,10 +270,34 @@ ei_results_rxc <- ei_rxc(
   totals_col = total
 )
 summary_eic(ei_results_rxc)
+#> $white
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp   68.19 6.18       54.56       79.89
+#> abrams 31.23 6.20       19.66       44.85
+#> metz    0.58 0.01        0.41        0.79
+#> 
+#> $black
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp   18.40 6.09        8.57       32.61
+#> abrams 80.83 6.19       66.36       90.76
+#> metz    0.76 0.01        0.52        1.09
+#> 
+#> $hispanic
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp    5.61 0.34        2.82       10.18
+#> abrams 89.03 0.49       83.45       93.32
+#> metz    5.37 0.15        2.86        7.90
+#> 
+#> $other
+#>         mean   se ci_95_lower ci_95_upper
+#> kemp   25.21 6.55        9.64       37.78
+#> abrams 72.49 6.46       60.39       87.55
+#> metz    2.30 0.08        1.43        3.60
 ```
 
 Finally, we can plot the results of the two methods using plot_eic. This function accepts a list of `eiCompare` objects outputted by `ei_iter()` and `ei_rxc`. It plots the point estimates and 95% credible intervals for each candidate-race pair, for however many objects are passed in. 
-```{r}
+
+```r
 results <- list(
   "Iterative" = ei_results_iter,
   "RxC" = ei_results_rxc
@@ -221,3 +305,7 @@ results <- list(
 
 plot_eic(results)
 ```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+
+Plotting the results of both methods, we can see that clear evidence of racially polarized voting exists in Gwinnett county. We see that both methods show white voters prefer Brian Kemp, while voters in all other race/ethnicity groups prefer Stacey Abrams.
