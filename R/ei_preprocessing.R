@@ -7,6 +7,8 @@
 #' @param cols A set of columns to sum over. Typically, enter cand_cols or
 #' race_cols here.
 #'
+#' @export
+#'
 #' @return A vector of row-wise sums across the column vector entered as
 #' argument.
 sum_over_cols <- function(data, cols) {

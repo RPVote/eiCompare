@@ -21,7 +21,7 @@
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
-#' @param pare_class default = TRUE
+#' @param eiCompare_class default = TRUE
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param verbose A boolean indicating whether to print out status messages.
@@ -57,7 +57,7 @@ ei_iter <- function(
                     erho = 0.5,
                     seed = NULL,
                     plots = FALSE,
-                    pare_class = TRUE,
+                    eiCompare_class = TRUE,
                     betas = FALSE,
                     par_compute = FALSE,
                     verbose = FALSE,
@@ -296,7 +296,7 @@ ei_iter <- function(
     rpv_distribution <- rpv_density(agg_betas, plot_path)
   }
 
-  if (pare_class) {
+  if (eiCompare_class) {
 
     # Set up containers
     means <- c()
@@ -334,7 +334,7 @@ ei_iter <- function(
 
       # Add district chains to dataframe
       district_name <- paste(cand, race, sep = "_")
-      district_samples[[district_name]] <- aggs
+      district_samples[[district_name]] <- as.numeric(aggs)
 
       # Get samples of precinct-level estimates
       prec_res <- ei::eiread(

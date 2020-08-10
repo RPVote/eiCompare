@@ -12,6 +12,7 @@ ei_iter(
   erho = 0.5,
   seed = NULL,
   plots = FALSE,
+  eiCompare_class = TRUE,
   betas = FALSE,
   par_compute = FALSE,
   verbose = FALSE,
@@ -39,6 +40,8 @@ runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{plots}{A boolean indicating whether or not to include density and
 tomography plots}
+
+\item{eiCompare_class}{default = TRUE}
 
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 

@@ -198,7 +198,7 @@ ei_rxc <- function(
     output <- list(
       "type" = "RxC",
       "estimates" = results_table,
-      "district_samples" = chains_pr,
+      "district_samples" = as.data.frame(chains_pr),
       "precinct_samples" = NULL,
       "stat_objects" = list(md_out)
     )

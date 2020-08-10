@@ -4,7 +4,7 @@
 \alias{get_md_bayes_gen_output}
 \title{Get md_bayes_gen() output from ei_rxc() output}
 \usage{
-get_md_bayes_gen_output(results_table, race_cols)
+get_md_bayes_gen_output(results_table)
 }
 \arguments{
 \item{results_table}{A results table from}

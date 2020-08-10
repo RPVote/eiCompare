@@ -187,9 +187,9 @@ These basic descriptive checks help us understand our data and give us a sense o
 
 ## Ecological Inference
 
-`eiCompare` enables users to analyze and compare three different approaches to EI, The three approaches are Goodman's EI, Iterative EI, and RxC EI. For more information about these techniques, see the [technical details](technical.details.com) page of our website.
+`eiCompare` enables users to analyze and compare the two dominant EI methods, Iterative EI and RxC EI. For more information about these techniques, see the [technical details](technical.details.com) page of our website.
 
-We can run these methods easily with their respective functions. `ei_rxc()` and `ei_iter` may take some time to run, since they both run simulations to compute their estimates. 
+We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution.
 
 ```{r}
 ei_results_iter <- ei_iter(
@@ -210,14 +210,11 @@ ei_results_rxc <- ei_rxc(
 )
 summary.eic(ei_results_rxc)
 ```
-
 ```{r}
-# results <- list(ei_results_iter, ei_results_rxc)
-#
-# for (i in 1:length(list)) {
-#
-# }
-#
-# ei_results_iter$estimates
-# ei_results_rxc$estimates
+results <- list(
+  "Iterative" = ei_results_iter,
+  "RxC" = ei_results_rxc
+)
+
+plot_eic(results)
 ```
