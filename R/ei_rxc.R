@@ -23,6 +23,8 @@
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
 #' @param verbose A boolean indicating whether to print out status messages.
+#' @param diagnostic Run diagnostic test to assess viability of MCMC parameters
+#' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -53,6 +55,8 @@ ei_rxc <- function(
                    seed = NULL,
                    ret_mcmc = FALSE,
                    verbose = FALSE,
+                   diagnostic = FALSE,
+                   n_chains = 3,
                    ...) {
 
   # Check for valid arguments
@@ -88,27 +92,49 @@ ei_rxc <- function(
       formula = formula,
       ntunes = ntunes,
       totaldraws = totaldraws,
-      ...
+      # ...
     )
   )
 
   if (verbose) {
     message("Collecting samples...")
   }
-  # Bayes model estimation
-  suppressWarnings(
-    md_out <- ei.MD.bayes(
-      formula = formula,
-      sample = samples,
-      data = data,
-      total = totals_col,
-      thin = thin,
-      burnin = burnin,
-      ret.mcmc = TRUE,
-      tune.list = tune_nocov,
-      ...
+
+  if (diagnostic) {
+    md_out <- foreach::foreach(chain = 1:n_chains) %do% {
+      # Bayes model estimation
+      suppressWarnings(
+        md_out <- ei.MD.bayes(
+          formula = formula,
+          sample = samples,
+          data = data,
+          total = totals_col,
+          thin = thin,
+          burnin = burnin,
+          ret.mcmc = TRUE,
+          tune.list = tune_nocov,
+          # ...
+        )
+      )
+
+      md_mcmc <- as.mcmc(md_out)
+    }
+  } else {
+    # Bayes model estimation
+    suppressWarnings(
+      md_out <- ei.MD.bayes(
+        formula = formula,
+        sample = samples,
+        data = data,
+        total = totals_col,
+        thin = thin,
+        burnin = burnin,
+        ret.mcmc = FALSE,
+        tune.list = tune_nocov,
+        # ...
+      )
     )
-  )
+  }
 
   # Extract district-level MCMC chains
   # These initially present raw population count estimates
