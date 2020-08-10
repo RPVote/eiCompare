@@ -5,7 +5,7 @@
 #' @export
 #'
 #' @return A nicely formatted dataframe for printing results
-summary.eic <- function(eic_object) {
+summary_eic <- function(eic_object) {
   estimates <- eic_object$estimates
   estimates <- data.frame(lapply(
     estimates,

@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Ecological Inference"
-output: rmarkdown::html_vignette
+output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -189,7 +189,7 @@ These basic descriptive checks help us understand our data and give us a sense o
 
 `eiCompare` enables users to analyze and compare the two dominant EI methods, Iterative EI and RxC EI. For more information about these techniques, see the [technical details](technical.details.com) page of our website.
 
-We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution.
+We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution. First, we conduct iterative EI using `ei_iter()`.
 
 ```{r}
 ei_results_iter <- ei_iter(
@@ -198,9 +198,10 @@ ei_results_iter <- ei_iter(
   race_cols = races,
   totals_col = total
 )
-summary.eic(ei_results_iter)
+summary_eic(ei_results_iter)
 ```
 
+Next, we conduct RxC EI using `ei_rxc()`. 
 ```{r}
 ei_results_rxc <- ei_rxc(
   data = gwinnett_ei,
@@ -208,8 +209,10 @@ ei_results_rxc <- ei_rxc(
   race_cols = races,
   totals_col = total
 )
-summary.eic(ei_results_rxc)
+summary_eic(ei_results_rxc)
 ```
+
+Finally, we can plot the results of the two methods using plot_eic. This function accepts a list of `eiCompare` objects outputted by `ei_iter()` and `ei_rxc`. It plots the point estimates and 95% credible intervals for each candidate-race pair, for however many objects are passed in. 
 ```{r}
 results <- list(
   "Iterative" = ei_results_iter,
