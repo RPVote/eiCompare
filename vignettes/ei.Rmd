@@ -144,10 +144,9 @@ gwinnett_ei <- stdize_votes_all(
   race_cols = races,
   totals_col = total
 )
-```
-```{r}
 head(gwinnett_ei)
 ```
+
 
 This function has produced a new dataframe where each column is a proportion. We can check that for each row, the candidate columns sum to one and the race columns sum to one using the following code.
 

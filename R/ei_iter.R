@@ -233,7 +233,7 @@ ei_iter <- function(
 
     setTxtProgressBar(pb, i)
 
-    list(district_res, precinct_res, aggs_b, ei_out)
+    list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
   # if (par_compute == TRUE) {
@@ -299,6 +299,8 @@ ei_iter <- function(
   if (eiCompare_class) {
 
     # Set up containers
+    races <- c()
+    cands <- c()
     means <- c()
     ses <- c()
     ci_lowers <- c()
@@ -308,9 +310,11 @@ ei_iter <- function(
     precinct_samples <- list()
 
     for (i in 1:length(ei_objects)) {
-      ei_object <- ei_objects[[i]]
-      cand <- race_cand_pairs[i, "cand"]
-      race <- race_cand_pairs[i, "race"]
+      ei_object <- ei_objects[[i]][[3]]
+      cand <- ei_objects[[i]][[2]]
+      race <- ei_objects[[i]][[1]]
+      cands <- append(cands, cand)
+      races <- append(races, race)
 
       # Get estimates
       aggs <- ei::eiread(ei_object, "aggs")[, 1]
@@ -359,7 +363,7 @@ ei_iter <- function(
 
     # Make estimates table
     estimates <- data.frame(cbind(means, ses, ci_lowers, ci_uppers))
-    estimates <- cbind(race_cand_pairs[, 2], race_cand_pairs[, 1], estimates)
+    estimates <- cbind(cands, races, estimates)
     colnames(estimates) <- c(
       "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
     )
