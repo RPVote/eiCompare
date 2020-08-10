@@ -31,6 +31,8 @@ suppressMessages(c(
   library(plyr),
   library(censusxy),
   library(tidycensus),
+  library(mapview),
+  library(tigris),
   library(sf)
 ))
 ```
@@ -49,6 +51,7 @@ ga_5k <- read_csv(paste(path, "ga_5k_voter_file.csv", sep = ""))
 ```{r}
 source("~/github/geocodeCompare/geocoder_format.R")
 source("~/github/eiCompare/R/run_geocoder.R")
+source("~/github/eiCompare/R/map_shapefile.R")
 ```
 
 ### Loading Voter Files
@@ -362,14 +365,50 @@ write_csv(geo_combined, "~/shared/BISG_datasets/gwin_fulton_5k_fullgeo.csv")
 ```
 
 ### Step 7: Plot your geocoded data
+We will map the area or ecological unit we are interested in using the tigris package for loading in US Census shapefiles.
 ```{r}
-# interactive map
-library(mapview)
-mapview::mapview(geo_combined)
+# Load shapefile for the state of Georgia
+shape_file <- counties(state = "GA")
+
+# Concatenate the state and county codes into column called fips
+shape_file$fips <- paste0(shape_file$STATEFP, shape_file$COUNTYFP)
+
+# Filter shape_file for the counties: Gwinnett and Fulton
+shape_file <- shape_file[shape_file$fips == "13121" | shape_file$fips == "13135", ]
+shape_file$fulton <- ifelse(shape_file$fips == "13121", 1, 0)
+shape_file$gwinnett <- ifelse(shape_file$fips == "13121", 1, 0)
+
+# Map shape_file
+county_shape <- map_shape_file(
+  shape_file = shape_file,
+  crs = "+proj=latlong +ellps=GRS80 +no_defs",
+  title = "Gwinnett and Fulton counties"
+)
+county_shape
 ```
+We now will look at the block level of Fulton and Gwinnett county
+```{r}
+# Load shape file using tidycensus
+gwin_fulton_blocks <- blocks(state = "GA", county = c("Gwinnett", "Fulton"))
+# Concatenate the state and county codes into column called fips
+gwin_fulton_blocks$fips <- paste0(gwin_fulton_blocks$STATEFP, gwin_fulton_blocks$COUNTYFP)
+
+gwin_fulton_map <- map_shape_points(
+  voter_file = geo_combined,
+  shape_file = gwin_fulton_blocks,
+  crs = "+proj=longlat +ellps=GRS80",
+  title = "Gwinnett and Fulton Counties - All Registered Voters"
+)
+gwin_fulton_map
+```
+
 
 ### Step 8: Mapping more data
 ```{r}
-# J to Insert interactive map function here.
+# Assign the sf object to a variable name inter_geo
+inter_geo <- geocoded_data_full_geo
+
+# Create interactive map using mapview
+mapview::mapview(inter_geo)
 ```
       
