@@ -105,7 +105,7 @@ names(voter_file_geocoded)[names(voter_file_geocoded) == "registration_number"] 
 
 # Separate latitude and longitude into columns
 voter_file_geocoded <- voter_file_geocoded %>%
-  extract(geometry, c("lat", "lon"), "\\((.*), (.*)\\)", convert = TRUE)
+  extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
 ```
 
 ```{r}
@@ -214,6 +214,9 @@ write_csv(bisg_file$bisg, paste(path_output, "gwin_fulton_bisg_fullgeo.csv"))
 ```{r}
 summary(bisg_file$bisg)
 ```
+```{r}
+head(bisg_file$bisg)
+```
 
 ### Scatterplots to summarize BISG predictions
 ```{r}
@@ -291,7 +294,7 @@ cvap$oth <- (cvap$AIAN + cvap$NHOPI + cvap$MULTI) / cvap$total
 
 cvap$COUNTY <- as.numeric(cvap$COUNTY)
 
-county_code <- c(which(cvap$COUNTY == 121), which(cvap$COUNTY == 89), which(cvap$COUNTY == 117), which(cvap$COUNTY == 135), which(cvap$COUNTY == 297))
+county_code <- c(which(cvap$COUNTY == 121), which(cvap$COUNTY == 135))
 
 cvap <- cvap[county_code, c("COUNTY", "whi", "bla", "his", "asi", "oth")]
 ```
