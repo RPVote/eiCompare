@@ -23,7 +23,7 @@
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
 #' @param verbose A boolean indicating whether to print out status messages.
-#' @param diagnostic Run diagnostic test to assess viability of MCMC parameters
+#' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC parameters (will return all chain results)
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
 #' @param plots A boolean indicating whether or not to include voter density plots
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
@@ -203,7 +203,7 @@ ei_rxc <- function(
     dev.off()
 
     # Generate Gelman plot for convergence
-    png(paste0(plot_path, "gelman.png"))
+    pdf(paste0(plot_path, "geolman.pdf"))
     coda::gelman.plot(chains_list)
     dev.off()
 
