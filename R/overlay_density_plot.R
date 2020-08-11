@@ -20,14 +20,16 @@
 # utils::globalVariables(c("m", "k", "%do%", "Candidate", "value"))
 
 overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type) {
+  race <- race_cols
+  cands <- cand_cols
+
   if (tolower(ei_type) == "ei") {
     # Extract beta bs
-    race <- race_cols
-    cands <- cand_cols
     agg_betas <- agg_betas[, grep("bbgg", colnames(agg_betas))]
+    colnames(agg_betas) <- gsub("bbgg_", "", colnames(race_comb))
   } else if (tolower(ei_type) == "rxc") {
-    race <- unique(stringr::str_match(colnames(agg_betas), ".*\\.([a-z_]*)\\..*")[, 2])
-    cands <- unique(stringr::str_match(colnames(agg_betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
+    colnames(agg_betas) <- gsub("betas.", "", colnames(agg_betas))
+    colnames(agg_betas) <- gsub("\\.", "_", colnames(agg_betas))
   } else {
     stop("Specify ei_type as ei or rxc")
   }
@@ -59,29 +61,36 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
     race_comb <- agg_betas[, grep(race[k], colnames(agg_betas))]
 
     # Column titles
-    colnames(race_comb) <- gsub(paste("bbgg_", race[k], "_", sep = ""), "", colnames(race_comb))
+    colnames(race_comb) <- gsub(paste(race[k], "_", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
-
-    suppressMessages({
-      dens_data <- reshape2::melt(race_comb, )
-    })
+    dens_data <- reshape2::melt(race_comb, id.vars = NULL)
 
 
-    colnames(dens_data) <- c("Candidate", "value")
+    colnames(dens_data) <- c("idx", "Candidate", "value")
 
     out <- dens_data %>%
       dplyr::group_by(Candidate) %>%
       dplyr::summarize(
         sd_size = sd(value * 100, na.rm = TRUE),
         min_size = min(value * 100, na.rm = TRUE),
-        max_size = max(value * 100, na.rm = TRUE), .groups = "drop",
+        max_size = max(value * 100, na.rm = TRUE),
+        .groups = "drop",
       )
     out <- data.frame(out)
 
     # Join with mean from results_table
-    rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
-    colnames(rt_sub) <- c("Candidate", "mean_size")
+    if (ei_type == "ei") {
+      rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
+      colnames(rt_sub) <- c("Candidate", "mean_size")
+    } else if (ei_type == "rxc") {
+      rt_sub <- as.data.frame(results_table[race[k]][[1]])
+      rt_sub <- tibble::rownames_to_column(rt_sub, "Candidate")
+      rt_sub <- dplyr::rename(rt_sub, mean_size = mean)
+      rt_sub <- rt_sub[, c("Candidate", "mean_size")]
+    }
+
+
     out <- inner_join(rt_sub, out, by = "Candidate")
     out$sd_minus <- out$mean_size - out$sd_size
     out$sd_plus <- out$mean_size + out$sd_size

@@ -25,6 +25,8 @@
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @param diagnostic Run diagnostic test to assess viability of MCMC parameters
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
+#' @param plots A boolean indicating whether or not to include voter density plots
+#' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -101,7 +103,7 @@ ei_rxc <- function(
   }
 
   if (diagnostic) {
-    md_out <- foreach::foreach(chain = 1:n_chains) %do% {
+    md_mcmc <- foreach::foreach(chain = 1:n_chains) %do% {
       # Bayes model estimation
       suppressWarnings(
         md_out <- ei.MD.bayes(
@@ -117,8 +119,34 @@ ei_rxc <- function(
         )
       )
 
-      md_mcmc <- as.mcmc(md_out)
+      # Extract district-level MCMC chains
+      # These initially present raw population count estimates
+      chains_raw <- md_out$draws$Cell.counts
+
+      # Convert population estimates to proportions
+      chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
+
+      # Loop through races to get proportion of race voting for each cand
+      # This loop is required to get proportions within races
+      for (i in 1:length(race_cols)) {
+        race_indices <- grep(race_cols[i], colnames(chains_raw))
+        race_draws <- chains_raw[, race_indices]
+        race_pr <- race_draws / rowSums(race_draws)
+        chains_pr[, race_indices] <- race_pr
+      }
+
+      # Make CODA object
+      chains_pr <- coda::as.mcmc(chains_pr)
     }
+
+    # Combine chains
+    chains_list <- coda::mcmc.list(list(md_mcmc))
+
+    # Generate trace and general density plots
+    plot(chains_list)
+
+    # Generate Gelman plot for convergence
+    coda::gelman.plot(chains_list)
   } else {
     # Bayes model estimation
     suppressWarnings(
@@ -129,79 +157,92 @@ ei_rxc <- function(
         total = totals_col,
         thin = thin,
         burnin = burnin,
-        ret.mcmc = FALSE,
+        ret.mcmc = TRUE,
         tune.list = tune_nocov,
         # ...
       )
     )
-  }
 
-  # Extract district-level MCMC chains
-  # These initially present raw population count estimates
-  chains_raw <- md_out$draws$Cell.counts
+    # Extract district-level MCMC chains
+    # These initially present raw population count estimates
+    chains_raw <- md_out$draws$Cell.counts
 
-  # Convert population estimates to proportions
-  chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
+    # Convert population estimates to proportions
+    chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
 
-  # Loop through races to get proportion of race voting for each cand
-  # This loop is required to get proportions within races
-  for (i in 1:length(race_cols)) {
-    race_indices <- grep(race_cols[i], colnames(chains_raw))
-    race_draws <- chains_raw[, race_indices]
-    race_pr <- race_draws / rowSums(race_draws)
-    chains_pr[, race_indices] <- race_pr
-  }
+    # Loop through races to get proportion of race voting for each cand
+    # This loop is required to get proportions within races
+    for (i in 1:length(race_cols)) {
+      race_indices <- grep(race_cols[i], colnames(chains_raw))
+      race_draws <- chains_raw[, race_indices]
+      race_pr <- race_draws / rowSums(race_draws)
+      chains_pr[, race_indices] <- race_pr
+    }
 
-  # Get upper, lower CI limits
-  ci_lower <- (1 - ci_size) / 2
-  ci_upper <- 1 - ci_lower
+    # Get upper, lower CI limits
+    ci_lower <- (1 - ci_size) / 2
+    ci_upper <- 1 - ci_lower
 
-  if (verbose) {
-    message(paste("Setting CI lower bound equal to", ci_lower))
-    message(paste("Setting CI upper bound equal to", ci_upper))
-  }
+    if (verbose) {
+      message(paste("Setting CI lower bound equal to", ci_lower))
+      message(paste("Setting CI upper bound equal to", ci_upper))
+    }
 
-  # Get point estimates and credible interval bounds
-  estimate <- mcmcse::mcse.mat(chains_pr)
+    # Get point estimates and credible interval bounds
+    estimate <- mcmcse::mcse.mat(chains_pr)
 
-  # The upper and lower CI estimates also have standard errors. Here these
-  # errors are conservatively used to extend the 95% confidence bound further
+    # The upper and lower CI estimates also have standard errors. Here these
+    # errors are conservatively used to extend the 95% confidence bound further
 
-  # look for function that just finds the 95% CI
+    # look for function that just finds the 95% CI
 
-  # Lower CI estimate
-  lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
-  lower_est <- lower[, 1]
-  lower_se <- lower[, 2]
-  lower <- lower_est - lower_se
+    # Lower CI estimate
+    lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
+    lower_est <- lower[, 1]
+    lower_se <- lower[, 2]
+    lower <- lower_est - lower_se
 
-  # Upper CI estimate
-  upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
-  upper_est <- upper[, 1]
-  upper_se <- upper[, 2]
-  upper <- upper_est + upper_se
+    # Upper CI estimate
+    upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
+    upper_est <- upper[, 1]
+    upper_se <- upper[, 2]
+    upper <- upper_est + upper_se
 
-  # This gets uses base R to get the correct candidate and race names from the
-  # output of the chains
-  cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
-  cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
-  cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
-  race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
+    # This gets uses base R to get the correct candidate and race names from the
+    # output of the chains
+    cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
+    cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
+    cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
+    race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
 
-  # Create, name an output table
-  results_table <- data.frame(cbind(estimate, lower, upper))
-  results_table <- cbind(cand_col, race_col, results_table)
-  colnames(results_table) <- c(
-    "cand", "race", "mean", "se", "ci_lower", "ci_upper"
-  )
+    # Create, name an output table
+    results_table <- data.frame(cbind(estimate, lower, upper))
+    results_table <- cbind(cand_col, race_col, results_table)
+    colnames(results_table) <- c(
+      "cand", "race", "mean", "se", "ci_lower", "ci_upper"
+    )
 
-  # Match expected output
-  results_table <- get_md_bayes_gen_output(results_table, race_cols)
+    # Match expected output
+    results_table <- get_md_bayes_gen_output(results_table, race_cols)
 
-  # Return results and chains if requested
-  if (ret_mcmc) {
-    return(list(table = results_table, chains = chains_pr))
-  } else {
-    return(results_table)
+    # Plot
+    if (plots) {
+      # Rename chains
+      colnames(chains_pr) <- gsub("ccount.", "betas.", colnames(md_out$draws$Cell.counts))
+
+      # Create density plots
+      density_plots <- overlay_density_plot(chains_pr, results_table,
+        race_cols, cand_cols,
+        plot_path,
+        ei_type = "rxc"
+      )
+    }
+
+    # Return results and chains if requested
+    if (ret_mcmc) {
+      return(list(table = results_table, chains = chains_pr))
+    } else {
+      return(results_table)
+    }
   }
 }
