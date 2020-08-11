@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Ecological Inference"
-output: rmarkdown::vignette
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ei}
   %\VignetteEngine{knitr::rmarkdown}

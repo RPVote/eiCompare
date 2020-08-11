@@ -7,7 +7,6 @@
 #' @param ei.object The output of ei::ei() where simulate is set to FALSE.
 #' @param samples The number of samples to use.
 #'
-#'
 #' @return an ei object from the ei package.
 ei_sim <- function(ei.object, samples) {
   samples <- samples + 1
