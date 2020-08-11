@@ -19,6 +19,9 @@
 #' @param erho A number passed directly to ei::ei(). Defaulted to 0.5
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
+#' @param samples The number of samples to draw from simulations on each
+#' iteration. Defaulated to 99. Note that increasing the number of samples drawn
+#' may increase the execution time of this function substantially.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param eiCompare_class default = TRUE
@@ -55,6 +58,7 @@ ei_iter <- function(
                     totals_col,
                     erho = 0.5,
                     seed = NULL,
+                    samples = 99,
                     plots = FALSE,
                     eiCompare_class = TRUE,
                     betas = FALSE,
@@ -156,10 +160,15 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho # ,
+            erho = erho,
+            simulate = FALSE # ,
             # args_pass
           )
         )
+    })
+
+    utils::capture.output({
+      ei_sim <- suppressMessages(ei_sim(ei_out, samples))
     })
 
     # Plots to be added here
