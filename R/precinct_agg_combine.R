@@ -1,61 +1,68 @@
-#' precinct_agg_combine
+#' Aggregates racial estimates across geographic units
 #'
-#' Combines voter file surname geocoded data into aggregated precinct counts.
-#' To be performed on data object resulting from successful completion of
-#' bisg_prep_race_predict() function.
+#' Obtains aggregated precinct counts of racial groups from a voter file. This
+#' function is usually applied after application of BISG, when the voter file
+#' has probabilistic estimates of race. However, it can be applied more
+#' generally, aggregating actual counts of race.
 #'
-#'
-#' @param dat data.frame() object
-#' @param precinct Character of precinct column name. Default = "precinct",
-#' which is what is output from bisg_prep_race_predict()
+#' @param voter_file The voter file, as a dataframe. Should contain columns that
+#'  denote the race probabilities or the actual race of the voter.
+#' @param group_col A string denoting the column to aggregate over (e.g.,
+#'  "precinct").
+#' @param race_cols A list of strings denoting which columns contain
+#'  probabilistic estimates of race. If aggregating over the ground truth race,
+#'  this variable should be a single string denoting which column contains the
+#'  race description.
+#' @param race_keys A named list, with keys denoting the new race groups (e.g.,
+#'  "white", "black", "hispanic", etc. The value of each key is a string or list
+#'  of strings that denote which values in the race column map onto the key
+#'  (e.g., mapping multiracial and Native American voters onto an "other" race
+#'  category) This variable should only be provided if aggregating over the true
+#'  race.
+#' @param include_total A logical denoting whether the total counts (potentially
+#'  rounded) should be included in the output dataframe.
 #' @return Aggregated dataset of nrow() precinct size, including racial size
-#' precinct estimates. Dataset suitable for EI/RxC.
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
-#' @examples
+#'  precinct estimates. Dataset suitable for EI/RxC.
 #'
-#' @importFrom data.table rbindlist
 #' @export precinct_agg_combine
-precinct_agg_combine <- function(dat, precinct = "precinct") {
-
-  # Execute Function output into list format output #
-  precinct_agg <- function(list_obj) {
-
-    # Sum up Race probabilities #
-    pred <- round(apply(list_obj[, grep("pred.", colnames(list_obj))], 2, sum), 0)
-
-    # Adjust for no race prediction #
-    sum_no_pred <- table(apply(list_obj[, grep("pred.", colnames(list_obj))], 1, sum))["0"]
-    if (!is.na(sum_no_pred)) {
-      pred <- c(pred, pred.none = sum_no_pred)
-      names(pred)[length(pred)] <- "pred.none"
-    } else { #
-
-      pred <- c(pred, pred.no_name = 0)
-      names(pred)[length(pred)] <- "pred.none"
+#' @importFrom dplyr group_by_at summarise_at
+precinct_agg_combine <- function(voter_file,
+                                 group_col = "precinct",
+                                 race_cols = NULL,
+                                 race_keys = NULL,
+                                 include_total = FALSE) {
+  # If a race key is provided, assume that race_cols is ground truth
+  if (!is.null(race_keys)) {
+    if (is.null(race_cols)) {
+      stop("Must specify a race column if providing ground truth race keys.")
     }
-
-    pred <- data.frame(t(pred))
-    pred <- data.frame(total = sum(pred), pred)
-    colnames(pred) <- c(
-      "total_agg", "pred.whi_agg", "pred.bla_agg",
-      "pred.his_agg", "pred.asi_agg", "pred.oth_agg",
-      "pred.none_agg"
-    )
-
-    # Percentages ; drop the 'none' predictions #
-    pred$pct_whi_agg <- with(pred, pred.whi_agg / (total_agg - pred.none_agg))
-    pred$pct_bla_agg <- with(pred, pred.bla_agg / (total_agg - pred.none_agg))
-    pred$pct_his_agg <- with(pred, pred.his_agg / (total_agg - pred.none_agg))
-    pred$pct_asi_agg <- with(pred, pred.asi_agg / (total_agg - pred.none_agg))
-    pred$pct_other_agg <- with(pred, pred.oth_agg / (total_agg - pred.none_agg))
-    pred$pct_min_agg <- with(pred, 1 - pct_whi_agg)
-    return(pred)
+    for (race in names(race_keys)) {
+      voter_file[[race]] <- as.numeric(
+        voter_file[[race_cols]] %in% race_keys[[race]]
+      )
+    }
+    # Overwrite race columns with new values
+    race_cols <- names(race_keys)
   }
-  # Split Data on Precinct; n=10 precincts (for most)
-  bisg_split <- split(dat, dat[, precinct])
-  precinct_data <- lapply(bisg_split, precinct_agg) # apply above function
-  precinct_data <- rbindlist(precinct_data)
-  # precinct_data[is.na(precinct_data)] <- 0 # Fill in missing with 0 (like "race/other pred")
 
-  return(precinct_data)
+  # If no race columns are provided, assume BISG output
+  if (is.null(race_cols)) {
+    race_cols <- c("pred.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth")
+  }
+  # Group voter file
+  grouped_vf <- dplyr::group_by_at(voter_file, group_col)
+
+  # Aggregate race columns across groups
+  if (include_total) {
+    funcs <- list("prop" = mean, "total" = function(x) round(sum(x)))
+  } else {
+    funcs <- list("prop" = mean)
+  }
+  agg <- dplyr::summarise_at(
+    .tbl = grouped_vf,
+    .funs = funcs,
+    .vars = race_cols
+  )
+
+  return(agg)
 }
