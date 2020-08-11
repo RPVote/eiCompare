@@ -160,8 +160,8 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho # ,
-            # simulate = FALSE  ,
+            erho = erho,
+            simulate = TRUE,
             # args_pass
           )
         )
@@ -329,7 +329,9 @@ ei_iter <- function(
       aggs <- ei::eiread(ei_object, "aggs")[, 1]
 
       # Both CIs
-      cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+      suppressMessages({
+        cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+      })
       ci_lowers <- append(ci_lowers, cis$CI_low)
       ci_uppers <- append(ci_uppers, cis$CI_high)
 

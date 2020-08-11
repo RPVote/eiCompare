@@ -188,7 +188,7 @@ We can run both methods with their respective functions. They take some time to 
 
 ```{r}
 gwinnett_ei_sample <- gwinnett_ei %>%
-  sample_n(40)
+  sample_n(100)
 ```
 
 
@@ -200,8 +200,7 @@ ei_results_iter <- ei_iter(
   cand_cols = cands,
   race_cols = races,
   totals_col = total,
-  name = "Iter",
-  erho = 10
+  name = "Iter"
 )
 summary(ei_results_iter)
 ```
