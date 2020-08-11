@@ -184,27 +184,38 @@ These basic descriptive checks help us understand our data and give us a sense o
 
 `eiCompare` enables users to analyze and compare the two dominant EI methods, Iterative EI and RxC EI. For more information about these techniques, see the [technical details](technical.details.com) page of our website.
 
-We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution. First, we conduct iterative EI using `ei_iter()`.
+We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution. To keep it short for this tutorial, we'll randomly sample 40 precincts (i.e. 40 rows) from the dataset and use these as the basis for our estimates. Obviously, in a real-life setting we would run the analyses on the entire dataset.
+
+```{r}
+gwinnett_ei_sample <- gwinnett_ei %>%
+  sample_n(40)
+```
+
+
+First, we conduct iterative EI using `ei_iter()`.
 
 ```{r}
 ei_results_iter <- ei_iter(
-  data = gwinnett_ei,
+  data = gwinnett_ei_sample,
   cand_cols = cands,
   race_cols = races,
-  totals_col = total
+  totals_col = total,
+  name = "Iter",
+  erho = 10
 )
-summary_eic(ei_results_iter)
+summary(ei_results_iter)
 ```
 
-Next, we conduct RxC EI using `ei_rxc()`. 
+Notice that the `name` field to names our results object. The name entered here is what differentiates results objects from each other when they are summarized or plotted together.  Next, we conduct RxC EI using `ei_rxc()`. 
 ```{r}
 ei_results_rxc <- ei_rxc(
-  data = gwinnett_ei,
+  data = gwinnett_ei_sample,
   cand_cols = cands,
   race_cols = races,
-  totals_col = total
+  totals_col = total,
+  name = "RxC"
 )
-summary_eic(ei_results_rxc)
+summary(ei_results_iter, ei_results_rxc)
 ```
 
 Finally, we can plot the results of the two methods using plot_eic. This function accepts a list of `eiCompare` objects outputted by `ei_iter()` and `ei_rxc`. It plots the point estimates and 95% credible intervals for each candidate-race pair, for however many objects are passed in. 
@@ -218,25 +229,3 @@ plot_eic(results)
 ```
 
 Plotting the results of both methods, we can see that clear evidence of racially polarized voting exists in Gwinnett county. We see that both methods show white voters prefer Brian Kemp, while voters in all other race/ethnicity groups prefer Stacey Abrams.
-
-```{r include = FALSE}
-
-# Note that we can also use `plot_eic()` to compare the performance of different statistical specifications. For instance, RxC EI relies on [Markov Chain Monte #Carlo](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo) (MCMC) simulation to compute point estimates and confidence intervals. The precision of these simulations depends #on how many samples are collected. By default, `ei_rxc()` takes one hundred thousand samples from the distribution by default. In many cases, reliable estimation may require even #more. To learn about the Bayesian statistical approach underlying `ei_rxc()`, and about MCMC sampling methods, we recommend John Kruschke's [Doing Bayesian Data #Analysis](https://books.google.ca/books?hl=en&lr=&id=FzvLAwAAQBAJ&oi=fnd&pg=PP1&dq=doing+bayesian+data+analysis&ots=CfynNUwf-K&sig=xxre8SXdnN42_G2F7LwdPGjl3JI#v=onepage&q=doing%2#0bayesian%20data%20analysis&f=false).
-
-# We can use `plot_eic()` to show how changing the number of samples in `ei_rxc()` affects the resulting estimations. As an extreme example, what happens if we drop the number of #samples all the way down to ten?
-
-
-ei_results_rxc_sample10 <- ei_rxc(
-  data = gwinnett_ei,
-  cand_cols = cands,
-  race_cols = races,
-  totals_col = total,
-  samples = 10
-)
-
-plot_eic(
-  eic_objects = list(
-    "1 million sample" = ei_results_rxc_sample10
-  )
-)
-```

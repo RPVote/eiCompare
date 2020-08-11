@@ -9,7 +9,7 @@ ei_iter(
   cand_cols,
   race_cols,
   totals_col,
-  erho = 0.5,
+  erho = 10,
   seed = NULL,
   samples = 99,
   plots = FALSE,
@@ -35,7 +35,7 @@ race}
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
 
-\item{erho}{A number passed directly to ei::ei(). Defaulted to 0.5}
+\item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
 
 \item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}

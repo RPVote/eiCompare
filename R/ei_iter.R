@@ -16,7 +16,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-#' @param erho A number passed directly to ei::ei(). Defaulted to 0.5
+#' @param erho A number passed directly to ei::ei(). Defaulted to 10
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param samples The number of samples to draw from simulations on each
@@ -56,7 +56,7 @@ ei_iter <- function(
                     cand_cols,
                     race_cols,
                     totals_col,
-                    erho = 0.5,
+                    erho = 10,
                     seed = NULL,
                     samples = 99,
                     plots = FALSE,
