@@ -50,11 +50,10 @@ map_shape_points <- function(voter_file,
                              title = "title") {
 
   # Create lat and lon coordinates from geometry column of the full geometry voter file output
-  voter_file_geo_latlon <- voter_file %>%
-    extract(geometry, c("lat", "lon"), "\\((.*), (.*)\\)", convert = TRUE)
+  voter_file_geo_latlon <- extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
   # Transform to sf
-  voter_file_geo_latlon <- st_as_sf(x = voter_file_geo_latlon, coords = 45:46)
+  voter_file_geo_latlon <- st_as_sf(x = voter_file_geo_latlon, coords = (25:26))
 
 
   # Establish Coordinate Reference System (CRS)
@@ -79,8 +78,8 @@ map_shape_points <- function(voter_file,
     geom_sf(data = shape_file, fill = "gray36") +
     geom_sf(
       data = voter_file_geo_onlyint,
-      col = "blue1",
-      size = .0005
+      col = "orange",
+      size = 1.5
     ) +
     scale_fill_grey(start = 0.3, end = 0.3) +
     labs(title = title)
