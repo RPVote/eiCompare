@@ -160,16 +160,16 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho,
-            simulate = FALSE # ,
+            erho = erho # ,
+            # simulate = FALSE  ,
             # args_pass
           )
         )
     })
 
-    utils::capture.output({
-      ei_sim <- suppressMessages(ei_sim(ei_out, samples))
-    })
+    # utils::capture.output({
+    #  ei_sim <- suppressMessages(ei_sim(ei_out, samples))
+    # })
 
     # Plots to be added here
     if (plots) {

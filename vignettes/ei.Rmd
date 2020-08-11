@@ -36,7 +36,7 @@ options(scipen = 999, digits = 4)
 ```{r}
 suppressPackageStartupMessages({
   library(eiCompare)
-  library(tidyverse)
+  library(dplyr)
   library(doParallel)
 })
 
