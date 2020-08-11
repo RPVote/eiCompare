@@ -27,6 +27,7 @@
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
 #' @param plots A boolean indicating whether or not to include voter density plots
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
+#' @param par_compute Boolean. If true, diagnostic test will be run in parallel.
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -59,6 +60,9 @@ ei_rxc <- function(
                    verbose = FALSE,
                    diagnostic = FALSE,
                    n_chains = 3,
+                   plots = FALSE,
+                   plot_path = "",
+                   par_compute = FALSE,
                    ...) {
 
   # Check for valid arguments
@@ -103,7 +107,46 @@ ei_rxc <- function(
   }
 
   if (diagnostic) {
-    md_mcmc <- foreach::foreach(chain = 1:n_chains) %do% {
+    if (verbose) message("Running diagnostic")
+    # Preparation for parallel processing if user specifies parallelization
+    if (par_compute) {
+      # Detect the number of cores you have
+      parallel::detectCores()
+
+      if (parallel::detectCores() < 4) {
+        stop("It is not recommended to run parallel ei with less than 4 cores")
+      } else if (parallel::detectCores() == 4) {
+        warning("4 cores is the minimum recommended to run parallel ei")
+      }
+      if (verbose) message("Running in paralllel")
+
+      # Standard to use 1 less core for clusters
+      clust <- parallel::makeCluster(parallel::detectCores() - 1)
+
+      # Register parallel processing cluster
+      doSNOW::registerDoSNOW(clust)
+
+      # Check to make sure that cores are set up correctly
+      foreach::getDoParWorkers()
+    }
+    # Set infix option for parallel or not parallel
+    `%myinfix%` <- ifelse(par_compute, `%dopar%`, `%do%`)
+
+    # Init progressbar
+    pb <- utils::txtProgressBar(
+      min = 0,
+      max = n_chains,
+      style = 3
+    )
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
+
+    md_mcmc <- foreach::foreach(
+      chain = 1:n_chains,
+      .inorder = FALSE,
+      .packages = c("ei"),
+      .options.snow = opts
+    ) %myinfix% {
       # Bayes model estimation
       suppressWarnings(
         md_out <- ei.MD.bayes(
@@ -115,7 +158,7 @@ ei_rxc <- function(
           burnin = burnin,
           ret.mcmc = TRUE,
           tune.list = tune_nocov,
-          ...
+          # ...
         )
       )
 
@@ -135,18 +178,36 @@ ei_rxc <- function(
         chains_pr[, race_indices] <- race_pr
       }
 
+      setTxtProgressBar(pb, i)
+
       # Make CODA object
       chains_pr <- coda::as.mcmc(chains_pr)
     }
 
-    # Combine chains
-    chains_list <- coda::mcmc.list(list(md_mcmc))
+    if (par_compute == TRUE) {
+      # Stop clusters (always done between uses)
+      parallel::stopCluster(clust)
+      # Garbage collection (in case of leakage)
+      gc()
+    }
+    # close progress bar
+    close(pb)
 
+    # Combine chains
+    chains_list <- coda::mcmc.list(md_mcmc)
+
+    if (verbose) message("Creating and saving plots")
     # Generate trace and general density plots
+    pdf(paste0(plot_path, "trace_density.pdf"))
     plot(chains_list)
+    dev.off()
 
     # Generate Gelman plot for convergence
+    png(paste0(plot_path, "gelman.png"))
     coda::gelman.plot(chains_list)
+    dev.off()
+
+    return(chains_list)
   } else {
     # Bayes model estimation
     suppressWarnings(
@@ -159,7 +220,7 @@ ei_rxc <- function(
         burnin = burnin,
         ret.mcmc = TRUE,
         tune.list = tune_nocov,
-        ...
+        # ...
       )
     )
 
