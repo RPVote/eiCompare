@@ -15,7 +15,7 @@ ei_sim(ei.object, samples)
 an ei object from the ei package.
 }
 \description{
-This is a modified version of the ei.sim function in the ei package. This 
+This is a modified version of the ei.sim function in the ei package. This
 function is modified to enable users to enter their desired sample size,
 instead of having the sample size be fixed at 99.
 }

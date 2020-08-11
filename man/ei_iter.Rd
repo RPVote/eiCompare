@@ -40,7 +40,7 @@ precinct}
 \item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
-\item{samples}{The number of samples to draw from simulations on each 
+\item{samples}{The number of samples to draw from simulations on each
 iteration. Defaulated to 99. Note that increasing the number of samples drawn
 may increase the execution time of this function substantially.}
 
