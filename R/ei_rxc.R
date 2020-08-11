@@ -19,6 +19,7 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
@@ -50,6 +51,7 @@ ei_rxc <- function(
                    thin = 1,
                    burnin = 10000,
                    ci_size = 0.95,
+                   name = "",
                    seed = NULL,
                    eiCompare_class = TRUE,
                    ret_mcmc = FALSE,
@@ -200,7 +202,8 @@ ei_rxc <- function(
       "estimates" = results_table,
       "district_samples" = as.data.frame(chains_pr),
       "precinct_samples" = NULL,
-      "stat_objects" = list(md_out)
+      "stat_objects" = list(md_out),
+      "name" = name
     )
     class(output) <- "eiCompare"
     return(output)

@@ -17,6 +17,7 @@ ei_iter(
   par_compute = FALSE,
   verbose = FALSE,
   plot_path = "",
+  name = "",
   ...
 )
 }
@@ -49,7 +50,10 @@ tomography plots}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
 
-\item{plot_path}{A string to specify plot save location. Defaulted to working directory}
+\item{plot_path}{A string to specify plot save location. Defaulted to working
+directory.}
+
+\item{name}{A unique identifier for the outputted eiCompare object.}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }

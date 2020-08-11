@@ -25,7 +25,9 @@
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param verbose A boolean indicating whether to print out status messages.
-#' @param plot_path A string to specify plot save location. Defaulted to working directory
+#' @param plot_path A string to specify plot save location. Defaulted to working
+#'  directory.
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @return dataframe of results from iterative ei
@@ -43,9 +45,6 @@
 #' Problem. Princeton: Princeton University Press.
 #'
 #' @export
-#'
-#'
-#'
 
 # utils::globalVariables(c("%dopar%", "%do%", "i"))
 
@@ -62,6 +61,7 @@ ei_iter <- function(
                     par_compute = FALSE,
                     verbose = FALSE,
                     plot_path = "",
+                    name = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -373,9 +373,10 @@ ei_iter <- function(
       "estimates" = estimates,
       "district_samples" = district_samples,
       "precinct_samples" = precinct_samples,
-      "stat_objects" = ei_objects
+      "stat_objects" = ei_objects,
+      "name" = name
     )
-    class(output) <- "pare"
+    class(output) <- "eiCompare"
     return(output)
   } else {
     # If betas == TRUE, return a list with results plus df of betas

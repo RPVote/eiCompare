@@ -260,14 +260,18 @@ rxc_formula <- function(cand_cols, race_cols) {
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param results_table A results table from
 #' @param race_cols Character vector of candidate race names, passed from
-#' ei_rxc
-get_md_bayes_gen_output <- function(results_table) {
+#'  ei_rxc
+#' @param tag A string added onto the columns names of each table. If empty
+#'  string, no tag is added. Tags are separated by underscores.
+#' @return A list of tables, each keyed by the racial group. The table contains
+#'  the mean, standard error, and confidence bounds for the EI estimate.
+get_md_bayes_gen_output <- function(results_table, tag = "") {
   races <- unique(results_table$race)
 
   # create list object output
   new_results <- list()
 
-  for (i in 1:length(races)) {
+  for (i in seq_along(races)) {
 
     # get race name
     race <- races[i]
@@ -280,6 +284,11 @@ get_md_bayes_gen_output <- function(results_table) {
 
     # remove the candidate column and multiple all numbers by 100
     race_res <- race_res[, -1] * 100
+
+    # add tag to column names if necessary
+    if (tag != "") {
+      colnames(race_res) <- paste0(colnames(race_res), "_", tag)
+    }
 
     # add to list
     new_results[[i]] <- race_res
