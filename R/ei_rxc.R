@@ -115,7 +115,7 @@ ei_rxc <- function(
           burnin = burnin,
           ret.mcmc = TRUE,
           tune.list = tune_nocov,
-          # ...
+          ...
         )
       )
 
@@ -159,7 +159,7 @@ ei_rxc <- function(
         burnin = burnin,
         ret.mcmc = TRUE,
         tune.list = tune_nocov,
-        # ...
+        ...
       )
     )
 

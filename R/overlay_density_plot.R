@@ -84,6 +84,8 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
       rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
       colnames(rt_sub) <- c("Candidate", "mean_size")
     } else if (ei_type == "rxc") {
+      dens_data <- as.data.frame(dens_data[, c("Candidate", "value")])
+
       rt_sub <- as.data.frame(results_table[race[k]][[1]])
       rt_sub <- tibble::rownames_to_column(rt_sub, "Candidate")
       rt_sub <- dplyr::rename(rt_sub, mean_size = mean)

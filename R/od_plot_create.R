@@ -90,8 +90,8 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     linetype = "dashed", data = out_sub
     ) +
     # Add sigma label
-    ggplot2::geom_text(x = max(out_sub$sd_plus[1], out_sub$sd_plus[1]), y = .12, label = "sigma", size = 3, parse = TRUE) +
-    ggplot2::geom_text(x = min(out_sub$sd_minus[2], out_sub$sd_minus[2]), y = .08, label = "sigma", size = 3, parse = TRUE) +
+    ggplot2::geom_text(x = max(out_sub$sd_plus[1], out_sub$sd_minus[1]), y = .12, label = "sigma", size = 3, parse = TRUE) +
+    ggplot2::geom_text(x = min(out_sub$sd_minus[2], out_sub$sd_plus[2]), y = .08, label = "sigma", size = 3, parse = TRUE) +
     # Add text label for means
     ggplot2::geom_label(
       x = out_sub$mean_size[1],
