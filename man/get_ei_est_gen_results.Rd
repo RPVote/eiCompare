@@ -11,7 +11,7 @@ get_ei_est_gen_results(ei_objects, race_cand_pairs, betas)
 
 \item{race_cand_pairs}{Passed from ei_iter}
 
-\item{beta}{Passed from ei_iter}
+\item{betas}{Passed from ei_iter}
 }
 \description{
 Convert ei objects into ei_est_gen-style results tables

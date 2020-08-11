@@ -16,7 +16,7 @@ remove_nas <- function(data) {
 #'
 #' @param ei_objects A list of ei objects
 #' @param race_cand_pairs Passed from ei_iter
-#' @param beta Passed from ei_iter
+#' @param betas Passed from ei_iter
 get_ei_est_gen_results <- function(
                                    ei_objects,
                                    race_cand_pairs,
@@ -259,8 +259,6 @@ rxc_formula <- function(cand_cols, race_cols) {
 #' Get md_bayes_gen() output from ei_rxc() output
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @param results_table A results table from
-#' @param race_cols Character vector of candidate race names, passed from
-#'  ei_rxc
 #' @param tag A string added onto the columns names of each table. If empty
 #'  string, no tag is added. Tags are separated by underscores.
 #' @return A list of tables, each keyed by the racial group. The table contains

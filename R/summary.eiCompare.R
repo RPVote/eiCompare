@@ -1,6 +1,7 @@
 #' Print a summary of an eiCompare object
 #'
 #' @param object An eiCompare object, outputted from ei_iter() or ei_rxc()
+#' @param ... Additional eiCompare objects to summarize
 #' @return A nicely formatted dataframe for printing results
 #' @export
 summary.eiCompare <- function(object, ...) {

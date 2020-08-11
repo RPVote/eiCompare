@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{object}{An eiCompare object, outputted from ei_iter() or ei_rxc()}
+
+\item{...}{Additional eiCompare objects to summarize}
 }
 \value{
 A nicely formatted dataframe for printing results

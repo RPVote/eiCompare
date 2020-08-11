@@ -11,9 +11,6 @@ get_md_bayes_gen_output(results_table, tag = "")
 
 \item{tag}{A string added onto the columns names of each table. If empty
 string, no tag is added. Tags are separated by underscores.}
-
-\item{race_cols}{Character vector of candidate race names, passed from
-ei_rxc}
 }
 \value{
 A list of tables, each keyed by the racial group. The table contains

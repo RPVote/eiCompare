@@ -58,6 +58,8 @@ credible-interval bounds, defaulted to 0.95}
 \item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
+\item{eiCompare_class}{default = TRUE}
+
 \item{ret_mcmc}{Boolean. If true, the full sample chains are returned}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}

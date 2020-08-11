@@ -24,6 +24,41 @@
   Rfun
 )
 }
+\arguments{
+\item{t}{passed from ei_sim()}
+
+\item{x}{passed from ei_sim()}
+
+\item{n}{passed from ei_sim()}
+
+\item{Zb}{passed from ei_sim()}
+
+\item{Zw}{passed from ei_sim()}
+
+\item{par}{passed from ei_sim()}
+
+\item{varcv}{passed from ei_sim()}
+
+\item{nsims}{passed from ei_sim()}
+
+\item{keep}{passed from ei_sim()}
+
+\item{numb}{passed from ei_sim()}
+
+\item{covs}{passed from ei_sim()}
+
+\item{erho}{passed from ei_sim()}
+
+\item{esigma}{passed from ei_sim()}
+
+\item{ebeta}{passed from ei_sim()}
+
+\item{ealphab}{passed from ei_sim()}
+
+\item{ealphaw}{passed from ei_sim()}
+
+\item{Rfun}{passed from ei_sim()}
+}
 \description{
 This function is pulled directly from the ei package to enable a modified
 version of ei.sim()

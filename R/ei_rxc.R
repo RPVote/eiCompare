@@ -19,6 +19,7 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
+#' @param eiCompare_class default = TRUE
 #' @param name A unique identifier for the outputted eiCompare object.
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.

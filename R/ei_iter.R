@@ -161,15 +161,15 @@ ei_iter <- function(
             formula = formula,
             total = totals_col,
             erho = erho,
-            simulate = TRUE,
+            simulate = FALSE,
             # args_pass
           )
         )
     })
 
-    # utils::capture.output({
-    #  ei_sim <- suppressMessages(ei_sim(ei_out, samples))
-    # })
+    utils::capture.output({
+      ei_out <- suppressMessages(ei_sim(ei_out, samples))
+    })
 
     # Plots to be added here
     if (plots) {
@@ -315,7 +315,7 @@ ei_iter <- function(
     ci_lowers <- c()
     ci_uppers <- c()
 
-    district_samples <- as.data.frame(matrix(ncol = 0, nrow = 99))
+    district_samples <- as.data.frame(matrix(ncol = 0, nrow = samples))
     precinct_samples <- list()
 
     for (i in 1:length(ei_objects)) {

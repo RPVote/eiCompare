@@ -158,6 +158,23 @@ ei_sim <- function(ei.object, samples) {
 #'
 #' This function is pulled directly from the ei package to enable a modified
 #' version of ei.sim()
+#' @param t passed from ei_sim()
+#' @param x passed from ei_sim()
+#' @param n passed from ei_sim()
+#' @param Zb passed from ei_sim()
+#' @param Zw passed from ei_sim()
+#' @param par passed from ei_sim()
+#' @param varcv passed from ei_sim()
+#' @param nsims passed from ei_sim()
+#' @param keep passed from ei_sim()
+#' @param numb passed from ei_sim()
+#' @param covs passed from ei_sim()
+#' @param erho passed from ei_sim()
+#' @param esigma passed from ei_sim()
+#' @param ebeta passed from ei_sim()
+#' @param ealphab passed from ei_sim()
+#' @param ealphaw passed from ei_sim()
+#' @param Rfun passed from ei_sim()
 #'
 #' @importFrom mvtnorm dmvnorm rmvnorm
 .samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
@@ -415,6 +432,18 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
 
 #' This function is pulled directly from the ei package to enable a modified
 #' version of ei.sim()
+#'
+#' @param sub passed from ei_sim()
+#' @param Rfun passed from ei_sim()
+#' @param bb passed from ei_sim()
+#' @param bw passed from ei_sim()
+#' @param sb passed from ei_sim()
+#' @param sw passed from ei_sim()
+#' @param rho passed from ei_sim()
+#' @param x passed from ei_sim()
+#' @param numb passed from ei_sim()
+#' @param numw passed from ei_sim()
+#'
 .createR <- function(sub, Rfun, bb, bw, sb, sw, rho, x, numb, numw) {
   out <- NULL
   lower <- cbind(-bb[sub] / sb, -bw[sub] / sw)

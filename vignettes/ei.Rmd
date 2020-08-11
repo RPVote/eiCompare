@@ -200,7 +200,8 @@ ei_results_iter <- ei_iter(
   cand_cols = cands,
   race_cols = races,
   totals_col = total,
-  name = "Iter"
+  name = "Iter",
+  samples = 25
 )
 summary(ei_results_iter)
 ```
