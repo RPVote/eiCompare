@@ -1,6 +1,5 @@
 ---
 title: "eiCompare: Visualizations"
-author: "Hikari Murayama"
 output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{pp-vignette}
@@ -24,13 +23,14 @@ data("corona")
 ```
 
 This vignette aims to highlight the functionalities within eiCompare to produce plots. These visualizations include:
+
 - _Tomography plots_
 
   Each line on the graph represents $\beta^b$ and $\beta^w$ each geographical unit (i.e. precinct). Not only does this plot graphically show the bounds those values have, the overlayed contours show which values on those lines have the highest probability of being an accurate estimate.
   
 - _Density $\beta^b$ and $\beta^w$ comparison plots_
 
-  As an output from iterative ei, these 2-pane plots compare the distribution of $\beta^b$ and $\beta^w$ to show the uncertainty of the point estimates.
+  As an output from iterative ei, these 2-pane plots compare the distribution of $\beta^b$  and $\beta^w$ to show the uncertainty of the point estimates.
 
 - _Density voter choice comparison plots for each race_
 
@@ -46,7 +46,7 @@ This vignette aims to highlight the functionalities within eiCompare to produce 
   As discussed in Barreto, Collingwood, Garcia-Ross, and Oskooii's study, RxC and iterative EI should produce similar results. This output visualizes the difference seen in these two methods.
 
 
-These plots can be created as part of running iterative ei, `ei_iter()`, as we as `md_bayes_gen()`. 
+These plots can be created as part of running iterative ei, `ei_iter()`, as we as `ei_rxc()`. 
 Furthermore, this notebook will cover how to use these plot outputs and use the `patchwork` package to create consolidated figures for reports and presentations.
 
 ## Introducing our example data set: Corona, CA
@@ -190,4 +190,4 @@ knitr::include_graphics("rpv_density.png")
 
 
 
-## Other plots??
+## Patchwork

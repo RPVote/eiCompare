@@ -1,6 +1,5 @@
 ---
 title: "eiCompare: Parallel Processing"
-author: "Hikari Murayama"
 output: rmarkdown::github_document
 vignette: >
   %\VignetteIndexEntry{pp-vignette}
