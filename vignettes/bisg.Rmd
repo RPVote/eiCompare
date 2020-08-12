@@ -227,9 +227,30 @@ names(bisg_df)[names(bisg_df) == "block"] <- "BLOCKCE10"
 
 # Join bisg and shape file
 bisg_sf <- left_join(shape_file, bisg_df, by = "BLOCKCE10")
+```
 
+
+```{r}
 # Plot choropleth map of race/ethnicity predictions for Fulton and Gwinnett counties
-plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG in Fulton and Gwinnett Counties")
-ggplot(data = bisg_sf) +
-  geom_sf()
+plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG")
+```
+
+
+```{r}
+plot(bisg_sf["pred.whi"], main = "Proportion of White Voters identified by BISG")
+```
+
+
+```{r}
+plot(bisg_sf["pred.his"], main = "Proportion of Hispanic Voters identified by BISG")
+```
+
+
+```{r}
+plot(bisg_sf["pred.asi"], main = "Proportion of Asian Voters identified by BISG")
+```
+
+
+```{r}
+plot(bisg_sf["pred.oth"], main = "Proportion of 'Other' Voters identified by BISG")
 ```
