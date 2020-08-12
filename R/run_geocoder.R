@@ -159,7 +159,7 @@ run_geocoder <- function(voter_file,
 
       # Set up iterations for parallel processing
       # Set number of loops needed to batch every 10000 rows of the voter file
-      n_loops <- round(num_obs / 10000, digits = 0) + 1
+      n_loops <- round(num_obs / 10000, digits = 0)
       start_row <- 1
       stop_row <- start_row + 9999
       last_row_stop <- num_obs
