@@ -187,21 +187,20 @@ These basic descriptive checks help us understand our data and give us a sense o
 We can run both methods with their respective functions. They take some time to run because they both compute point estimates by sampling from a distribution. To keep it short for this tutorial, we'll randomly sample 40 precincts (i.e. 40 rows) from the dataset and use these as the basis for our estimates. Obviously, in a real-life setting we would run the analyses on the entire dataset.
 
 ```{r}
-gwinnett_ei_sample <- gwinnett_ei %>%
-  sample_n(100)
+# gwinnett_ei_sample <- gwinnett_ei %>%
+#  sample_n(100)
 ```
-
 
 First, we conduct iterative EI using `ei_iter()`.
 
 ```{r}
 ei_results_iter <- ei_iter(
-  data = gwinnett_ei_sample,
+  data = gwinnett_ei,
   cand_cols = cands,
   race_cols = races,
   totals_col = total,
   name = "Iter",
-  samples = 25
+  samples = 50
 )
 summary(ei_results_iter)
 ```
@@ -209,10 +208,12 @@ summary(ei_results_iter)
 Notice that the `name` field to names our results object. The name entered here is what differentiates results objects from each other when they are summarized or plotted together.  Next, we conduct RxC EI using `ei_rxc()`. 
 ```{r}
 ei_results_rxc <- ei_rxc(
-  data = gwinnett_ei_sample,
+  data = gwinnett_ei,
   cand_cols = cands,
   race_cols = races,
   totals_col = total,
+  ntunes = 1,
+  samples = 100,
   name = "RxC"
 )
 summary(ei_results_iter, ei_results_rxc)

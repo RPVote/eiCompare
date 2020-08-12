@@ -226,7 +226,19 @@ ei_sim <- function(ei.object, samples) {
 #'
 #' This function is pulled directly from the ei package to enable a modified
 #' version of ei.sim()
-#'
+#' @param param passed by .samp
+#' @param y passed by .samp
+#' @param x passed by .samp
+#' @param n passed by .samp
+#' @param Zb passed by .samp
+#' @param Zw passed by .samp
+#' @param numb passed by .samp
+#' @param erho passed by .samp
+#' @param esigma passed by .samp
+#' @param ebeta passed by .samp
+#' @param ealphab passed by .samp
+#' @param ealphaw passed by .samp
+#' @param Rfun passed by .samp#'
 like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
                  ealphab, ealphaw, Rfun) {
 
