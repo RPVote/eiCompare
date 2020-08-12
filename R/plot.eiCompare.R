@@ -30,16 +30,19 @@ plot.eiCompare <- function(x, ...) {
   data$cand <- factor(data$cand, levels = rev(cands))
 
   # Construct error bar plot
-  ggplot2::ggplot(data = data, aes(x = mean, y = cand, fill = name)) +
+  ggplot2::ggplot(
+    data = data,
+    ggplot2::aes(x = mean, y = cand, fill = name)
+  ) +
     ggplot2::geom_errorbarh(
-      aes(xmin = ci_95_lower, xmax = ci_95_upper),
+      ggplot2::aes(xmin = ci_95_lower, xmax = ci_95_upper),
       height = 0.25,
-      position = position_dodge(width = n_objects * 0.25)
+      position = ggplot2::position_dodge(width = n_objects * 0.25)
     ) +
     ggplot2::geom_point(
       size = 2.5,
       shape = 21,
-      position = position_dodge(width = n_objects * 0.25)
+      position = ggplot2::position_dodge(width = n_objects * 0.25)
     ) +
     ggplot2::geom_vline(
       xintercept = 0.5,
@@ -55,7 +58,7 @@ plot.eiCompare <- function(x, ...) {
     ggplot2::theme_bw() +
     ggplot2::theme(
       legend.position = "bottom",
-      axis.title.y = element_blank(),
-      legend.title = element_blank()
+      axis.title.y = ggplot2::element_blank(),
+      legend.title = ggplot2::element_blank()
     )
 }
