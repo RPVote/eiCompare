@@ -94,11 +94,11 @@ Non-Latino encompasses the Asian and White voting population.
 corona$pct_hisp + corona$pct_non_lat == 1
 ```
 
-So for this analysis there are 5 candidates (Husted, Spiegel, Ruth, Button, and Montanez) and 3 racial groups (Hispanic/Latino, Asian, and White). With that, let's set up the inputs we need for the function and time it to see how long it takes to complete the iterative ei analysis without parallelization.
+So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, and Montanez) and 3 racial groups (Hispanic/Latino, Asian, and White). With that, let's set up the inputs we need for the function and time it to see how long it takes to complete the iterative ei analysis without parallelization.
 
 ```{r}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
-race_cols <- c("pct_hisp", "pct_asian", "pct_white", "pct_non_lat")
+race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
 
 # Run without parallization

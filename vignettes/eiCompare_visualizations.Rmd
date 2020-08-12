@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-# devtools::install_github("DSSG-eiCompare/eiCompare@rxc_visualizations")
+devtools::install_github("DSSG-eiCompare/eiCompare@rxc_visualizations")
 library(eiCompare)
 
 # install.packages("doSNOW" )
@@ -92,7 +92,7 @@ Non-Latino encompasses the Asian and White voting population.
 corona$pct_hisp + corona$pct_non_lat == 1
 ```
 
-So for this analysis there are 5 candidates (Husted, Spiegel, Ruth, Button, and Montanez) and 3 racial groups (Hispanic/Latino, Asian, and White). 
+So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, Montanez, and Fox) and 3 racial groups (Hispanic/Latino, Asian, and White). 
 
 
 ## `ei_iter()`: Tomography, Density comparison, Density voter choice
