@@ -84,9 +84,12 @@ plot_bivariate <- function(
     corrs_long <- corrs %>%
       tidyr::pivot_longer(race_cols, names_to = "race", values_to = "corr")
     bivariate_plot <- bivariate_plot +
-      geom_text(
+      ggplot2::geom_text(
         data = corrs_long,
-        aes(label = paste("r = ", round(corr, 2), sep = "")), x = .91, y = 0.93
+        ggplot2::aes(label = paste("r = ", round(corr, 2), sep = "")),
+        x = .91,
+        y = 0.93,
+        size = ifelse(max(n_races, n_cands) > 3, 2, 3)
       )
   }
 
