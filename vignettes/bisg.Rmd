@@ -12,10 +12,10 @@ This vignette demonstrates how to perform Bayesian Improved Surname Geocoding wh
 
 Bayesian Improved Surname Geocoding (BISG) is a method that applies the Bayes Rule/Theorem to predict the race/ethnicity of an individual using the individual's surname and geocoded location [Elliott et. al 2008, Elliot et al. 2009, Imai and Khanna 2016]. 
 
-Specifically, BISG first calculates the prior probability of **i** individual being of a ceratin **r** racial group given their **s** surname, or p(r<sub>i<sub>|s<sub>i<sub>). The prior probability created from the surname is then updated with the probability of the **i** individual living in a **g** geographic location belonging to a *r* racial group, or p(g<sub>i<sub>|r<sub>i<sub>). The following equation describes how BISG calculates race/ethnicity of individuals using Bayes Theorem, given the surname and geographic location, and specifically when race/ethncicty is unknown :
+Specifically, BISG first calculates the prior probability of **i** individual being of a ceratin **r** racial group given their **s** surname, or p(r<sub>i</sub>|s<sub>i</sub>). The prior probability created from the surname is then updated with the probability of the **i** individual living in a **g** geographic location belonging to a *r* racial group, or p(g<sub>i</sub>|r<sub>i</sub>). The following equation describes how BISG calculates race/ethnicity of individuals using Bayes Theorem, given the surname and geographic location, and specifically when race/ethncicty is unknown :
       
 
-      ![BISG Equation for Predicting Race/Ethnicity.]/github/eiCompare/vignettes/bisg_equation.PNG
+      ![BISG Equation for Predicting Race/Ethnicity.](/github/eiCompare/vignettes/bisg_equation.PNG)
 
 In R, the package that performs BISG is called, WRU: Who Are You `wru` [cite WRU package]. This vignette will walk you through how to prepare your geocoded voter file for performing BISG by stepping you throught the processing of cleaning your voter file, prepping voter data for running the BISG, and finally, performing BISG to obtain racial/ethnic probailities of individuals in a voter file.
 
