@@ -30,7 +30,6 @@ suppressMessages(c(
   library(gmodels),
   library(plyr),
   library(censusxy),
-  library(tidycensus),
   library(tigris),
   library(sf),
   library(leaflet)
