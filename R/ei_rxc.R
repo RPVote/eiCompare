@@ -19,6 +19,8 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
+#' @param eiCompare_class default = TRUE
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
@@ -50,7 +52,9 @@ ei_rxc <- function(
                    thin = 1,
                    burnin = 10000,
                    ci_size = 0.95,
+                   name = "",
                    seed = NULL,
+                   eiCompare_class = TRUE,
                    ret_mcmc = FALSE,
                    verbose = FALSE,
                    ...) {
@@ -126,22 +130,26 @@ ei_rxc <- function(
     chains_pr[, race_indices] <- race_pr
   }
 
-  # Get upper, lower CI limits
-  ci_lower <- (1 - ci_size) / 2
-  ci_upper <- 1 - ci_lower
-
-  if (verbose) {
-    message(paste("Setting CI lower bound equal to", ci_lower))
-    message(paste("Setting CI upper bound equal to", ci_upper))
-  }
-
-  # Get point estimates and credible interval bounds
+  # Get point estimates and standard errors
   estimate <- mcmcse::mcse.mat(chains_pr)
 
   # The upper and lower CI estimates also have standard errors. Here these
   # errors are conservatively used to extend the 95% confidence bound further
 
-  # look for function that just finds the 95% CI
+  # Set bounds according to
+  if (eiCompare_class) {
+    # eiCompare class object reports fixed CIs
+    ci_lower <- 0.025
+    ci_upper <- 0.975
+  } else {
+    # Get upper, lower CI limits
+    ci_lower <- (1 - ci_size) / 2
+    ci_upper <- 1 - ci_lower
+    if (verbose) {
+      message(paste("Setting CI lower bound equal to", ci_lower))
+      message(paste("Setting CI upper bound equal to", ci_upper))
+    }
+  }
 
   # Lower CI estimate
   lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
@@ -162,20 +170,43 @@ ei_rxc <- function(
   cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
   race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
 
+  # Put names on chains_pr
+  names <- paste(cand_col, race_col, sep = "_")
+  colnames(chains_pr) <- names
+
   # Create, name an output table
   results_table <- data.frame(cbind(estimate, lower, upper))
   results_table <- cbind(cand_col, race_col, results_table)
-  colnames(results_table) <- c(
-    "cand", "race", "mean", "se", "ci_lower", "ci_upper"
-  )
-
-  # Match expected output
-  results_table <- get_md_bayes_gen_output(results_table, race_cols)
-
-  # Return results and chains if requested
-  if (ret_mcmc) {
-    return(list(table = results_table, chains = chains_pr))
+  if (!eiCompare_class) {
+    colnames(results_table) <- c(
+      "cand", "race", "mean", "se", "ci_lower", "ci_upper"
+    )
   } else {
-    return(results_table)
+    colnames(results_table) <- c(
+      "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
+    )
+  }
+
+  if (!eiCompare_class) {
+    # Match expected output
+    results_table <- get_md_bayes_gen_output(results_table)
+
+    # Return results and chains if requested
+    if (ret_mcmc) {
+      return(list(table = results_table, chains = chains_pr))
+    } else {
+      return(results_table)
+    }
+  } else {
+    output <- list(
+      "type" = "RxC",
+      "estimates" = results_table,
+      "district_samples" = as.data.frame(chains_pr),
+      "precinct_samples" = NULL,
+      "stat_objects" = list(md_out),
+      "name" = name
+    )
+    class(output) <- "eiCompare"
+    return(output)
   }
 }

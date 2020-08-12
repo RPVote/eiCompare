@@ -12,6 +12,7 @@ Depends:
   eiPack,
   ei
 Imports:
+  bayestestR,
   cubature,
   data.table,
   doParallel,
