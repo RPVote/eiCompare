@@ -192,25 +192,25 @@ knitr::include_graphics("trace_density.pdf")
 The Gelman-Rubin diagnostic is one method to test for convergence to see if the sample is close to the posterior distribution. You'll get one plot for each parameter and produces the scale reduction factor. In these plots you'll be looking to for values below a factor of ~1.1 so these plots will give you a good sense of any changes you'll need for burn-in.
 
 ```{r echo=FALSE,  out.width='0.75\\linewidth'}
-knitr::include_graphics("gelman.pdf")
+knitr::include_graphics("geolman.pdf")
 ```
 
 
 ## EI and RxC comparison chart
 The `ei_rc_good_table` function lets the user compare the distribution of their ei and rxc results. This plot is one method to double check RxC parameter settings and enable users to go back and check over their work.
 
-First let's run the rxc:
+First let's run the rxc analysis:
 ```{r}
-rxc_results <- ei_rxc(
-  data = corona, cand_cols, race_cols, totals_col, diagnostic = FALSE,
-  par_compute = TRUE, verbose = TRUE
-)
+# rxc_results <- ei_rxc(
+#   data = corona, cand_cols, race_cols, totals_col, diagnostic = FALSE,
+#   par_compute = TRUE, verbose = TRUE
+# )
 ```
 
 And now we can combine our results to compare their distributions.
 ```{r}
-ei_rc_combine <- ei_rc_good_table(ei_results, rxc_results,
-  groups = c("Latino", "Asian", "White")
-)
-plot(ei_rc_combine)
+# ei_rc_combine <- ei_rc_good_table(ei_results, rxc_results,
+#   groups = c("Latino", "Asian", "White")
+# )
+# plot(ei_rc_combine)
 ```
