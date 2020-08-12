@@ -42,6 +42,10 @@
 #' @export
 #'
 #' @importFrom mcmcse mcse.mat mcse.q.mat
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach getDoParWorkers %dopar% %do%
+#' @importFrom utils capture.output setTxtProgressBar
+#' @importFrom coda as.mcmc mcmc.list gelman.plot
 #'
 #' @return A dataframe of ei results
 ei_rxc <- function(
@@ -200,12 +204,12 @@ ei_rxc <- function(
     # Generate trace and general density plots
     pdf(paste0(plot_path, "trace_density.pdf"))
     plot(chains_list)
-    dev.off()
+    grDevices::dev.off()
 
     # Generate Gelman plot for convergence
     pdf(paste0(plot_path, "geolman.pdf"))
     coda::gelman.plot(chains_list)
-    dev.off()
+    grDevices::dev.off()
 
     return(chains_list)
   } else {

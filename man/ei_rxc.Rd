@@ -18,6 +18,11 @@ ei_rxc(
   seed = NULL,
   ret_mcmc = FALSE,
   verbose = FALSE,
+  diagnostic = FALSE,
+  n_chains = 3,
+  plots = FALSE,
+  plot_path = "",
+  par_compute = FALSE,
   ...
 )
 }
@@ -57,6 +62,16 @@ runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 \item{ret_mcmc}{Boolean. If true, the full sample chains are returned}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
+
+\item{diagnostic}{Boolean. If true, run diagnostic test to assess viability of MCMC parameters (will return all chain results)}
+
+\item{n_chains}{Number of chains for diagnostic test. Default is set to 3.}
+
+\item{plots}{A boolean indicating whether or not to include voter density plots}
+
+\item{plot_path}{A string to specify plot save location. Defaulted to working directory}
+
+\item{par_compute}{Boolean. If true, diagnostic test will be run in parallel.}
 
 \item{...}{Additional parameters passed to eiPack::tuneMD()}
 }

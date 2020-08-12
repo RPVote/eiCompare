@@ -12,14 +12,17 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
 #'
-#'
+#' @importFrom foreach %dopar% %do%
 #'
 #' @export
 #'
 
-# utils::globalVariables(c("m", "k", "%do%", "Candidate", "value"))
 
 overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type) {
+  # Set new variables to NULL
+  k <- Candidate <- value <- m <- NULL
+
+
   race <- race_cols
   cands <- cand_cols
 
@@ -87,7 +90,8 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
       dens_data <- as.data.frame(dens_data[, c("Candidate", "value")])
 
       rt_sub <- as.data.frame(results_table[race[k]][[1]])
-      rt_sub <- tibble::rownames_to_column(rt_sub, "Candidate")
+      rt_sub$Candidate <- rownames(rt_sub)
+      rownames(rt_sub) <- NULL
       rt_sub <- dplyr::rename(rt_sub, mean_size = mean)
       rt_sub <- rt_sub[, c("Candidate", "mean_size")]
     }

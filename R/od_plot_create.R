@@ -19,10 +19,12 @@
 #'
 #' @export
 
-# utils::globalVariables(c("value", "Candidate", "..scaled..", "sd_minus", "sd_plus"))
-
 
 od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand_colors) {
+  # Set new variables to NULL
+  value <- Candidate <- sd_minus <- sd_plus <- NULL
+
+
   # Omit NAs and subset both density data and summmary table
   dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_pair), ])
   out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_pair), ]

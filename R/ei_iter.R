@@ -30,7 +30,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach getDoParWorkers
+#' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'

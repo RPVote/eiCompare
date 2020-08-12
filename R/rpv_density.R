@@ -18,6 +18,9 @@
 
 # pair wise subtraction
 rpv_density <- function(agg_betas, plot_path) {
+  value <- NULL
+
+
   # take difference between pairs
   agg_betas_diff <- matrix(ncol = ncol(agg_betas) / 2, nrow = nrow(agg_betas))
   for (i in seq(1, ncol(agg_betas), 2)) {
