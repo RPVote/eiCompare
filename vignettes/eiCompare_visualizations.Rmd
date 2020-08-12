@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-# devtools::install_github("DSSG-eiCompare/eiCompare@master")
+# devtools::install_github("DSSG-eiCompare/eiCompare@rxc_visualizations")
 library(eiCompare)
 
 # install.packages("doSNOW" )
@@ -38,16 +38,13 @@ This vignette aims to highlight the functionalities within eiCompare to produce 
     
 - _MCMC convergence density plots_
 
-  These MCMC draw plots show... {NOT COMPLETE}
+  Using `coda`, `ei_rxc()` can create diagnostic plot to assess convergence of the Markov Chain Monte Carlo (MCMC) and visualize the parameter fluctuations over iterations and its distribution. It is recommended to do a diagnostic run and assessing these results prior to running the full RxC analysis.
 
 
 - _Summary plot to compare iterative ei and RxC results_
 
   As discussed in Barreto, Collingwood, Garcia-Ross, and Oskooii's study, RxC and iterative EI should produce similar results. This output visualizes the difference seen in these two methods.
-
-
-These plots can be created as part of running iterative ei, `ei_iter()`, as we as `ei_rxc()`. 
-Furthermore, this notebook will cover how to use these plot outputs and use the `patchwork` package to create consolidated figures for reports and presentations.
+  
 
 ## Introducing our example data set: Corona, CA
 
@@ -112,7 +109,7 @@ Time to run our iteraative ei!
 
 ```{r}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
-race_cols <- c("pct_hisp", "pct_asian", "pct_white", "pct_non_lat")
+race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
 
 # Run with plots =
@@ -164,30 +161,56 @@ knitr::include_graphics("rpv_density.png")
 ```
 
 
-#### BELOW NOT COMPLETE YET
 ## `ei_rxc()`: Density voter choice, MCMC convergence
 
-### MCMC convergence density plots
+`ei_rxc` also has capabiltiies to create density voter choice plots. But keep in mind these may take a long time to run depedning on what you specify for draws. You can opt into creating these plots as in `ei_iter` by toggling `plots = TRUE`.
 
-```{r echo=FALSE, out.width='100%'}
+In addition, to assess your RxC parameter set up, we recommend running a diagnostic test first. By toggling to `diagnostic = TRUE` you will be able to conduct a MCMC chain analysis and test for convergence. 
 
-# knitr::include_graphics("density_pct_montanez_pct_hisp.png")
+
+```{r}
+rxc_diag <- ei_rxc(
+  data = corona, cand_cols, race_cols, totals_col, diagnostic = TRUE,
+  par_compute = TRUE, verbose = TRUE
+)
+```
+
+
+The following plots are created by using the `coda` package.
+
+### Trace and marginal density plots
+
+`coda` enables creating trace and density plots, side-by-side for each parameter, with ease. Trace plots show the calculated parameter for each iteration. If there seems to be a chain lags to join the rests' mode, this is an indication you'd want to increase the burn-in period. On the other hand, the marginal density plots show the distribution of this parameter. You're looking for a bell curve here-- if its lumpy you'll want to run the algorithm longer.
+
+
+```{r echo=FALSE,  out.width='0.75\\linewidth'}
+knitr::include_graphics("trace_density.pdf")
+```
+
+
+### Gelman-Rubin diagnostic plot
+The Gelman-Rubin diagnostic is one method to test for convergence to see if the sample is close to the posterior distribution. You'll get one plot for each parameter and produces the scale reduction factor. In these plots you'll be looking to for values below a factor of ~1.1 so these plots will give you a good sense of any changes you'll need for burn-in.
+
+```{r echo=FALSE,  out.width='0.75\\linewidth'}
+knitr::include_graphics("gelman.pdf")
 ```
 
 
 ## EI and RxC comparison chart
+The `ei_rc_good_table` function lets the user compare the distribution of their ei and rxc results. This plot is one method to double check RxC parameter settings and enable users to go back and check over their work.
 
-```{r echo=FALSE, out.width='100%'}
-
-# knitr::include_graphics("density_pct_montanez_pct_hisp.png")
+First let's run the rxc:
+```{r}
+rxc_results <- ei_rxc(
+  data = corona, cand_cols, race_cols, totals_col, diagnostic = FALSE,
+  par_compute = TRUE, verbose = TRUE
+)
 ```
 
-
-```{r echo=FALSE, out.width='100%'}
-# ei_rc_combine <- ei_rc_good_table(results_ei, results_rxc, groups= c("Black", "White", "Latino", "Other"))
-# plot(ei_rc_combine)
+And now we can combine our results to compare their distributions.
+```{r}
+ei_rc_combine <- ei_rc_good_table(ei_results, rxc_results,
+  groups = c("Latino", "Asian", "White")
+)
+plot(ei_rc_combine)
 ```
-
-
-
-## Patchwork
