@@ -29,7 +29,7 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
   if (tolower(ei_type) == "ei") {
     # Extract beta bs
     agg_betas <- agg_betas[, grep("bbgg", colnames(agg_betas))]
-    colnames(agg_betas) <- gsub("bbgg_", "", colnames(race_comb))
+    colnames(agg_betas) <- gsub("bbgg_", "", colnames(agg_betas))
   } else if (tolower(ei_type) == "rxc") {
     colnames(agg_betas) <- gsub("betas.", "", colnames(agg_betas))
     colnames(agg_betas) <- gsub("\\.", "_", colnames(agg_betas))
