@@ -207,7 +207,7 @@ ei_rxc <- function(
     grDevices::dev.off()
 
     # Generate Gelman plot for convergence
-    pdf(paste0(plot_path, "geolman.pdf"))
+    pdf(paste0(plot_path, "gelman.pdf"))
     coda::gelman.plot(chains_list)
     grDevices::dev.off()
 
