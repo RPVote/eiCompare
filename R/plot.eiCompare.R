@@ -1,0 +1,64 @@
+#' Print a plot comparing the predictions of EI outputs.
+#'
+#' The output of this plot consists of error bars containing the mean and
+#' confidence intervals for each candidate, racial group, and eiCompare object.
+#'
+#' @param x An eiCompare object, outputted from ei_iter() or ei_rxc().
+#' @param ... Additional eiCompare objects to summarize.
+#' @return A ggplot comparing eiCompare objects.
+#'
+#' @import ggplot2
+#' @export
+plot.eiCompare <- function(x, ...) {
+  # Consolidate eiCompare objects
+  objects <- list(x, ...)
+  n_objects <- length(objects)
+
+  # Consolidate EI outputs in a single dataframe
+  data <- as.data.frame(matrix(nrow = 0, ncol = 7))
+  for (ii in seq_along(objects)) {
+    object <- objects[[ii]]
+    samples <- as.data.frame(object$estimates)
+    samples["name"] <- object$name
+    data <- rbind(data, samples)
+  }
+
+  # Get unique values for race and candidates
+  races <- unique(data$race)
+  cands <- unique(data$cand)
+  data$race <- factor(data$race, levels = races)
+  data$cand <- factor(data$cand, levels = rev(cands))
+
+  # Construct error bar plot
+  ggplot2::ggplot(
+    data = data,
+    ggplot2::aes(x = mean, y = cand, fill = name)
+  ) +
+    ggplot2::geom_errorbarh(
+      ggplot2::aes(xmin = ci_95_lower, xmax = ci_95_upper),
+      height = 0.25,
+      position = ggplot2::position_dodge(width = n_objects * 0.25)
+    ) +
+    ggplot2::geom_point(
+      size = 2.5,
+      shape = 21,
+      position = ggplot2::position_dodge(width = n_objects * 0.25)
+    ) +
+    ggplot2::geom_vline(
+      xintercept = 0.5,
+      linetype = "dashed",
+      color = "red"
+    ) +
+    ggplot2::facet_grid(race ~ .) +
+    ggplot2::scale_fill_brewer(type = "qual") +
+    ggplot2::scale_x_continuous(
+      name = "Proportion of vote",
+      breaks = seq(0, 1, .2)
+    ) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      legend.position = "bottom",
+      axis.title.y = ggplot2::element_blank(),
+      legend.title = ggplot2::element_blank()
+    )
+}

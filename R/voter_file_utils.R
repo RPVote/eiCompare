@@ -44,7 +44,7 @@ tidy_voter_file_wru <- function(voter_file,
                                 block = NULL) {
   # Create voter file, making new voter IDs if necessary
   if (is.null(voter_id)) {
-    voter_id <- seq_len(voter_file)
+    voter_id <- seq_len(nrow(voter_file))
   } else {
     voter_id <- voter_file[, voter_id]
   }

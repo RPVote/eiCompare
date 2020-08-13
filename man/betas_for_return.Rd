@@ -14,3 +14,6 @@ betas_for_return(precinct_results, race_cand_pairs)
 \description{
 Manipulate precinct results to get betas as from ei_est_gen
 }
+\author{
+Ari Decter-Frain <agd75@cornell.edu>
+}
