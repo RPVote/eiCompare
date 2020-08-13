@@ -27,7 +27,7 @@ This vignette aims to highlight the parallel processing capabilities within eiCo
 
 - `ei_rxc()` (only for diagnostic)
 
-- [INSERT GEOCODING FUNCTION NAME HERE]
+- `run_geocoder()`
 
 Prior to attempting to run these functions in parallel, it is advised you check your computer or server for the following properites:
 
@@ -44,11 +44,11 @@ _Parallel processing_ decreases the time needed for your processes by splitting 
 
 In order to make this functionality more accessible to users, eiCompare's functions that include parallel processing include a check for the number of cores you have available to you. If you have less than 4 cores, our functions will not let you proceed with parallelization. Even with exacltly 4 cores, the functions will return a warning that parallelization is not recommended. 
 
-There are many sources online if you'd like to learn more about parallelization in general.
+There are many resources online if you'd like to learn more about parallelization in general.
 
 ## Walking through an example: `ei_iter()`
 
-In this vignette, we'll be focusing on `ei_iter()`, which is discussed in a previous vignette, [INSERT TITLE HERE]. We recommend that you review this vignette prior to attempting parallelization for this function. 
+In this vignette, we'll be focusing on `ei_iter()` (the functionalities and work flow are described in detail in the Ecological Inference tutorial). We recommend that you review this vignette prior to attempting parallelization for this function. 
 
 The data we'll be using for this example is from 2014 elections in California, specifically looking at voting results and racial demogrphiacs for Corona by precinct.
 
@@ -124,3 +124,7 @@ Depending on your dataset, the number of races and candidates you're analyzung, 
 
 knitr::include_graphics("para_benchmark_box_nsamples.png")
 ```
+
+## Summary
+
+`eiCompare` provides the option to parallelize operations for iterative ei in `ei_iter()`, diagnostic tests in `ei_rxc()`,  and geocoding in `run_geocoder()`. By setting the parallelization toggle to `TRUE`, as well as having the proper set up with more than 4 cores and more than 16 GB of RAM, the user should be able to run these operations multitudes faster.
