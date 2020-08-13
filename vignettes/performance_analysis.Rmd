@@ -1,6 +1,6 @@
 ---
 title: "Conducting Performance Analyses"
-output: rmarkdown::html_vignette
+output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{Conducting Performance Analyses}
   %\VignetteEngine{knitr::rmarkdown}
@@ -47,10 +47,13 @@ In this case study, we'll focus on the defendant map. We'll demonstrate how a pe
 
 Let's take a look at a map proposed by the defendants, ERSD. The district map is composed of nine wards. To assess representation, we could examine the CVAP (the number of people who can vote) by race across the wards. Thus, let's take a look at the fraction of CVAP voters that are in the minority aggregate, by ward:
 
-```{r cvap_map, fig.height=6, fig.width=7.2, message=FALSE, warning=FALSE}
+```{r load_data}
 # Load the map
 data("ersd_maps")
+```
 
+
+```{r cvap_map, fig.align = "center", fig.height=6, fig.width=7.2, message=FALSE, warning=FALSE}
 # Plot the map, using a fill that depends on Citizen Voting Age Population (CVAP)
 options(repr.plot.width = 7.2, repr.plot.height = 6)
 cvap_map <- ggplot() +
@@ -129,7 +132,7 @@ print(as.data.frame(voter_file_w_ward)[, c("surname", "WARD")])
 
 We can double check that the correct wards were identified by plotting the voters on the ward map:
 
-```{r plot_voter_w_ward,  fig.height=6, fig.width=7.2, message=FALSE, warning=FALSE}
+```{r plot_voter_w_ward, fig.height=6, fig.width=7.2, fig.align = "center", message=FALSE, warning=FALSE}
 # Plot the map with no fill and voters as points
 options(repr.plot.width = 7.2, repr.plot.height = 6)
 map <- ggplot() +
@@ -276,7 +279,7 @@ Notice that the function outputted messages during the process, since we specifi
 
 With the performance analysis complete, let's compare the predicted turnout of the minority aggregate to the CVAP fraction: 
 
-```{r visualize_results, fig.height=5, fig.width=5, message=FALSE, warning=FALSE}
+```{r visualize_results, fig.align = "center", fig.height=5, fig.width=5, message=FALSE, warning=FALSE}
 options(repr.plot.width = 5, repr.plot.height = 5)
 
 # Get minority aggregate turnout
