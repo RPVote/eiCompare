@@ -93,8 +93,13 @@ Check the dimensions (the number of rows and columns) of the voter file.
 # Get the dimensions of the voter file
 dim(voter_file_geocoded)
 ```
-There are 4440 voters (or observations) and 45 columns in the voter file.
+There are 12 voters (or observations) and 25 columns in the voter file.
 
+Convert geometry column name into two columns for latitude and longitude points.
+```{r}
+voter_file_geocoded <- voter_file_geocoded %>%
+  extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
+```
 
 ### Step 2: De-duplicate the voter file.
 
@@ -102,29 +107,16 @@ The next step involves removing duplicate voter IDs from the voter file, using t
 ```{r}
 # Rename registration_id to voter_id
 names(voter_file_geocoded)[names(voter_file_geocoded) == "registration_number"] <- "voter_id"
-
-# Separate latitude and longitude into columns
-voter_file_geocoded <- voter_file_geocoded %>%
-  extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
-```
-
-```{r}
-# Check column names for lat and lon columns
-names(voter_file_geocoded)
 ```
 
 ```{r}
 # Remove duplicate voter IDs (the unique identifier for each voter)
 voter_file_dedupe <- dedupe_voter_file(voter_file = voter_file_geocoded, voter_id = "voter_id")
-
-# Check new dimensions of voter file after removing duplicate voter IDs
-dim(voter_file_dedupe)
-names(voter_file_dedupe)
 ```
 
 There are no duplicate voter IDs in the dataset.
 
-### Step 5: Perform BISG and obtain the predicted race/ethnicity of each voter.
+### Step 3: Perform BISG and obtain the predicted race/ethnicity of each voter.
 ```{r}
 # Convert the voter_shaped_merged file into a data frame for performing BISG.
 voter_file_complete <- as.data.frame(voter_file_dedupe)
@@ -155,16 +147,11 @@ bisg_file <- eiCompare::wru_predict_race_wrapper(
 ```
 
 ```{r}
-# Check the object for BISG output
+# Check BISG output
 head(bisg_file$bisg)
 
 # Assign BISG list data frame, bisg$bisg, to bisg_tbl
 bisg_tbl <- bisg_file$bisg
-```
-
-```{r}
-# Save file as a .csv
-write_csv(bisg_tbl, paste(path, "ga_geo_output.csv"))
 ```
 
 
@@ -173,7 +160,7 @@ write_csv(bisg_tbl, paste(path, "ga_geo_output.csv"))
 summary(bisg_tbl)
 ```
 
-
+### Look at BISG race predictions by county
 ```{r}
 # Obtain aggregate values for the BISG results by county
 bisg_agg <- precinct_agg_combine(
@@ -184,15 +171,12 @@ bisg_agg <- precinct_agg_combine(
   include_total = FALSE
 )
 
-bisg_agg
-```
-
-```{r}
 # Assign values to county names for barplot
 bisg_agg$county[bisg_agg$county == "121"] <- "Fulton"
 bisg_agg$county[bisg_agg$county == "135"] <- "Gwinnett"
 
-bisg_agg
+# Table with BISG race predictions by county
+head(bisg_agg)
 ```
 
 ### Barplot of BISG results
@@ -211,10 +195,6 @@ bisg_bar + scale_color_discrete(name = "Race/Ethnicity Proportions")
 Finally, we will map the BISG data onto choropleth maps.
 
 ```{r}
-names(bisg_tbl)
-```
-
-```{r}
 bisg_df <- bisg_tbl %>%
   select(block, pred.whi, pred.bla, pred.his, pred.asi, pred.oth)
 
@@ -229,28 +209,28 @@ names(bisg_df)[names(bisg_df) == "block"] <- "BLOCKCE10"
 bisg_sf <- left_join(shape_file, bisg_df, by = "BLOCKCE10")
 ```
 
-
+#### Plot Map of Proportion of Black Voters
 ```{r}
 # Plot choropleth map of race/ethnicity predictions for Fulton and Gwinnett counties
 plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG")
 ```
 
-
+#### Plot Map of Proportion of White Voters
 ```{r}
 plot(bisg_sf["pred.whi"], main = "Proportion of White Voters identified by BISG")
 ```
 
-
+#### Plot Map of Proportion of Hispanic Voters
 ```{r}
 plot(bisg_sf["pred.his"], main = "Proportion of Hispanic Voters identified by BISG")
 ```
 
-
+#### Plot Map of Proportion of Asian Voters
 ```{r}
 plot(bisg_sf["pred.asi"], main = "Proportion of Asian Voters identified by BISG")
 ```
 
-
+#### Plot Map of Proportion of Other Voters
 ```{r}
 plot(bisg_sf["pred.oth"], main = "Proportion of 'Other' Voters identified by BISG")
 ```
