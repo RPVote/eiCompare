@@ -14,9 +14,9 @@ test_that("ei results table mungs results correctly", {
     )
   )
   expected <- data.frame(
-    "Candidate" = c("x", "sd", "y", "sd", "Total"),
-    "pct_race" = c(0.75, 0.25, 0.70, 0.20, 1.45),
-    "other" = c(0.25, 0.2, 0.30, 0.1, 0.55)
+    "Candidate" = c("x", "se", "y", "se", "Total"),
+    "pct_race" = c(0.75, 0.25, 0.70, 0.20, 1.45) * 100,
+    "other" = c(0.25, 0.2, 0.30, 0.1, 0.55) * 100
   )
   output <- get_results_table(input,
     cand_col = c("x", "y"),

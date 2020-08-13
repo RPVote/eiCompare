@@ -10,10 +10,15 @@ ei_iter(
   race_cols,
   totals_col,
   erho = 10,
-  sample = 1000,
+  seed = NULL,
+  samples = 99,
   plots = FALSE,
+  eiCompare_class = TRUE,
   betas = FALSE,
   par_compute = FALSE,
+  verbose = FALSE,
+  plot_path = "",
+  name = "",
   ...
 )
 }
@@ -32,14 +37,28 @@ precinct}
 
 \item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
 
-\item{sample}{The number of samples used in ei estimation. Defaulted to 1000}
+\item{seed}{A numeric seed value for replicating estimate results across
+runs. If NULL, a random seed is chosen. Defaulted to NULL.}
+
+\item{samples}{The number of samples to draw from simulations on each
+iteration. Defaulated to 99. Note that increasing the number of samples drawn
+may increase the execution time of this function substantially.}
 
 \item{plots}{A boolean indicating whether or not to include density and
 tomography plots}
 
+\item{eiCompare_class}{default = TRUE}
+
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{par_compute}{A boolean to conduct ei using parallel processing}
+
+\item{verbose}{A boolean indicating whether to print out status messages.}
+
+\item{plot_path}{A string to specify plot save location. Defaulted to working
+directory.}
+
+\item{name}{A unique identifier for the outputted eiCompare object.}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
@@ -63,5 +82,5 @@ Problem. Princeton: Princeton University Press.
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 
-Ari Decter-Frain
+Ari Decter-Frain <agd75@cornell.edu>
 }

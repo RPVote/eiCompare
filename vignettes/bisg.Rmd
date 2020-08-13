@@ -11,7 +11,6 @@ This vignette demonstrates how to perform Bayesian Improved Surname Geocoding wh
 ## *What is Bayesian Improved Surname Geocoding?*
 
 Bayesian Improved Surname Geocoding (BISG) is a method that applies the Bayes Rule/Theorem to predict the race/ethnicity of an individual using the individual's surname and geocoded location [Elliott et. al 2008, Elliot et al. 2009, Imai and Khanna 2016]. 
-
 Specifically, BISG first calculates the prior probability of **i** individual being of a ceratin **r** racial group given their **s** surname, or p(r<sub>i</sub>|s<sub>i</sub>). The prior probability created from the surname is then updated with the probability of the **i** individual living in a **g** geographic location belonging to a *r* racial group, or p(g<sub>i</sub>|r<sub>i</sub>). The following equation describes how BISG calculates race/ethnicity of individuals using Bayes Theorem, given the surname and geographic location, and specifically when race/ethncicty is unknown :
       
 
@@ -21,6 +20,7 @@ In R, the package that performs BISG is called, WRU: Who Are You `wru` [cite WRU
 
 ## *Performing BISG on your data*
 We will perform BISG using the previous Gwinnett and Fulton county voter registration data called `gwin_fulton_5k.csv` that was geocoded in the **eiCompare: Geocoding vignette**. 
+
 
 The first step in performing BISG is to geocode your voter file addresses. For information on geocoding, visit the Geocoding Vignette. 
 
@@ -82,19 +82,18 @@ Obtain the first six rows of the voter file to check that the file has downloade
 head(voter_file_geocoded, 6)
 ```
 
-View the column names of the voter file. Some of these columns will be used along the journey to performing BISG.
+Make sure to load your census data that details certain geographies (i.e. counties, cities, tracts, blocks, etc.)
 ```{r}
-# Find out names of columns in voter file
-names(voter_file_geocoded)
+# Load New York census data
+load("~/shared/east_ramapo/data/ny_census2.RData")
+census_data <- ny_3
 ```
 
-Check the dimensions (the number of rows and columns) of the voter file.
+Next, load the state shape file using the sf::st_read() function.
 ```{r}
-# Get the dimensions of the voter file
-dim(voter_file_geocoded)
+# Load New York block shape file
+ny_shape <- st_read("~/shared/east_ramapo/data/tl_2014_36_tabblock10.shp")
 ```
-There are 4440 voters (or observations) and 45 columns in the voter file.
-
 
 ### Step 2: De-duplicate the voter file.
 
@@ -119,8 +118,7 @@ voter_file_dedupe <- dedupe_voter_file(voter_file = voter_file_geocoded, voter_i
 
 # Check new dimensions of voter file after removing duplicate voter IDs
 dim(voter_file_dedupe)
-names(voter_file_dedupe)
-```
+names(voter_file_dedupe)```
 
 There are no duplicate voter IDs in the dataset.
 
