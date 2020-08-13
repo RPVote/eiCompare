@@ -7,15 +7,16 @@ The goal is to assist people doing voter redistricting work.
 
 ## Installation
 
-Install previous version from CRAN with 
+Install latest CRAN release with 
 ```
 # https://github.com/lorenc5/eiCompare (2.4)
 install.packages('eiCompare')
 ```
 
-Install developement version with
+Install latest developement version with
 ```
-devtools::install_github('RPVote/eiCompare')
+# install.packages("remotes")
+remotes::install_github('RPVote/eiCompare')
 ```
 
 

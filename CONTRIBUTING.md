@@ -1,6 +1,11 @@
 # Contributing Guide
 
+Thanks for your interest in contributing to eiCompare! Please start by reviewing our [code of conduct](CODE_OF_CONDUCT.md)
+
 This software package attempts to closely follow modern best-practices for R packages detailed at https://r-pkgs.org. Here we cover basic steps if you'd like to contribute improvements or new functionality.
+
+We recommend using the R [devtools](https://github.com/r-lib/devtools) package to facilitate the development workflow: `install.packages("devtools")`
+
 
 ## GitHub Workflow
 We recommend a ["Forking Workflow"](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) if you’d like to contribute code or documentation to eiCompare !
