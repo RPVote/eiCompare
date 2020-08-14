@@ -69,7 +69,8 @@ runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
 
-\item{diagnostic}{Boolean. If true, run diagnostic test to assess viability of MCMC parameters (will return all chain results)}
+\item{diagnostic}{Boolean. If true, run diagnostic test to assess viability of MCMC
+parameters (will return all chain results)}
 
 \item{n_chains}{Number of chains for diagnostic test. Default is set to 3.}
 
