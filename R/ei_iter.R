@@ -16,21 +16,28 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-#' @param erho A number passed directly to ei::ei(). Defaulted to 0.5
+#' @param erho A number passed directly to ei::ei(). Defaulted to 10
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
+#' @param samples The number of samples to draw from simulations on each
+#' iteration. Defaulated to 99. Note that increasing the number of samples drawn
+#' may increase the execution time of this function substantially.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
+#' @param eiCompare_class default = TRUE
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
 #' @param verbose A boolean indicating whether to print out status messages.
-#' @param plot_path A string to specify plot save location. Defaulted to working directory
+#' @param plot_path A string to specify plot save location. Defaulted to working
+#'  directory.
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @return dataframe of results from iterative ei
 #'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach getDoParWorkers %dopar% %do%
+#' @importFrom bayestestR ci
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
@@ -41,9 +48,6 @@
 #' Problem. Princeton: Princeton University Press.
 #'
 #' @export
-#'
-#'
-#'
 
 # utils::globalVariables(c("%dopar%", "%do%", "i"))
 
@@ -54,11 +58,14 @@ ei_iter <- function(
                     totals_col,
                     erho = 10,
                     seed = NULL,
+                    samples = 99,
                     plots = FALSE,
+                    eiCompare_class = TRUE,
                     betas = FALSE,
                     par_compute = FALSE,
                     verbose = FALSE,
                     plot_path = "",
+                    name = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -153,11 +160,15 @@ ei_iter <- function(
             data = data,
             formula = formula,
             total = totals_col,
-            erho = erho
-            # sample = sample
-            # args_pass
+            erho = erho,
+            simulate = FALSE,
+            args_pass
           )
         )
+    })
+
+    utils::capture.output({
+      ei_out <- suppressMessages(ei_sim(ei_out, samples))
     })
 
     # Plots to be added here
@@ -226,20 +237,12 @@ ei_iter <- function(
     precinct_res <- cbind(res$betab, res$betaw)
     colnames(precinct_res) <- paste(c("betab", "betaw"), cand, race, sep = "_")
 
-    # Sabe out aggs
+    # Save out aggs
     aggs_b <- eiread(ei_out, "aggs")
-
 
     setTxtProgressBar(pb, i)
 
-    list(district_res, precinct_res, aggs_b)
-  }
-
-  if (par_compute == TRUE) {
-    # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
+    list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
   # close progress bar
@@ -249,7 +252,14 @@ ei_iter <- function(
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
   agg_results <- sapply(ei_results, function(x) x[3])
+  ei_objects <- sapply(ei_results, function(x) x[4])
 
+  if (par_compute) {
+    # Stop clusters (always done between uses)
+    parallel::stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
+  }
 
   # Put results in dataframe
   results_table <- get_results_table(
@@ -279,22 +289,110 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     # Create density plots
-    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(
+      agg_betas, results_table, race_cols, cand_cols, plot_path,
+      ei_type = "ei"
+    )
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
   }
 
+  if (eiCompare_class) {
 
-  # If betas == TRUE, return a list with results plus df of betas
-  if (betas) {
-    df_betas <- betas_for_return(precinct_results, race_cand_pairs)
-    to_return <- list(
-      "race_group_table" = results_table,
-      "all_betas" = df_betas
+    # Set up containers
+    races <- c()
+    cands <- c()
+    means <- c()
+    ses <- c()
+    ci_lowers <- c()
+    ci_uppers <- c()
+
+    district_samples <- as.data.frame(matrix(ncol = 0, nrow = samples))
+    precinct_samples <- list()
+
+    for (i in 1:length(ei_objects)) {
+      ei_object <- ei_objects[[i]][[3]]
+      cand <- ei_objects[[i]][[2]]
+      race <- ei_objects[[i]][[1]]
+      cands <- append(cands, cand)
+      races <- append(races, race)
+
+      # Get estimates
+      aggs <- ei::eiread(ei_object, "aggs")[, 1]
+
+      # Both CIs
+      suppressMessages({
+        cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+      })
+      ci_lowers <- append(ci_lowers, cis$CI_low)
+      ci_uppers <- append(ci_uppers, cis$CI_high)
+
+      # Mean
+      mean <- mean(aggs, na.rm = TRUE)
+      means <- append(means, mean)
+
+      # Standard error
+      nsims <- length(aggs)
+      devs <- mean - aggs
+      sq_devs <- devs^2
+      sum_sq_devs <- sum(sq_devs)
+      se <- sqrt(sum_sq_devs / nsims)
+      ses <- append(ses, se)
+
+      # Add district chains to dataframe
+      district_name <- paste(cand, race, sep = "_")
+      district_samples[[district_name]] <- as.numeric(aggs)
+
+      # Get samples of precinct-level estimates
+      prec_res <- ei::eiread(
+        ei.object = ei_object,
+        "betab",
+        "sbetab",
+        "betaw",
+        "sbetaw"
+      )
+
+      # Put precinct betas in dataframe
+      precinct_res <- cbind(
+        prec_res$betab,
+        prec_res$sbetab,
+        prec_res$betaw,
+        prec_res$sbetaw
+      )
+      colnames(precinct_res) <- c("betab", "sbetab", "betaw", "sbetaw")
+
+      precinct_samples[[district_name]] <- precinct_res
+    }
+
+    # Make estimates table
+    estimates <- data.frame(cbind(means, ses, ci_lowers, ci_uppers))
+    estimates <- cbind(cands, races, estimates)
+    colnames(estimates) <- c(
+      "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
     )
-    return(to_return)
+
+    output <- list(
+      "type" = "iter",
+      "estimates" = estimates,
+      "district_samples" = district_samples,
+      "precinct_samples" = precinct_samples,
+      "stat_objects" = ei_objects,
+      "name" = name
+    )
+    class(output) <- "eiCompare"
+    return(output)
   } else {
-    return(results_table)
+    # If betas == TRUE, return a list with results plus df of betas
+    if (betas) {
+      df_betas <- betas_for_return(precinct_results, race_cand_pairs)
+      to_return <- list(
+        "race_group_table" = results_table,
+        "all_betas" = df_betas
+      )
+      return(to_return)
+    } else {
+      return(results_table)
+    }
   }
 }

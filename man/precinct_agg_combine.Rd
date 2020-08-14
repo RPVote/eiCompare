@@ -2,28 +2,45 @@
 % Please edit documentation in R/precinct_agg_combine.R
 \name{precinct_agg_combine}
 \alias{precinct_agg_combine}
-\title{precinct_agg_combine}
+\title{Aggregates racial estimates across geographic units}
 \usage{
-precinct_agg_combine(dat, precinct = "precinct")
+precinct_agg_combine(
+  voter_file,
+  group_col = "precinct",
+  race_cols = NULL,
+  race_keys = NULL,
+  include_total = FALSE
+)
 }
 \arguments{
-\item{dat}{data.frame() object}
+\item{voter_file}{The voter file, as a dataframe. Should contain columns that
+denote the race probabilities or the actual race of the voter.}
 
-\item{precinct}{Character of precinct column name. Default = "precinct",
-which is what is output from bisg_prep_race_predict()}
+\item{group_col}{A string denoting the column to aggregate over (e.g.,
+"precinct").}
+
+\item{race_cols}{A list of strings denoting which columns contain
+probabilistic estimates of race. If aggregating over the ground truth race,
+this variable should be a single string denoting which column contains the
+race description.}
+
+\item{race_keys}{A named list, with keys denoting the new race groups (e.g.,
+"white", "black", "hispanic", etc. The value of each key is a string or list
+of strings that denote which values in the race column map onto the key
+(e.g., mapping multiracial and Native American voters onto an "other" race
+category) This variable should only be provided if aggregating over the true
+race.}
+
+\item{include_total}{A logical denoting whether the total counts (potentially
+rounded) should be included in the output dataframe.}
 }
 \value{
 Aggregated dataset of nrow() precinct size, including racial size
-precinct estimates. Dataset suitable for EI/RxC.
+ precinct estimates. Dataset suitable for EI/RxC.
 }
 \description{
-Combines voter file surname geocoded data into aggregated precinct counts.
-To be performed on data object resulting from successful completion of
-bisg_prep_race_predict() function.
-}
-\examples{
-
-}
-\author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Obtains aggregated precinct counts of racial groups from a voter file. This
+function is usually applied after application of BISG, when the voter file
+has probabilistic estimates of race. However, it can be applied more
+generally, aggregating actual counts of race.
 }

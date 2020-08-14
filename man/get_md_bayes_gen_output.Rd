@@ -4,13 +4,17 @@
 \alias{get_md_bayes_gen_output}
 \title{Get md_bayes_gen() output from ei_rxc() output}
 \usage{
-get_md_bayes_gen_output(results_table, race_cols)
+get_md_bayes_gen_output(results_table, tag = "")
 }
 \arguments{
 \item{results_table}{A results table from}
 
-\item{race_cols}{Character vector of candidate race names, passed from
-ei_rxc}
+\item{tag}{A string added onto the columns names of each table. If empty
+string, no tag is added. Tags are separated by underscores.}
+}
+\value{
+A list of tables, each keyed by the racial group. The table contains
+ the mean, standard error, and confidence bounds for the EI estimate.
 }
 \description{
 Get md_bayes_gen() output from ei_rxc() output
