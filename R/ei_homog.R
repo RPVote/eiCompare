@@ -2,7 +2,7 @@
 #'
 #' Creates matrix table of homogeneous precinct analysis results by racial/ethnic group. The idea, 
 #' for example, is to get a basic sense of voting behavior by racial group, examine candidate 
-#' preference in districts that are above 80% white, 80% black, etc.
+#' preference in districts that are above 80\% white, 80\% black, etc.
 #' 
 #' ei_homog
 #'
@@ -11,9 +11,9 @@
 #' @param race_cols A character vector listing the column names for turnout by race
 #' @param totals_col The name of the column containing total votes cast in each precinct
 #' @param cp numeric; homogeneous precinct cut-point, e.g., 0.80; default = 0.80
-#' @param warn_row = numeric; threshold number of precincts racial group must be above to 
+#' @param warn_row numeric; threshold number of precincts racial group must be above to 
 #' conduct analysis; default = 5. For example, with three groups, whites, blacks, Hispanics, 
-#' each group must have at least 5 precincts with at least 80% share of the population for 
+#' each group must have at least 5 precincts with at least 80\% share of the population for 
 #' that group. All racial groups need to have at least n number of precincts at or above 
 #' warn_row level or error will be thrown.
 #' 
