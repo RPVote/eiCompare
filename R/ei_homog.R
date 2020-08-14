@@ -76,8 +76,6 @@ ei_homog <- function(data, cand_cols, race_cols, totals_col, cp = 0.80, warn_row
             message(paste("Number of observations for racial group: ", race_cols[j], sep=""))
             print(nrow(homog))
         }
-        #cat(paste("Number of observations for racial group: ", race_cols[j], sep=""))
-        #cat("\n")
     
         stopifnot("Number of rows for racial group lower than threshold. Change warn_row threshold and/or check data to see if homogeneous precinct analysis even possible for all race groups." = nrow(homog) >= warn_row)
         
