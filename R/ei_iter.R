@@ -139,7 +139,7 @@ ei_iter <- function(
   ei_results <- foreach::foreach(
     i = seq_len(n_iters),
     .inorder = FALSE,
-    .packages = c("ei", "stats", "utils"),
+    .packages = c("ei", "stats", "utils", "mvtnorm"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
@@ -162,8 +162,7 @@ ei_iter <- function(
             total = totals_col,
             erho = erho,
             simulate = FALSE,
-            args_pass
-
+            # args_pass
           )
         )
     })
