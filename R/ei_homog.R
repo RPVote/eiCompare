@@ -57,6 +57,7 @@
 #'         warn_row = 3,
 #'         verbose = TRUE)
 #'
+#' @import stats
 #' @export ei_homog
 
 
