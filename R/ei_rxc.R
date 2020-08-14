@@ -25,7 +25,8 @@
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
 #' @param verbose A boolean indicating whether to print out status messages.
-#' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC parameters (will return all chain results)
+#' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC
+#' parameters (will return all chain results)
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
 #' @param plots A boolean indicating whether or not to include voter density plots
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
@@ -45,6 +46,7 @@
 #'
 #' @importFrom mcmcse mcse.mat mcse.q.mat
 #' @importFrom doSNOW registerDoSNOW
+#' @importFrom snow makeCluster stopCluster
 #' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom utils capture.output setTxtProgressBar
 #' @importFrom coda as.mcmc mcmc.list gelman.plot
@@ -129,7 +131,7 @@ ei_rxc <- function(
       if (verbose) message("Running in paralllel")
 
       # Standard to use 1 less core for clusters
-      clust <- parallel::makeCluster(parallel::detectCores() - 1)
+      clust <- snow::makeCluster(parallel::detectCores() - 1)
 
       # Register parallel processing cluster
       doSNOW::registerDoSNOW(clust)
@@ -150,7 +152,7 @@ ei_rxc <- function(
     opts <- list(progress = progress)
 
     md_mcmc <- foreach::foreach(
-      chain = 1:n_chains,
+      chain = seq_len(n_chains),
       .inorder = FALSE,
       .packages = c("ei"),
       .options.snow = opts
@@ -194,7 +196,7 @@ ei_rxc <- function(
 
     if (par_compute == TRUE) {
       # Stop clusters (always done between uses)
-      parallel::stopCluster(clust)
+      snow::stopCluster(clust)
       # Garbage collection (in case of leakage)
       gc()
     }

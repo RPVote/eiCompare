@@ -36,6 +36,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #' @importFrom doSNOW registerDoSNOW
+#' @importFrom snow makeCluster stopCluster
 #' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom bayestestR ci
 #' @importFrom purrr lift
@@ -80,7 +81,7 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    clust <- snow::makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)
@@ -246,16 +247,6 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
-  # if (par_compute == TRUE) {
-  #  # Stop clusters (always done between uses)
-  #  parallel::stopCluster(clust)
-  #  # Garbage collection (in case of leakage)
-  #  gc()
-  #  #setTxtProgressBar(pb, i)
-  #
-  #  return(ei_out)
-  # }
-
 
   # close progress bar
   close(pb)
@@ -268,7 +259,7 @@ ei_iter <- function(
 
   if (par_compute) {
     # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
+    snow::stopCluster(clust)
     # Garbage collection (in case of leakage)
     gc()
   }
