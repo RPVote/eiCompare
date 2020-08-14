@@ -98,9 +98,3 @@ ei_homog <- function(data, cand_cols, race_cols, totals_col, cp = 0.80, warn_row
     
 }
 
-
-ei_homog(data = toy,
-         race_cols = c("white", "black"),
-         cand_cols = c("cand_a", "cand_b"),
-         totals_col = "total",
-         verbose=T)
