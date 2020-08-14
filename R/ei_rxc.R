@@ -187,7 +187,7 @@ ei_rxc <- function(
         chains_pr[, race_indices] <- race_pr
       }
 
-      setTxtProgressBar(pb, i)
+      setTxtProgressBar(pb, chain)
 
       # Make CODA object
       chains_pr <- coda::as.mcmc(chains_pr)
