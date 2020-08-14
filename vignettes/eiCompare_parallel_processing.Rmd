@@ -127,4 +127,4 @@ knitr::include_graphics("para_benchmark_box_nsamples.png")
 
 ## Summary
 
-`eiCompare` provides the option to parallelize operations for iterative ei in `ei_iter()`, diagnostic tests in `ei_rxc()`,  and geocoding in `run_geocoder()`. By setting the parallelization toggle to `TRUE`, as well as having the proper set up with more than 4 cores and more than 16 GB of RAM, the user should be able to run these operations multitudes faster.
+`eiCompare` provides capabilities to parallelize operations for iterative ei in `ei_iter()`, diagnostic tests in `ei_rxc()`,  and geocoding in `run_geocoder()`. By setting the parallelization toggle to `TRUE`, as well as having the proper set up with more than 4 cores and more than 16 GB of RAM, the user should be able to run these operations multitudes faster.
