@@ -163,6 +163,7 @@ ei_iter <- function(
             erho = erho,
             simulate = FALSE,
             args_pass
+
           )
         )
     })
@@ -244,6 +245,17 @@ ei_iter <- function(
 
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
+
+  # if (par_compute == TRUE) {
+  #  # Stop clusters (always done between uses)
+  #  parallel::stopCluster(clust)
+  #  # Garbage collection (in case of leakage)
+  #  gc()
+  #  #setTxtProgressBar(pb, i)
+  #
+  #  return(ei_out)
+  # }
+
 
   # close progress bar
   close(pb)
