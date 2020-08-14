@@ -36,7 +36,6 @@
 #' @return dataframe of results from iterative ei
 #'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom snow makeCluster stopCluster
 #' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom bayestestR ci
 #' @importFrom purrr lift
@@ -81,7 +80,7 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- snow::makeCluster(parallel::detectCores() - 1)
+    clust <- makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)
@@ -138,7 +137,7 @@ ei_iter <- function(
 
   # Loop through each 2x2 ei
   ei_results <- foreach::foreach(
-    i = 1:n_iters,
+    i = seq_len(n_iters),
     .inorder = FALSE,
     .packages = c("ei", "stats", "utils"),
     .options.snow = opts
@@ -216,8 +215,8 @@ ei_iter <- function(
     # This works according to the aggregate formula in King, 1997, section 8.3
     aggs <- res$aggs
     ses <- c()
-    for (i in 1:ncol(aggs)) {
-      aggs_col <- aggs[, i]
+    for (k in 1:ncol(aggs)) {
+      aggs_col <- aggs[, k]
       m <- mean(aggs_col)
       nsims <- length(aggs_col)
       devs <- m - aggs_col
@@ -259,7 +258,7 @@ ei_iter <- function(
 
   if (par_compute) {
     # Stop clusters (always done between uses)
-    snow::stopCluster(clust)
+    stopCluster(clust)
     # Garbage collection (in case of leakage)
     gc()
   }

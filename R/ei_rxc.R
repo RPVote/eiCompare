@@ -46,7 +46,6 @@
 #'
 #' @importFrom mcmcse mcse.mat mcse.q.mat
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom snow makeCluster stopCluster
 #' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom utils capture.output setTxtProgressBar
 #' @importFrom coda as.mcmc mcmc.list gelman.plot
@@ -131,7 +130,7 @@ ei_rxc <- function(
       if (verbose) message("Running in paralllel")
 
       # Standard to use 1 less core for clusters
-      clust <- snow::makeCluster(parallel::detectCores() - 1)
+      clust <- makeCluster(parallel::detectCores() - 1)
 
       # Register parallel processing cluster
       doSNOW::registerDoSNOW(clust)
@@ -196,7 +195,7 @@ ei_rxc <- function(
 
     if (par_compute == TRUE) {
       # Stop clusters (always done between uses)
-      snow::stopCluster(clust)
+      stopCluster(clust)
       # Garbage collection (in case of leakage)
       gc()
     }
