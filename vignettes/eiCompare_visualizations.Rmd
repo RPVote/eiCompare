@@ -34,7 +34,7 @@ This vignette aims to highlight the functionalities within eiCompare to produce 
 
 - _Density voter choice comparison plots for each race_
 
-  This density plot comparison answers the question "How did Candidate A and Candidate B's votes for race C compare?". This visualization includes information such as standard deviation, avergae percentage of race C voters, and overlap percentage.
+  This density plot comparison answers the question "How did Candidate A and Candidate B's votes for race C compare?". This visualization includes information such as standard deviation, average percentage of race C voters, and overlap percentage.
     
 - _MCMC diagnostic plots_
 
@@ -92,13 +92,13 @@ So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, Mont
 
 ## `ei_iter()`: Tomography, Density comparison, Density voter choice
 
-With that, let's run ei_ter to output the first set of visuals. If you want to to opt to create plots for `ei_iter` you'll need to set `plots` to `TRUE`. In addition, if you'd like to specificy where you would like to save your plots, you can specify a `plots_path`. In this example we'll just set it to where this vignette lives.
+With that, let's run ei_ter to output the first set of visuals. If you want to to opt to create plots for `ei_iter` you'll need to set `plots` to `TRUE`. In addition, if you'd like to specificy where you would like to save your plots, you can specify a `plots_path`. 
 
-``` {r, include = FALSE}
+``` {r}
 save_path <- "~/hikari-stuff/eiCompare/vignettes/"
 ```
 
-Time to run our iteraative ei!
+Time to run our iterative ei!
 
 ```{r}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
