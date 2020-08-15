@@ -39,6 +39,7 @@
 #'
 #' @export wru_predict_race_wrapper
 #' @import wru
+#' @importFrom dplyr relocate
 wru_predict_race_wrapper <- function(voter_file,
                                      census_data,
                                      voter_id = NULL,
@@ -57,7 +58,7 @@ wru_predict_race_wrapper <- function(voter_file,
                                      return_geocode_flag = FALSE,
                                      verbose = FALSE) {
   # Tidy up voter file according to WRU's specifications
-  voter_file <- tidy_voter_file_wru(
+  wru_voter_file <- tidy_voter_file_wru(
     voter_file = voter_file,
     voter_id = voter_id,
     surname = surname,
@@ -74,7 +75,7 @@ wru_predict_race_wrapper <- function(voter_file,
     }
     merged_surnames <- suppressWarnings(
       wru::merge_surnames(
-        voter.file = voter_file,
+        voter.file = wru_voter_file,
         surname.year = surname_year,
         clean.surname = TRUE,
         impute.missing = TRUE
@@ -91,7 +92,7 @@ wru_predict_race_wrapper <- function(voter_file,
   invisible(capture.output(
     bisg <- suppressWarnings(
       wru::predict_race(
-        voter.file = voter_file,
+        voter.file = wru_voter_file,
         census.surname = use_surname,
         surname.only = surname_only,
         surname.year = surname_year,
@@ -103,7 +104,7 @@ wru_predict_race_wrapper <- function(voter_file,
     )
   ))
   # Re-order race predictions to match voter file
-  bisg <- bisg[match(voter_file$voterid, bisg$voterid), ]
+  bisg <- bisg[match(wru_voter_file$voterid, bisg$voterid), ]
   # Find out which geographic units didn't match
   no_geocode_match <- is.na(bisg$pred.whi)
 
@@ -114,7 +115,7 @@ wru_predict_race_wrapper <- function(voter_file,
         "Some voters failed geocode matching. Matching at a higher level."
       )
     }
-    no_match_voters <- voter_file[no_geocode_match, ]
+    no_match_voters <- wru_voter_file[no_geocode_match, ]
     # Re-run BISG using a new geographic unit
     if (census_geo == "block") {
       new_geo <- "tract"
@@ -144,10 +145,14 @@ wru_predict_race_wrapper <- function(voter_file,
     # Merge the new probabilities back into the old dataframe
     bisg[no_geocode_match, ] <- bisg_no_match
 
-    # Store geocode match flag if requested
-    if (return_geocode_flag & !surname_only) {
-      voter_file$matched_geocode <- !no_geocode_match
-    }
+    matched_geocode <- !no_geocode_match
+  } else {
+    matched_geocode <- TRUE
+  }
+
+  # Store geocode match flag
+  if (return_geocode_flag & !surname_only) {
+    voter_file$matched_geocode <- matched_geocode
   }
 
   # Final check if there are no matches
@@ -163,7 +168,7 @@ wru_predict_race_wrapper <- function(voter_file,
     invisible(capture.output(
       no_match_surnames <- suppressWarnings(
         wru::merge_surnames(
-          voter.file = voter_file[no_match_final, ],
+          voter.file = wru_voter_file[no_match_final, ],
           surname.year = surname_year,
           clean.surname = TRUE,
           impute.missing = TRUE
@@ -176,8 +181,17 @@ wru_predict_race_wrapper <- function(voter_file,
     bisg[no_match_final, ][, pred_cols] <- no_match_surnames[, p_cols]
   }
 
+  # Finalize voter file
+  if (is.null(voter_id)) {
+    voter_file$voter_id <- bisg$voterid
+    voter_file <- dplyr::relocate(voter_file, voter_id, .before = 1)
+  }
+  pred_cols <- c("pred.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth")
+  voter_file[, pred_cols] <- bisg[, pred_cols]
+
+  # Merge BISG information back into voter file
   if (verbose) {
     message("BISG complete.")
   }
-  return(list(voter_file = voter_file, bisg = bisg))
+  return(voter_file)
 }

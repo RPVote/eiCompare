@@ -1,12 +1,11 @@
 context("Testing WRU predict race wrapper function.")
 
 test_that("WRU wrapper correctly calculates probabilities.", {
-  library(wru)
-
   # Create voter file
   voter_file <- data.frame(
     voter_id = c("1", "2"),
     surname = c("JOHNSON", "HERNANDEZ"),
+    precinct = c("23", "34"),
     state = "NY",
     county = c("087", "087"),
     tract = c("010101", "010101"),
@@ -36,9 +35,10 @@ test_that("WRU wrapper correctly calculates probabilities.", {
     return_geocode_flag = TRUE,
     verbose = FALSE
   )
-  expect_true(all(!is.na(bisg$bisg)))
-  expect_true(all(bisg$voter_file$merged_surname))
-  expect_true(all(bisg$voter_file$merged_geocode))
+  expect_true(all(!is.na(bisg)))
+  expect_true(all(bisg$merged_surname))
+  expect_true(all(bisg$merged_geocode))
+  expect_true("precinct" %in% names(bisg))
 
 
   # Run predict race wrapper function
@@ -61,6 +61,6 @@ test_that("WRU wrapper correctly calculates probabilities.", {
     return_geocode_flag = TRUE,
     verbose = FALSE
   )
-  expect_true(all(!is.na(bisg$bisg)))
-  testthat::expect_false(any(names(bisg$voter_file) == "merged_geocode"))
+  expect_true(all(!is.na(bisg)))
+  testthat::expect_false(any(names(bisg) == "merged_geocode"))
 })
