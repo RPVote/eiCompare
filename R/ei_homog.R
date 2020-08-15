@@ -60,7 +60,7 @@
 #'         warn_row = 3,
 #'         verbose = TRUE)
 #'
-#' @importFrom stats weighted_mean
+#' @importFrom stats weighted.mean
 #' @export ei_homog
 
 
