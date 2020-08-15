@@ -140,6 +140,7 @@ ei_iter <- function(
     i = seq_len(n_iters),
     .inorder = FALSE,
     .packages = c("ei", "stats", "utils", "mvtnorm"),
+    .export = c("ei_sim", ".samp", "like", ".createR"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
@@ -245,6 +246,13 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
+  # Stop clusters as soon as done parallel processing
+  if (par_compute) {
+    # Stop clusters (always done between uses)
+    stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
+  }
 
   # close progress bar
   close(pb)
@@ -255,12 +263,6 @@ ei_iter <- function(
   agg_results <- sapply(ei_results, function(x) x[3])
   ei_objects <- sapply(ei_results, function(x) x[4])
 
-  if (par_compute) {
-    # Stop clusters (always done between uses)
-    stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
-  }
 
   # Put results in dataframe
   results_table <- get_results_table(
