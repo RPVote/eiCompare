@@ -20,7 +20,7 @@ suppressMessages({
 
 ## What is a performance analysis? 
 
-A successful voting rights case may result in a local jurisdiction's districting map to be thrown out, prompting the need for a new map. Thus, it's necessary assess whether the new map provides sufficient representation for minority groups. It’s not desirable to simply wait for elections to happen and see what the results might be. Instead, we can look at past elections, and observe how candidates would perform if the proposed map was used at the time of the election. This is the basis of a performance analysis.
+A successful voting rights case may result in a local jurisdiction's districting map being thrown out, prompting the need for a new map. Thus, it's necessary assess whether the new map provides sufficient representation for minority groups. It’s not desirable to simply wait for elections to happen and see what the results might be. Instead, we can look at past elections, and observe how candidates would perform if the proposed map was used at the time of the election. This is the basis of a performance analysis.
 
 Ultimately, we need to assess the demographic breakdown across racial groups for each district in the new map. What data source do we use to calculate the percentage of each racial group? We could use total population or citizen voting age population (CVAP), as provided by the Census Bureau. However, these measures may not be accurate, because they assume that voter turnout is equal across racial groups. This is not always true, especially in cases of racial gerrymandering, where turnout for minority groups may be depressed. Instead, we argue that going to the level of the _voter file_ is necessary, as the voter file actually informs _who turned out to vote_.
 
@@ -37,7 +37,7 @@ To conduct a performance analysis, we need to join the voters in a voter file to
 
 ## Case study: East Ramapo School District
 
-The example we'll use to demonstrate the performance analysis is East Ramapo School District (ERSD), located in Rockland County of the New York City suburbs. ERSD is highly segregated, with the majority of Black and Hispanic students attending public schools and white students attending private schools. Furthermore, its voting system for the School Board was at-large, where all voters could vote for all seats on the school board. This system favored the white families whose students largely attended private schools, resulting in redistribution of funds that had adverse impacts on public school students.
+The example we'll use to demonstrate the performance analysis is East Ramapo School District (ERSD), located in Rockland County of the New York City suburbs. ERSD is highly segregated, with the majority of Black and Hispanic students attending public schools and white students attending private schools. Furthermore, ERSD uses an at-large voting system for School Board elections, where all voters could vote for all seats on the school board. This system favored the white families whose students largely attended private schools, resulting in redistribution of funds that had adverse impacts on public school students.
 
 In May 2020, the at-large voting system was struck down, and a ward system with a new set of districting maps was required. In a ward system, voters elect a representative for their own geographically compact ward. Two maps were proposed: one by the plaintiffs (New York Civil Liberties Union, NYCLU) and the defendants (ERSD). Ideally, the map should allow sufficient representation for the minority aggregate population (in this case, Black and Hispanic/Latino voters).
 
@@ -77,7 +77,7 @@ cvap_map <- ggplot() +
 show(cvap_map)
 ```
 
-Examining this map reveals that, according to CVAP, four wards (1-4) have potential for minority voters to elect a representative of their choice (they have a plurality or majority). However, due to turnout differences across racial groups, this does not imply that the minority voters would have actually turned out sufficiently enough to elect four representatives. In other words, this map may not have "performed" well enough to guarantee representation, due to turnout.
+Examining this map reveals that, according to CVAP, four wards (1-4) have potential for minority voters to elect a representative of their choice (they have a plurality or majority). However, due to turnout differences across racial groups, this does not imply that the minority voters would have actually turned out sufficiently enough to elect four representatives. In other words, this map may not have "performed" well enough to guarantee representation, due to turnout. Now, we'll walk through how to conduct a performance analysis and test this hypothesis"
 
 ### Toy Voter File
 
@@ -200,7 +200,7 @@ print(bisg$bisg[, c(
 )])
 ```
 
-These race probabilities have to be merged back into the original voter file, producing a final voter file.
+For example, the `pred.whi` column implies that "ROSENBERG" has an 86% chance of being white given both the surname and location information. On the other hand, "JACKSON" has a 97% chance of being black, given that JACKSON is a surname that is predominantly black and this person is located in a largely black Census block. These race probabilities have to be merged back into the original voter file, producing a final voter file.
 
 ```{r merge_bisg}
 # Merge race information back into voter file
