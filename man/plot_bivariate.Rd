@@ -9,7 +9,7 @@ plot_bivariate(
   data,
   cand_cols,
   race_cols,
-  corrs = TRUE,
+  corrs = FALSE,
   save = FALSE,
   path = ""
 )

@@ -8,6 +8,15 @@
 #' pair, votes by other races and for other candidates are binned and 2x2
 #' ecological inference is run.
 #'
+#' This function wraps around the ei function from the ei R package. This
+#' function is unstable and can break in apparently arbitrary ways. Errors
+#' often emerge with particular values of the erho parameter. If the function
+#' breaks, it will automatically try adjusting the erho parameter, first to 20,
+#' then to 0.5.
+#'
+#' If problems persist, please submit an issue on the eiCompare github
+#' repository and include the error message you receive.
+#'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
 #' @param cand_cols A character vector listing the column names for turnout for
@@ -33,7 +42,9 @@
 #' @param name A unique identifier for the outputted eiCompare object.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @return dataframe of results from iterative ei
+#' @return If eiCompare_class = TRUE, an object of class eiCompare is returned.
+#' Otherwise, a dataframe is returned that matches the formatting of ei_est_gen
+#' output.
 #'
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach getDoParWorkers
@@ -152,24 +163,91 @@ ei_iter <- function(
     set.seed(seed)
 
     # Run 2x2 ei
-    # ADD TRY CATCH SO THAT IF PARALLELIZATION=TRUE THEN KILL CLUSTERS
-    utils::capture.output({
-      ei_out <-
-        suppressMessages(
-          purrr::lift(ei::ei)(
-            data = data,
-            formula = formula,
-            total = totals_col,
-            erho = erho,
-            simulate = FALSE,
-            # args_pass
-          )
-        )
-    })
+    # Calls to ei are wrapped in nested try-catches that try different erho
+    # parameters to get the function working. The underlying ei function is
+    # unstable and changing erho can break it.
+    tryCatch(
+      {
+        utils::capture.output({
+          ei_out <-
+            suppressMessages(
+              purrr::lift(ei::ei)(
+                data = data,
+                formula = formula,
+                total = totals_col,
+                erho = erho,
+                simulate = FALSE,
+                args_pass
+              )
+            )
+        })
 
-    utils::capture.output({
-      ei_out <- suppressMessages(ei_sim(ei_out, samples))
-    })
+        utils::capture.output({
+          ei_out <- suppressMessages(ei_sim(ei_out, samples))
+        })
+      },
+      error = function() {
+        message(paste(formula, "iteration failed. Retrying with erho = 20..."))
+        tryCatch(
+          {
+            utils::capture.output({
+              ei_out <-
+                suppressMessages(
+                  purrr::lift(ei::ei)(
+                    data = data,
+                    formula = formula,
+                    total = totals_col,
+                    erho = 20,
+                    simulate = FALSE,
+                    args_pass
+                  )
+                )
+            })
+
+            utils::capture.output({
+              ei_out <- suppressMessages(ei_sim(ei_out, samples))
+            })
+          },
+          error = function() {
+            message(
+              paste(formula, "iteration failed again. Retrying with erho = 0.5...")
+            )
+            tryCatch(
+              {
+                utils::capture.output({
+                  ei_out <-
+                    suppressMessages(
+                      purrr::lift(ei::ei)(
+                        data = data,
+                        formula = formula,
+                        total = totals_col,
+                        erho = 20,
+                        simulate = FALSE,
+                        args_pass
+                      )
+                    )
+                })
+
+                utils::capture.output({
+                  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+                })
+              },
+              error = function(cond) {
+                stop(paste(
+                  formula,
+                  "failed with the following error:\n",
+                  cond,
+                  "Try a different erho parameter.",
+                  "If the problem persists, please submit an issue on the",
+                  "eiCompare git repository, including the error you",
+                  "received."
+                ))
+              }
+            )
+          }
+        )
+      }
+    )
 
     # Plots to be added here
     if (plots) {
@@ -330,7 +408,9 @@ ei_iter <- function(
 
       # Both CIs
       suppressMessages({
-        cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+        suppressWarnings({
+          cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+        })
       })
       ci_lowers <- append(ci_lowers, cis$CI_low)
       ci_uppers <- append(ci_uppers, cis$CI_high)

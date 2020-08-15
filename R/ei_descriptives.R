@@ -22,7 +22,7 @@ plot_bivariate <- function(
                            data,
                            cand_cols,
                            race_cols,
-                           corrs = TRUE,
+                           corrs = FALSE,
                            save = FALSE,
                            path = "") {
   data <- data[, c(cand_cols, race_cols)]
