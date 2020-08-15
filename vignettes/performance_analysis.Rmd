@@ -50,6 +50,7 @@ Let's take a look at a map proposed by the defendants, ERSD. The district map is
 ```{r load_data}
 # Load the map
 data("ersd_maps")
+st_crs(ersd_maps) <- 4326
 ```
 
 
