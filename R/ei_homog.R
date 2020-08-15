@@ -16,6 +16,7 @@
 #' each group must have at least 5 precincts with at least 80\% share of the population for 
 #' that group. All racial groups need to have at least n number of precincts at or above 
 #' warn_row level or error will be thrown.
+#' @param verbose A boolean indicating whether to print out status messages.
 #' 
 #' @return matrix with homogeneous precinct results, columns = race groups, rows = candidates
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>; <loren.collingwood@@gmail.com>
@@ -59,7 +60,7 @@
 #'         warn_row = 3,
 #'         verbose = TRUE)
 #'
-#' @import stats
+#' @importFrom stats weighted.mean
 #' @export ei_homog
 
 
