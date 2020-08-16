@@ -290,8 +290,8 @@ ei_iter <- function(
     )
 
     # get aggregate means
-    betab_district_mean <- mean(res$aggs[1], na.rm = TRUE)
-    betaw_district_mean <- mean(res$aggs[2], na.rm = TRUE)
+    betab_district_mean <- mean(res$aggs[, 1], na.rm = TRUE)
+    betaw_district_mean <- mean(res$aggs[, 2], na.rm = TRUE)
 
     # Get aggregate ses
     # This works according to the aggregate formula in King, 1997, section 8.3
@@ -484,7 +484,7 @@ ei_iter <- function(
   } else {
     message(
       paste(
-        "This results output option is deprecated by the eiCompare class",
+        "This results output is deprecated by the eiCompare class",
         "object. It will be removed in the near future."
       )
     )

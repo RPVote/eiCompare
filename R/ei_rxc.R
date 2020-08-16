@@ -191,7 +191,7 @@ ei_rxc <- function(
     # Match expected output
     message(
       paste(
-        "This results output option is deprecated by the eiCompare class",
+        "This results output is deprecated by the eiCompare class",
         "object. It will be removed in the near future."
       )
     )
