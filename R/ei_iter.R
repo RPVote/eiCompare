@@ -25,6 +25,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
@@ -39,7 +40,6 @@
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @param plot_path A string to specify plot save location. Defaulted to working
 #'  directory.
-#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @return If eiCompare_class = TRUE, an object of class eiCompare is returned.
@@ -67,6 +67,7 @@ ei_iter <- function(
                     cand_cols,
                     race_cols,
                     totals_col,
+                    name = "",
                     erho = 10,
                     seed = NULL,
                     samples = 99,
@@ -76,7 +77,6 @@ ei_iter <- function(
                     par_compute = FALSE,
                     verbose = FALSE,
                     plot_path = "",
-                    name = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization

@@ -8,6 +8,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ntunes Integer number of pre-MCMC tuning runs, defaulted to 10
 #' @param totaldraws Integer number of iterations per run in pre-MCMC tuning
 #' runs, defaulted to 10000
@@ -20,7 +21,6 @@
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
 #' @param eiCompare_class default = TRUE
-#' @param name A unique identifier for the outputted eiCompare object.
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
@@ -46,13 +46,13 @@ ei_rxc <- function(
                    cand_cols,
                    race_cols,
                    totals_col,
+                   name = "",
                    ntunes = 10,
                    totaldraws = 10000,
                    samples = 100000,
                    thin = 1,
                    burnin = 10000,
                    ci_size = 0.95,
-                   name = "",
                    seed = NULL,
                    eiCompare_class = TRUE,
                    ret_mcmc = FALSE,
