@@ -80,7 +80,7 @@ c2_ei_res <- c(0.7013, 0.2987)
 #Set up vectors for function #
 cand_names <- c("Cand A", "Cand B")
 # Execute elect_algebra()
-elect_algebra(to, cvap, c1_ei_res, c2_ei_res, cand_names)
+elect_algebra(to = turn_out, cvap, c1_ei_res, c2_ei_res, cand_names)
 
 }
 \author{
