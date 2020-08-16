@@ -137,6 +137,8 @@ ei_iter <- function(
     }
   }
 
+  if (verbose) message(paste("Beginning", n_iters, "2x2 estimations..."))
+
   # Init progressbar
   pb <- utils::txtProgressBar(
     min = 0,
@@ -210,7 +212,10 @@ ei_iter <- function(
           },
           error = function() {
             message(
-              paste(formula, "iteration failed again. Retrying with erho = 0.5...")
+              paste(
+                formula,
+                "iteration failed again. Retrying with erho = 0.5..."
+              )
             )
             tryCatch(
               {
@@ -336,7 +341,7 @@ ei_iter <- function(
   # close progress bar
   close(pb)
 
-  # Separate out district level summary and precinct level results
+  # Extract results objects
   district_results <- sapply(ei_results, function(x) x[1])
   precinct_results <- sapply(ei_results, function(x) x[2])
   agg_results <- sapply(ei_results, function(x) x[3])
@@ -377,7 +382,14 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     # Create density plots
-    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(
+      agg_betas,
+      results_table,
+      race_cols,
+      cand_cols,
+      plot_path,
+      ei_type = "ei"
+    )
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
@@ -470,6 +482,12 @@ ei_iter <- function(
     class(output) <- "eiCompare"
     return(output)
   } else {
+    message(
+      paste(
+        "This results output option is deprecated by the eiCompare class object.",
+        "It will be removed in the near future."
+      )
+    )
     # If betas == TRUE, return a list with results plus df of betas
     if (betas) {
       df_betas <- betas_for_return(precinct_results, race_cand_pairs)
