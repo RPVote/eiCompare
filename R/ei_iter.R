@@ -27,7 +27,7 @@
 #' precinct
 #' @param name A unique identifier for the outputted eiCompare object.
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
-#' @param seed A numeric seed value for replicating estimate results across
+#' @param seed An integer seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param samples The number of samples to draw from simulations on each
 #' iteration. Defaulated to 99. Note that increasing the number of samples drawn
@@ -484,8 +484,8 @@ ei_iter <- function(
   } else {
     message(
       paste(
-        "This results output option is deprecated by the eiCompare class object.",
-        "It will be removed in the near future."
+        "This results output option is deprecated by the eiCompare class",
+        "object. It will be removed in the near future."
       )
     )
     # If betas == TRUE, return a list with results plus df of betas

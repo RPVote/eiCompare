@@ -189,6 +189,12 @@ ei_rxc <- function(
 
   if (!eiCompare_class) {
     # Match expected output
+    message(
+      paste(
+        "This results output option is deprecated by the eiCompare class",
+        "object. It will be removed in the near future."
+      )
+    )
     results_table <- get_md_bayes_gen_output(results_table)
 
     # Return results and chains if requested
