@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Ecological Inference"
-output: rmarkdown::github_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ei}
   %\VignetteEngine{knitr::rmarkdown}
@@ -211,16 +211,16 @@ ei_results_iter <- ei_iter(
 summary(ei_results_iter)
 ```
 
-Notice that the `name` field is used to give a name to the results object. The name entered here is what differentiates results objects from each other when they are summarized or plotted together.  Next, we conduct RxC EI using `ei_rxc()`. This function uses a Markov Chain Monte Carlo (MCMC) algorithm to compute estimates. In practice, to ensure robust results, users should use at least the default number of samples (probably more), and check the diagnostics of the MCMC chain to ensure that everything worked correctly.  
+Notice that the `name` field is used to give a name to the results object. The name entered here is what differentiates results objects from each other when they are summarized or plotted together.  Next, we conduct RxC EI using `ei_rxc()`. This function uses a Markov Chain Monte Carlo (MCMC) algorithm to compute estimates. Here, the MCMC parameters are set to prioritize speed over accuracy. In practice, to ensure robust results, users should use at least the default number of samples (probably more), and check the diagnostics of the MCMC chain to ensure that everything worked correctly.  
 ```{r}
 ei_results_rxc <- ei_rxc(
   data = gwinnett_ei,
   cand_cols = cands,
   race_cols = races,
   totals_col = total,
-  ntunes = 10,
-  samples = 50000,
-  thin = 5,
+  ntunes = 1,
+  samples = 5000,
+  thin = 1,
   name = "RxC"
 )
 summary(ei_results_iter, ei_results_rxc)
