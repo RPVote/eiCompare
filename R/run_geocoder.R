@@ -3,7 +3,7 @@
 #'
 #' @param voter_file: A data frame contain the voter addresses, separated into columns for street, city, state, and zipcode
 #' @param geocoder: The options for selecting geocoders are "censusxy" and "opencage".
-#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. This is dependent on whether your dataset exceeds 10,000 observations (i.e. addresses). Geocoding a batch of 10000 addresses is also the limit for addresses to be geocoded with the US Census Geocoder API.
+#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. Running parallel processing requires the user to have at least 4 CPU cores. Use detectCores() to determine the number of CPUs on your device.
 #' @param voter_id: the unique identifier
 #' @param street: the street number, street name, and/or street suffix. Ex. 555 Main Street SW
 #' @param city: the location/town
@@ -33,7 +33,7 @@ run_geocoder <- function(voter_file,
                          voter_id = "voter_id",
                          street = "street",
                          city = "city",
-                         state = "GA",
+                         state = "state",
                          zipcode = "residence_zipcode",
                          country = NULL,
                          census_return = NULL,
@@ -69,7 +69,7 @@ run_geocoder <- function(voter_file,
     )
 
     voter_file <- census_voter_file
-    packageStartupMessage(" done")
+    packageStartupMessage(" Geocoding complete.")
     return(voter_file)
   }
 
@@ -159,7 +159,10 @@ run_geocoder <- function(voter_file,
 
       # Set up iterations for parallel processing
       # Set number of loops needed to batch every 10000 rows of the voter file
-      n_loops <- round(num_obs / 10000, digits = 0)
+      remain <- num_obs %% 10000
+      n_loops <- ifelse(remain == 0, round(num_obs / 10000, digits = 0),
+        (round(num_obs / 10000, digits = 0)) + 1
+      )
       start_row <- 1
       stop_row <- start_row + 9999
       last_row_stop <- num_obs
