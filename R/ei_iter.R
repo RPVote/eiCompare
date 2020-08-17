@@ -29,9 +29,6 @@
 #' @param erho A number passed directly to ei::ei(). Defaulted to 10
 #' @param seed An integer seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
-#' @param samples The number of samples to draw from simulations on each
-#' iteration. Defaulated to 99. Note that increasing the number of samples drawn
-#' may increase the execution time of this function substantially.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param eiCompare_class default = TRUE
@@ -70,7 +67,6 @@ ei_iter <- function(
                     name = "",
                     erho = 10,
                     seed = NULL,
-                    samples = 99,
                     plots = FALSE,
                     eiCompare_class = TRUE,
                     betas = FALSE,
@@ -178,18 +174,23 @@ ei_iter <- function(
                 formula = formula,
                 total = totals_col,
                 erho = erho,
-                simulate = FALSE,
+                simulate = TRUE,
                 args_pass
               )
             )
         })
 
-        utils::capture.output({
-          ei_out <- suppressMessages(ei_sim(ei_out, samples))
-        })
+        # This was meant to enable parameterization of the ei importance sample
+        # size, but its inclusion changes results dramatically.
+        # utils::capture.output({
+        #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+        # })
       },
-      error = function() {
-        message(paste(formula, "iteration failed. Retrying with erho = 20..."))
+      error = function(cond) {
+        message(paste(
+          format(formula),
+          "iteration failed. Retrying with erho = 20...\n"
+        ))
         tryCatch(
           {
             utils::capture.output({
@@ -200,21 +201,23 @@ ei_iter <- function(
                     formula = formula,
                     total = totals_col,
                     erho = 20,
-                    simulate = FALSE,
+                    simulate = TRUE,
                     args_pass
                   )
                 )
             })
 
-            utils::capture.output({
-              ei_out <- suppressMessages(ei_sim(ei_out, samples))
-            })
+            # This was meant to enable parameterization of the ei importance
+            # sample size, but its inclusion changes results dramatically.
+            # utils::capture.output({
+            #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+            # })
           },
-          error = function() {
+          error = function(cond) {
             message(
               paste(
-                formula,
-                "iteration failed again. Retrying with erho = 0.5..."
+                format(formula),
+                "iteration failed again. Retrying with erho = 0.5...\n"
               )
             )
             tryCatch(
@@ -227,15 +230,17 @@ ei_iter <- function(
                         formula = formula,
                         total = totals_col,
                         erho = 20,
-                        simulate = FALSE,
+                        simulate = TRUE,
                         args_pass
                       )
                     )
                 })
 
-                utils::capture.output({
-                  ei_out <- suppressMessages(ei_sim(ei_out, samples))
-                })
+                # This was meant to enable parameterization of the ei importance
+                # sample size, but its inclusion changes results dramatically.
+                # utils::capture.output({
+                #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+                # })
               },
               error = function(cond) {
                 stop(paste(
@@ -402,10 +407,11 @@ ei_iter <- function(
     cands <- c()
     means <- c()
     ses <- c()
+    sds <- c()
     ci_lowers <- c()
     ci_uppers <- c()
 
-    district_samples <- as.data.frame(matrix(ncol = 0, nrow = samples))
+    district_samples <- as.data.frame(matrix(ncol = 0, nrow = 99))
     precinct_samples <- list()
 
     for (i in 1:length(ei_objects)) {
@@ -430,6 +436,10 @@ ei_iter <- function(
       # Mean
       mean <- mean(aggs, na.rm = TRUE)
       means <- append(means, mean)
+
+      # Standard deviation
+      sd <- sd(aggs, na.rm = TRUE)
+      sds <- append(sds, sd)
 
       # Standard error
       nsims <- length(aggs)

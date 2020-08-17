@@ -9,13 +9,13 @@ ei_rxc(
   cand_cols,
   race_cols,
   totals_col,
+  name = "",
   ntunes = 10,
   totaldraws = 10000,
   samples = 1e+05,
   thin = 1,
   burnin = 10000,
   ci_size = 0.95,
-  name = "",
   seed = NULL,
   eiCompare_class = TRUE,
   ret_mcmc = FALSE,
@@ -36,6 +36,8 @@ race}
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
 
+\item{name}{A unique identifier for the outputted eiCompare object.}
+
 \item{ntunes}{Integer number of pre-MCMC tuning runs, defaulted to 10}
 
 \item{totaldraws}{Integer number of iterations per run in pre-MCMC tuning
@@ -52,8 +54,6 @@ discarded, defaulted to 10000}
 
 \item{ci_size}{Numeric desired probability within the upper and lower
 credible-interval bounds, defaulted to 0.95}
-
-\item{name}{A unique identifier for the outputted eiCompare object.}
 
 \item{seed}{A numeric seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}

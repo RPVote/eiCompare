@@ -113,6 +113,8 @@ plot_bivariate <- function(
 #' @param race_cols A character vector listing the column names for turnout by
 #' race
 #'
+#' @export
+#'
 #' @importFrom stats cor
 race_cand_cors <- function(data, cand_cols, race_cols) {
   as.data.frame(cor(data[, c(cand_cols)], data[, c(race_cols)]))
