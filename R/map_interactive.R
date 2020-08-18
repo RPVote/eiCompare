@@ -14,7 +14,7 @@
 #' @importFrom tidyr
 #' @importFrom leaflet
 
-sp_latlon <- extract(sp_voterfile, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
+sp_latlon <- tidyr::extract(sp_voterfile, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
 leaflet(data = sp_latlon) %>%
   addTiles() %>%
