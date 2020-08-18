@@ -14,8 +14,14 @@ Below are some steps to help you walk through the process of performing geocodin
 
 
 ### Step 1: Load R libraries/packages
-Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
+```{r}
+# Install eiCompare
+suppressPackageStartupMessages({
+  devtools::install_github("RPVote/eiCompare@master")
+})
+```
 
+Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
 
 ```{r}
 # Load libraries
