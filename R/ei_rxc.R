@@ -306,6 +306,17 @@ ei_rxc <- function(
       )
     }
 
+    if (plots) {
+      # colnames(chains_pr) <- gsub("ccount.", "betas.", colnames(md_out$draws$Cell.counts))
+      colnames(chains_pr) <- paste0("betas.", colnames(chains_pr))
+      # Create density plots
+      density_plots <- overlay_density_plot(chains_pr, results_table,
+        race_cols, cand_cols,
+        plot_path,
+        ei_type = "rxc"
+      )
+    }
+
     if (!eiCompare_class) {
       # Match expected output
       results_table <- get_md_bayes_gen_output(results_table)
