@@ -35,16 +35,14 @@
 #' @return The geocoded voter file with either added simple 
 #' (latitude and longitude coordinates) or other geographies.
 #'
-#' @export voter_file
+#' @export run_geocoder
 #'
-#' @importFrom data.table dataframe manipulation
-#' @importFrom foreach iterates over elements or obervations
-#' @importFrom parallel helps run large computations for parallel processing
-#' @importFrom doParallel helps run large computations for parallel processing
-#' @importFrom censusxy The US Census Geocoder API 
-#' https://cran.r-project.org/web/packages/censusxy/index.html
-#' @importFrom opencage The commercial geocoder, Opencage that returns 
-#' latitude and longitude vaues. https://opencagedata.com/
+#' @import data.table 
+#' @import foreach 
+#' @import parallel
+#' @import doParallel 
+#' @import censusxy
+#' @import opencage
 #'
 
 run_geocoder <- function(voter_file,
