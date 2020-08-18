@@ -5,13 +5,18 @@ dependencies:
   - pre-commit
   - r-base>=4
   - r-irkernel>=1.1
+  - r-bayestestr
   - r-bh
   - r-bitops
   - r-car
+  - r-coda
   - r-codetools
+  - r-cpp11
   - r-cubature
   - r-data.table
   - r-devtools
+  - r-doparallel
+  - r-dosnow
   - r-ellipse
   - r-expm
   - r-foreach
@@ -36,6 +41,7 @@ dependencies:
   - r-r.methodss3
   - r-r.oo
   - r-r.utils
+  - r-rcpp
   - r-rcpparmadillo
   - r-rcurl
   - r-rgdal
@@ -45,6 +51,7 @@ dependencies:
   - r-shiny
   - r-sjlabelled
   - r-sjmisc
+  - r-snow
   - r-sourcetools
   - r-sp
   - r-stringr
@@ -53,6 +60,7 @@ dependencies:
   - r-tidyverse
   - r-tidyr
   - r-tmvtnorm
+  - r-tmvnsim
   - r-ucminf
   - r-xtable
   - r-zoo
