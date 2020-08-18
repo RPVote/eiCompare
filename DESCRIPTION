@@ -21,9 +21,14 @@ Authors@R:
              comment = c(ORCID = "0000-0002-6809-2437")),
       person(given = "Juandalyn",
              family = "Burke",
-             role = "aut"),
+             role = "aut",
+             comment = c(ORCID = "0000-0002-6345-7505")),
       person(given = "Scott",
              family = "Henderson",
+             role = "aut",
+             comment = c(ORCID = "0000-0003-0624-4965")),
+      person(given = "Matt",
+             family = "Barreto",
              role = "ctb",
              comment = c(ORCID = "0000-0003-0624-4965")))
 URL: https://github.com/RPVote/eiCompare
@@ -32,14 +37,16 @@ License: GPL-3 + file LICENSE
 Depends:
   R (>= 3.5.0),
 Imports:
-  ei,
-  eiPack,
-  wru
-NeedsCompilation: no
-Suggests:
-  data.table,
+  bayestestR,
   doParallel,
   doSNOW,
+  ei,
+  eiPack,
+  mcmcse,
+  overlapping,
+  wru
+Suggests:
+  data.table,
   dplyr,
   ggplot2,
   knitr,
@@ -50,8 +57,8 @@ Suggests:
   sjmisc,
   stringr,
   testthat
-  testthat
-VignetteBuilder: 
+VignetteBuilder:
   knitr
+NeedsCompilation: no
 RoxygenNote: 7.1.1
 Encoding: UTF-8
