@@ -36,7 +36,8 @@ precinct}
 
 \item{name}{A unique identifier for the outputted eiCompare object.}
 
-\item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
+\item{erho}{A number passed directly to ei::ei(). Defaulted to 10. Can also
+pass in a vector of erho values}
 
 \item{seed}{An integer seed value for replicating estimate results across
 runs. If NULL, a random seed is chosen. Defaulted to NULL.}
@@ -89,4 +90,6 @@ Problem. Princeton: Princeton University Press.
 Loren Collingwood <loren.collingwood@ucr.edu>
 
 Ari Decter-Frain <agd75@cornell.edu>
+
+Hikari Murayama <hikari_murayama@berkeley.edu>
 }

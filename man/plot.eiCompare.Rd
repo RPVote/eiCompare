@@ -15,6 +15,7 @@
 A ggplot comparing eiCompare objects.
 }
 \description{
-The output of this plot consists of error bars containing the mean and
-confidence intervals for each candidate, racial group, and eiCompare object.
+The output of this plot consists of error bars containing the mean for each
+candidate, racial group, and eiCompare object. Error bars represent one
+standard deviation from the mean of the posterior sampling distribution.
 }

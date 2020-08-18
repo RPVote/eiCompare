@@ -98,5 +98,7 @@ eiPack, King et al., (http://gking.harvard.edu/eiR)
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 
+Hikari Murayama <hikari_murayama@berkeley.edu>
+
 Ari Decter-Frain <agd75@cornell.edu>
 }
