@@ -52,12 +52,6 @@ suppressPackageStartupMessages({
 })
 ```
 
-```{r}
-# source files
-source("~/github/eiCompare/R/wru_predict_race_wrapper.R")
-source("~/github/eiCompare/R/voter_file_utils.R")
-```
-
 Load in census data, the shape file and geocoded voter registation data with latitude and longitude coordinates.
 ```{r}
 # Load Georgia census data
