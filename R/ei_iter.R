@@ -36,7 +36,7 @@
 #' @return dataframe of results from iterative ei
 #'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach getDoParWorkers
+#' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom bayestestR ci
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
@@ -80,7 +80,7 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    clust <- makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)
@@ -137,9 +137,10 @@ ei_iter <- function(
 
   # Loop through each 2x2 ei
   ei_results <- foreach::foreach(
-    i = 1:n_iters,
+    i = seq_len(n_iters),
     .inorder = FALSE,
-    .packages = c("ei", "stats", "utils"),
+    .packages = c("ei", "stats", "utils", "mvtnorm"),
+    .export = c("ei_sim", ".samp", "like", ".createR"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
@@ -214,8 +215,8 @@ ei_iter <- function(
     # This works according to the aggregate formula in King, 1997, section 8.3
     aggs <- res$aggs
     ses <- c()
-    for (i in 1:ncol(aggs)) {
-      aggs_col <- aggs[, i]
+    for (k in 1:ncol(aggs)) {
+      aggs_col <- aggs[, k]
       m <- mean(aggs_col)
       nsims <- length(aggs_col)
       devs <- m - aggs_col
@@ -245,15 +246,13 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
-  # if (par_compute == TRUE) {
-  #  # Stop clusters (always done between uses)
-  #  parallel::stopCluster(clust)
-  #  # Garbage collection (in case of leakage)
-  #  gc()
-  #  #setTxtProgressBar(pb, i)
-  #
-  #  return(ei_out)
-  # }
+  # Stop clusters as soon as done parallel processing
+  if (par_compute) {
+    # Stop clusters (always done between uses)
+    stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
+  }
 
   # close progress bar
   close(pb)
@@ -264,12 +263,6 @@ ei_iter <- function(
   agg_results <- sapply(ei_results, function(x) x[3])
   ei_objects <- sapply(ei_results, function(x) x[4])
 
-  if (par_compute) {
-    # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
-  }
 
   # Put results in dataframe
   results_table <- get_results_table(
@@ -299,7 +292,10 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     # Create density plots
-    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(
+      agg_betas, results_table, race_cols, cand_cols, plot_path,
+      ei_type = "ei"
+    )
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)

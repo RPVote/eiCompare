@@ -12,29 +12,39 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
 #'
-#'
+#' @importFrom foreach %dopar% %do%
 #'
 #' @export
 #'
 
-# utils::globalVariables(c("m", "k", "%do%", "Candidate", "value"))
 
 overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type) {
+  # Set new variables to NULL
+  k <- Candidate <- value <- m <- NULL
+
+
+  race <- race_cols
+  cands <- cand_cols
+
   if (tolower(ei_type) == "ei") {
     # Extract beta bs
-    race <- race_cols
-    cands <- cand_cols
     agg_betas <- agg_betas[, grep("bbgg", colnames(agg_betas))]
+    colnames(agg_betas) <- gsub("bbgg_", "", colnames(agg_betas))
   } else if (tolower(ei_type) == "rxc") {
-    race <- unique(stringr::str_match(colnames(agg_betas), ".*\\.([a-z_]*)\\..*")[, 2])
-    cands <- unique(stringr::str_match(colnames(agg_betas), ".*\\.[a-z_]*\\.(.*)")[, 2])
+    colnames(agg_betas) <- gsub("betas.", "", colnames(agg_betas))
+    colnames(agg_betas) <- gsub("\\.", "_", colnames(agg_betas))
   } else {
     stop("Specify ei_type as ei or rxc")
   }
 
 
   # Designate colors for each candidate
-  color_choice <- as.list(RColorBrewer::brewer.pal(length(unique(cands)), "Set2"))
+  # Designate color blind friendly scale
+  # from Color University Design at University of Tokyo
+  color_scale <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999")
+  # Repeat twice so can accomodate up to 16 candidates (with repeating colors)
+  color_scale <- c(color_scale, color_scale)
+  color_choice <- as.list(color_scale[1:length(unique(cands))])
   cand_colors <- stats::setNames(color_choice, as.list(gsub("pct_", "", cands)))
 
   # go through each
@@ -59,15 +69,14 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
     race_comb <- agg_betas[, grep(race[k], colnames(agg_betas))]
 
     # Column titles
-    colnames(race_comb) <- gsub(paste("bbgg_", race[k], "_", sep = ""), "", colnames(race_comb))
+    colnames(race_comb) <- gsub(paste(race[k], "_", sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
+    dens_data <- reshape2::melt(race_comb, id.vars = NULL)
 
-    suppressMessages({
-      dens_data <- reshape2::melt(race_comb, )
-    })
-
-
+    if (ncol(dens_data) == 3) {
+      dens_data <- dens_data[, c(2:3)]
+    }
     colnames(dens_data) <- c("Candidate", "value")
 
     out <- dens_data %>%
@@ -75,13 +84,25 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
       dplyr::summarize(
         sd_size = sd(value * 100, na.rm = TRUE),
         min_size = min(value * 100, na.rm = TRUE),
-        max_size = max(value * 100, na.rm = TRUE), .groups = "drop",
+        max_size = max(value * 100, na.rm = TRUE),
+        .groups = "drop",
       )
     out <- data.frame(out)
 
     # Join with mean from results_table
-    rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
-    colnames(rt_sub) <- c("Candidate", "mean_size")
+    if (ei_type == "ei") {
+      rt_sub <- results_table[!(results_table$Candidate %in% c("se", "Total")), c("Candidate", race[k])]
+      colnames(rt_sub) <- c("Candidate", "mean_size")
+    } else if (ei_type == "rxc") {
+      dens_data <- as.data.frame(dens_data[, c("Candidate", "value")])
+
+      rt_sub <- as.data.frame(results_table[race[k]][[1]])
+      rt_sub$Candidate <- rownames(rt_sub)
+      rt_sub <- dplyr::rename(rt_sub, mean_size = mean)
+      rt_sub <- rt_sub[, c("Candidate", "mean_size")]
+    }
+
+
     out <- inner_join(rt_sub, out, by = "Candidate")
     out$sd_minus <- out$mean_size - out$sd_size
     out$sd_plus <- out$mean_size + out$sd_size
