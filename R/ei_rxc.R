@@ -34,6 +34,7 @@
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
