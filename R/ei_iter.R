@@ -26,7 +26,8 @@
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
 #' @param name A unique identifier for the outputted eiCompare object.
-#' @param erho A number passed directly to ei::ei(). Defaulted to 10
+#' @param erho A number passed directly to ei::ei(). Defaulted to 10. Can also
+#' pass in a vector of erho values
 #' @param seed An integer seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param plots A boolean indicating whether or not to include density and
@@ -168,9 +169,14 @@ ei_iter <- function(
     # This loop tries three different erho values before returning an error.
     # It first tries the default erho value, then the default for ei (0.5),
     # then 20.
-    erhos <- c(erho, 0.5, 20)
+    n_erhos <- length(erho)
+    if (n_erhos > 1) {
+      erhos <- erho
+    } else {
+      erhos <- c(erho, 0.5, 20)
+    }
     ii <- 1
-    while (ii < 4) {
+    while (ii < (n_erhos + 1)) {
       tryCatch(
         {
           utils::capture.output({
@@ -395,14 +401,6 @@ ei_iter <- function(
       sd <- sd(aggs, na.rm = TRUE)
       sds <- append(sds, sd)
 
-      # Standard error
-      nsims <- length(aggs)
-      devs <- mean - aggs
-      sq_devs <- devs^2
-      sum_sq_devs <- sum(sq_devs)
-      se <- sqrt(sum_sq_devs / nsims)
-      ses <- append(ses, se)
-
       # Add district chains to dataframe
       district_name <- paste(cand, race, sep = "_")
       district_samples[[district_name]] <- as.numeric(aggs)
@@ -429,10 +427,10 @@ ei_iter <- function(
     }
 
     # Make estimates table
-    estimates <- data.frame(cbind(means, ses, ci_lowers, ci_uppers))
+    estimates <- data.frame(cbind(means, sds, ci_lowers, ci_uppers))
     estimates <- cbind(cands, races, estimates)
     colnames(estimates) <- c(
-      "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
+      "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
     )
 
     output <- list(
