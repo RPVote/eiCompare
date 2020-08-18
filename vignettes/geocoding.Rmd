@@ -8,7 +8,7 @@ In this vignette, we will walk-through how to geocode a dataset that includes ad
 
 ## What is Geocoding?
 
-One of the first steps to performing ecological inference using eiCompare is geocoding your voter file addresses in order to perform Bayesian Improved Surname Geocoding (BISG).  Geocoding is the process of using an address or place of location to find geoographic coordinates (i.e. latitude/longitude) of that location on a map. In relation to performing BISG, the values of the geographic coordinates are compared to other census data containing self-reported race and ethnicity to determine the likelihood of an individual living in an ecological unit area (i.e. county, block, tract) being of a certain race given their address. This probability is then used to update a prior probability in the BISG analysis. For more information on BISG, please refer to the BISG vignette. 
+One of the first steps to performing ecological inference using eiCompare is geocoding your voter file addresses in order to perform Bayesian Improved Surname Geocoding (BISG).  Geocoding is the process of using an address or place of location to find geographic coordinates (i.e. latitude/longitude) of that location on a map. In relation to performing BISG, the values of the geographic coordinates are compared to other census data containing self-reported race and ethnicity to determine the likelihood of an individual living in an ecological unit area (i.e. county, block, tract) being of a certain race given their address. This probability is then used to update a prior probability in the BISG analysis. For more information on BISG, please refer to the BISG vignette. 
 
 Below are some steps to help you walk through the process of performing geocoding on your voter file. 
 
@@ -19,29 +19,31 @@ Each library/package loaded allows you to use certain functions needed to prep y
 
 ```{r}
 # Load libraries
-suppressMessages(c(
-  library(stringr),
-  library(readr),
-  library(tidyverse),
-  library(foreach),
-  library(parallel),
-  library(doParallel),
-  library(data.table),
-  library(gmodels),
-  library(plyr),
-  library(censusxy),
-  library(tigris),
-  library(sf),
+suppressPackageStartupMessages({
+  library(eiCompare)
+  library(stringr)
+  library(readr)
+  library(tidyverse)
+  library(foreach)
+  library(parallel)
+  library(doParallel)
+  library(data.table)
+  library(gmodels)
+  library(plyr)
+  library(censusxy)
+  library(tigris)
+  library(sf)
   library(leaflet)
-))
+})
 ```
 
 ### Step 2: Load your voter data.
-We are using a toy dataset representing the Georgia and Fulton county voter registration and geocoding all voter addresses.
+We are using a toy dataset representing the Georgia and Fulton county 
+voter registration and geocoding all voter addresses.
 
 
 ```{r}
-# Create dataset
+# Create toy dataset for Fulton and Gwinnett counties in Georgia
 county_code <- c(rep(60, 10), rep(67, 10))
 county_name <- c(rep("Fulton", 10), rep("Gwinnett", 10))
 voter_id <- c(1:20)
@@ -63,24 +65,27 @@ street_number <- c(
   "287", "1359", "2961", "1525", "4305", "3530", "1405", "4115", "3465", "3655"
 )
 street_name <- c(
-  "Howell Mill Rd NW", "Village Center Blvd", "Bakers Ferry Rd SW", "Aria Blvd", "Jameson Pass",
-  "Hollywood Rd NW", "Autumn Ridge Trl", "Hammond Dr NE", "Oakley Rd", "Peachtree Dunwoody Rd",
-  "E Crogan St", "Beaver Ruin Road", "Lenora Church Rd", "Station Center Blvd", "Paxton Ln",
-  "Parkwood Hills Ct", "Beaver Ruin Rd", "S Lee St", "Duluth Highway 120", "Peachtree Industrial Blvd"
+  "Howell Mill Rd NW", "Village Center Blvd", "Bakers Ferry Rd SW", "Aria Blvd", 
+  "Jameson Pass", "Hollywood Rd NW", "Autumn Ridge Trl", "Hammond Dr NE", 
+  "Oakley Rd", "Peachtree Dunwoody Rd", "E Crogan St", "Beaver Ruin Road", 
+  "Lenora Church Rd", "Station Center Blvd", "Paxton Ln", "Parkwood Hills Ct", 
+  "Beaver Ruin Rd", "S Lee St", "Duluth Highway 120", "Peachtree Industrial Blvd"
 )
 street_suffix <- c(
   "NW", NA, "SW", NA, NA, "NW", NA, "NE", NA, NA,
   NA, NA, NA, NA, NA, NA, NA, NA, NA, NA
 )
 city <- c(
-  "Atlanta", "Fairburn", "Atlanta", "Sandy Springs", "Atlanta", "Roswell", "Sandy Springs", "Union City",
-  "Sandy Springs", "Alpharetta", "Lawrenceville", "Norcross", "Snellville", "Suwanee", "Lilburn",
-  "Snellville", "Norcross", "Buford", "Duluth", "Duluth"
+  "Atlanta", "Fairburn", "Atlanta", "Sandy Springs", "Atlanta", "Roswell", 
+  "Sandy Springs", "Union City", "Sandy Springs", "Alpharetta", "Lawrenceville", 
+  "Norcross", "Snellville", "Suwanee", "Lilburn", "Snellville", "Norcross", 
+  "Buford", "Duluth", "Duluth"
 )
 state <- "GA"
 zipcode <- c(
-  "30318", "30213", "30331", "30328", "30318", "30076", "30328", "30291", "30328", "30022",
-  "30045", "30093", "30078", "30024", "30047", "30078", "30093", "30518", "30096", "30096"
+  "30318", "30213", "30331", "30328", "30318", "30076", "30328", 
+  "30291", "30328", "30022", "30045", "30093", "30078", "30024", 
+  "30047", "30078", "30093", "30518", "30096", "30096"
 )
 
 
@@ -90,33 +95,19 @@ voter_data <- data.frame(
 )
 ```
 
-### Load Functions
-```{r}
-source("~/github/geocodeCompare/geocoder_format.R")
-source("~/github/eiCompare/R/run_geocoder.R")
-source("~/github/eiCompare/R/map_shapefile.R")
-```
-
 #### Loading Voter Files
-**First, check the voter registration file, `voter_data`, to make sure the dataset has properly downloaded.**
-**We will be working with a subset 20 observations for the Gwinett and Fulton County data.**
+**First, check the voter registration file, `voter_data`, to make sure the dataset 
+has properly downloaded.
 
 
 ```{r}
-# Check dimensions of the ga_full dataset
+# Check dimensions of the dataset
 dim(voter_data)
 
 # Check first 6 rows
 head(voter_data, 6)
 
 # Check the column names of the file
-names(voter_data)
-```
-
-
-```{r}
-# Change column name for the `name` column to `county_name`
-names(voter_data)[colnames(voter_data) == "name"] <- "county_name"
 names(voter_data)
 ```
 
@@ -127,20 +118,9 @@ names(voter_data)
 # Check that the data only has Gwinnett and Fulton county data
 # Frequency count
 CrossTable(voter_data$county_code, voter_data$county_name, digits = 0)
-
-# Get the dimensions of the dataset
-dim(voter_data)
 ```
 
 **There are 20 registered voters in Gwinnett and Fulton counties.**
-
-
-```{r}
-# Check the frequency of city names
-table(sort(voter_data$city))
-```
-
-
 
 ```{r}
 ### Step 3: Prepare/Structure your voter data for geocoding.
@@ -160,7 +140,7 @@ head(voter_data$street_address, 6)
 
 
 ```{r}
-# Create a final address. This address can be used if you are geocoding with the Opencage API.
+# Create a final address. This address can also be used if you are geocoding with the Opencage API.
 
 voter_data <- concat_final_address(
   voter_file = voter_data,
@@ -173,8 +153,6 @@ voter_data <- concat_final_address(
 
 # convert dataframe into a tibble
 voter_data <- as_tibble(voter_data)
-
-head(voter_data, 6)
 ```
 
 ### Step 3: run_geocoder() Function
@@ -183,7 +161,7 @@ head(voter_data, 6)
 
 Select the geocoder you are going to use to find the geographies like coordinates (i.e. latitude and longitude) and FIPS codes for the addresses in the voter file. There are several options for geocoding your data using a geocoding API.  The eiCompare package utilizes the US Census Geocding API via a R package called censusxy. For an alternative commerically available geocoder, we recommend using Opencage Geocoder API which has limits of 2500 requests per day.
 
-*Note: If you have more than 10000 voters in your file, we recommend using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.*
+*Note: You have to have at least 4 CPU cores to use the parallel processing option. If you have more than 10000 voters in your file, we recommend using parallel processing. More information on parallel processing can be found on the Parallel Processing vignette.*
 
 #### Let's start geocoding our data
 We recommend first geocoding your data with the US Census Geocoder API via the R package, censusxy.
@@ -193,7 +171,7 @@ The US Census Geocoder has two options for geocoding output: "simple" and "full"
 + "simple" returns coordinates of latitude (lat) and longitude. 
 + "full" returns coordinates, and other variables for geographies from Federal Information Processing Standards (FIPS) codes.
 
-To get the latitude and longitude only, we will set the `census_return` variable to "simple" and assign each census variable to a desired value. We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
+To get the latitude and longitude only, we will set the `census_output` variable to "simple" and assign each census variable to a desired value. We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
 
 
 ```{r}
@@ -224,7 +202,7 @@ Check the column names of the geocoded dataset. There should be an additional co
 colnames(geocoded_data_simple)
 ```
 
-Next, we will use parallel processing to make our geocoder run faster by setting `parallel`=TRUE and obtain simple geographies.
+Next, we will use parallel processing to make our geocoder run faster by setting `parallel`=`TRUE` and obtain simple geographies by setting `census_output`="simple".
 
 
 ```{r}
@@ -249,10 +227,10 @@ geocoded_data_simple_para <- run_geocoder(
 
 head(geocoded_data_simple_para)
 ```
-**Using parallel processing, we geocoded addresses much faster, even though the difference is in seconds.** 
+**Using parallel processing, we geocoded addresses much faster, even though the difference is seconds apart.** 
 
 
-**We will now demonstrate how to add the the coordinates and FIPS codes by setting the `census_return` variable to "full".**
+**We will now demonstrate how to add the the coordinates and FIPS codes by setting the `census_output` variable to "full".**
 ```{r}
 geocoded_data_full_geo <- run_geocoder(
   voter_file = voter_data,
@@ -351,15 +329,14 @@ class(geo_combined_df)
 ### Step 4: Plot your geocoded data
 We will map the area or ecological unit we are interested in using the tigris package for loading in US Census shapefiles.
 
-
 ```{r}
-# Load shapefile for the state of Georgia
+# Load shapefile for the state of Georgia using tigris package
 shape_file <- counties(state = "GA")
 
 # Concatenate the state and county codes into column called fips
 shape_file$fips <- paste0(shape_file$STATEFP, shape_file$COUNTYFP)
 
-# Filter shape_file for the counties: Gwinnett and Fulton
+# Filter shape_file for the counties: Gwinnett and Fulton using the tigris package
 shape_file <- shape_file[shape_file$fips == "13121" | shape_file$fips == "13135", ]
 shape_file$fulton <- ifelse(shape_file$fips == "13121", 1, 0)
 shape_file$gwinnett <- ifelse(shape_file$fips == "13121", 1, 0)
@@ -411,3 +388,5 @@ geo_combined_sp <- as(geo_combined, Class = "Spatial")
 voter_file_geo_latlon <- extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 leaflet(voter_file_geo_latlon) %>% addCircles(lng = ~lon, lat = ~lat)
 ```
+
+
