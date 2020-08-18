@@ -189,7 +189,6 @@ wru_predict_race_wrapper <- function(voter_file,
   pred_cols <- c("pred.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth")
   voter_file[, pred_cols] <- bisg[, pred_cols]
 
-  # Merge BISG information back into voter file
   if (verbose) {
     message("BISG complete.")
   }
