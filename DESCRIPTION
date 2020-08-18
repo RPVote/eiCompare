@@ -31,46 +31,27 @@ Description: Compares estimates from three ecological inference routines, based 
 License: GPL-3 + file LICENSE
 Depends:
   R (>= 3.5.0),
-  eiPack,
-  ei
 Imports:
-  bayestestR,
-  cubature,
+  ei,
+  eiPack,
+  wru
+NeedsCompilation: no
+Suggests:
   data.table,
   doParallel,
   doSNOW,
   dplyr,
-  ellipse,
-  foreach,
   ggplot2,
-  graphics,
-  magrittr,
-  mcmcse,
+  knitr,
   methods,
-  mnormt,
-  msm,
-  mvtnorm,
-  plotrix,
   purrr,
-  R.utils,
-  RCurl,
-  RJSONIO,
+  rmarkdown,
   sf,
   sjmisc,
   stringr,
-  tidyr,
-  tidyselect,
-  tmvtnorm,
-  ucminf,
-  wru,
-  overlapping
-NeedsCompilation: no
-Suggests:
-  knitr,
-  rmarkdown,
-  testthat,
-  reshape2,
-  RColorBrewer
+  testthat
+  testthat
+VignetteBuilder: 
+  knitr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
-VignetteBuilder: knitr
