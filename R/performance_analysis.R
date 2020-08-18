@@ -169,7 +169,7 @@ performance_analysis <- function(voter_file,
         "st" = tidyselect::all_of(census_state_col),
         "county" = tidyselect::all_of(census_county_col),
         "tract" = tidyselect::all_of(census_tract_col),
-        "block" = tidyselect::all_of(census_block_col),
+        "block" = tidyselect::all_of(census_block_col)
       )
     ) %>%
     dplyr::select(
