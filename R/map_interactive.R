@@ -14,17 +14,17 @@
 #' @importFrom tidyr
 #' @importFrom leaflet
 
-sp_latlon <- tidyr::extract(sp_voterfile, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
+#sp_latlon <- tidyr::extract(sp_voterfile, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
-leaflet(data = sp_latlon) %>%
-  addTiles() %>%
-  addMarkers(~lon, ~lat,
-    popup = paste(
-      "Voter ID", voter_id, "<br>",
-      "First Name:", first_name, "<br>",
-      "Last Name:", last_name, "<br>",
-      "FIPS code:", fips_code, "<br>",
-      "Latitude:", lat, "<br>",
-      "Longitude:", lon, "<br>"
-    )
-  )
+#leaflet(data = sp_latlon) %>%
+  #addTiles() %>%
+  #addMarkers(~lon, ~lat,
+    #popup = paste(
+      #"Voter ID", voter_id, "<br>",
+      #"First Name:", first_name, "<br>",
+      #"Last Name:", last_name, "<br>",
+      #"FIPS code:", fips_code, "<br>",
+      #"Latitude:", lat, "<br>",
+      #"Longitude:", lon, "<br>"
+    #)
+  #)
