@@ -1,26 +1,39 @@
-#' Geocoding voter file addresses with coordinates (latitude and longitude) and/or census geographies.
+#' Geocoding voter file addresses with coordinates (latitude and longitude) 
+#' and/or census geographies.
 #'
 #'
-#' @param voter_file: A data frame contain the voter addresses, separated into columns for street, city, state, and zipcode
+#' @param voter_file: A data frame contain the voter addresses, separated into 
+#' columns for street, city, state, and zipcode
 #' @param geocoder: The options for selecting geocoders are "censusxy" and "opencage".
-#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. Running parallel processing 
-#' requires the user to have at least 4 CPU cores. Use detectCores() to determine the number of CPUs on your device.
+#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. 
+#' Running parallel processing 
+#' requires the user to have at least 4 CPU cores. Use detectCores() to determine the 
+#' number of CPUs on your device.
 #' @param voter_id: the unique identifier
-#' @param street: the street number, street name, and/or street suffix. Ex. 555 Main Street SW
+#' @param street: the street number, street name, and/or street suffix. 
+#' Ex. 555 Main Street SW
 #' @param city: the location/town
 #' @param state: the abbreviated state (U.S. state categories such as "GA")
 #' @param zipcode: the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
 #' @param country: the abbreviated a nation or territory
-#' @param census_return: either "locations" or "geographies". "locations" returns the latitude and longitude coordinates. 
-#' "geographies" returns the latitude, longitude, and FIPS codes for county, state, tract, and block.
-#' @param census_benchmark: a dataset of the snapshot of the US Census data. Data is collected two times a year. 
-#' Public_AR_Current is the time period when we created the snapshot of the data (usually done twice yearly). 
+#' @param census_return: either "locations" or "geographies". "locations" returns 
+#' the latitude and longitude coordinates. 
+#' "geographies" returns the latitude, longitude, and FIPS codes for county, state, 
+#' tract, and block.
+#' @param census_benchmark: a dataset of the snapshot of the US Census data. Data is 
+#' collected two times a year. 
+#' Public_AR_Current is the time period when we created the snapshot of the data 
+#' (usually done twice yearly). 
 #' For example, Public_AR_Current is the most recent snapshot of our dataset.
-#' @param census_vintage: a dataset that details the survey or census that the census_benchmark uses.
-#' @param opencage_key: the Opencage Geocoder API key needed to run the Opencage Geocoder. The use of the key is 
-#' limited to the level of membership on Opencage. Only 2500 rquests per day for free membership.
+#' @param census_vintage: a dataset that details the survey or census that the 
+#' census_benchmark uses.
+#' @param opencage_key: the Opencage Geocoder API key needed to run the Opencage 
+#' Geocoder. The use of the key is 
+#' limited to the level of membership on Opencage. Only 2500 rquests per day 
+#' for free membership.
 #'
-#' @return The geocoded voter file with either added simple (latitude and longitude coordinates) or other geographies.
+#' @return The geocoded voter file with either added simple 
+#' (latitude and longitude coordinates) or other geographies.
 #'
 #' @export voter_file
 #'
@@ -28,8 +41,10 @@
 #' @importFrom foreach iterates over elements or obervations
 #' @importFrom parallel helps run large computations for parallel processing
 #' @importFrom doParallel helps run large computations for parallel processing
-#' @importFrom censusxy The US Census Geocoder API https://cran.r-project.org/web/packages/censusxy/index.html
-#' @importFrom opencage The commercial geocoder, Opencage that returns latitude and longitude vaues. https://opencagedata.com/
+#' @importFrom censusxy The US Census Geocoder API 
+#' https://cran.r-project.org/web/packages/censusxy/index.html
+#' @importFrom opencage The commercial geocoder, Opencage that returns 
+#' latitude and longitude vaues. https://opencagedata.com/
 #'
 
 run_geocoder <- function(voter_file,
