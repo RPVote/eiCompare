@@ -14,21 +14,14 @@ Below are some steps to help you walk through the process of performing geocodin
 
 
 ### Step 1: Load R libraries/packages
-<<<<<<< HEAD
-Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
-=======
->>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
 ```{r}
 # Install eiCompare
 suppressPackageStartupMessages({
   devtools::install_github("RPVote/eiCompare@master")
 })
 ```
-<<<<<<< HEAD
-=======
 
 Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
->>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
 
 ```{r}
 # Load libraries
@@ -50,13 +43,6 @@ suppressPackageStartupMessages({
   library(leaflet)
 })
 ```
-
-### Load Functions
-```{r}
-source("~/github/geocodeCompare/geocoder_format.R")
-source("~/github/eiCompare/R/run_geocoder.R")
-```
-
 
 ### Step 2: Load your voter data.
 We are using a toy dataset representing the Georgia and Fulton county 
@@ -192,7 +178,8 @@ The US Census Geocoder has two options for geocoding output: "simple" and "full"
 + "simple" returns coordinates of latitude (lat) and longitude. 
 + "full" returns coordinates, and other variables for geographies from Federal Information Processing Standards (FIPS) codes.
 
-To get the latitude and longitude only, we will set the `census_output` variable to "simple" and assign each census variable to a desired value. 
+To get the latitude and longitude only, we will set the `census_output` variable to "simple" and assign each census variable to a desired value. We only have 4995 observations. So, we will not run parallel processing and set parallel to FALSE in the run_geocoder() function.
+
 
 ```{r}
 # Getting the latitude and longitude coordinates only.
@@ -351,7 +338,7 @@ We will map the area or ecological unit we are interested in using the tigris pa
 
 ```{r}
 # Load shapefile for the state of Georgia using tigris package
-shape_file <- tigris::counties(state = "GA")
+shape_file <- counties(state = "GA")
 
 # Concatenate the state and county codes into column called fips
 shape_file$fips <- paste0(shape_file$STATEFP, shape_file$COUNTYFP)
@@ -394,20 +381,3 @@ gwin_fulton_map <- map_shape_points(
 )
 gwin_fulton_map
 ```
-<<<<<<< HEAD
-
-
-#### Interactive Maps
-
-##### Leaflet Maps
-```{r}
-# Convert sf object, geo_combined to an sp object
-library(sp)
-geo_combined_sp <- as(geo_combined, Class = "Spatial")
-
-# Create lat and lon coordinates from geometry column of the full geometry voter file output
-voter_file_geo_latlon <- tidyr::extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
-leaflet(voter_file_geo_latlon) %>% addCircles(lng = ~lon, lat = ~lat)
-```
-=======
->>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
