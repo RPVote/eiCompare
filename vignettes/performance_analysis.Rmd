@@ -167,7 +167,7 @@ Since New York state does not report race on the voter file, we need to estimate
 data(rockland_census)
 
 # Apply BISG to the voter file to get race predictions
-bisg <- eiCompare::wru_predict_race_wrapper(
+voter_file_with_race <- eiCompare::wru_predict_race_wrapper(
   voter_file = as.data.frame(voter_file_w_ward),
   census_data = rockland_census,
   voter_id = "voter_id",
@@ -191,8 +191,8 @@ bisg <- eiCompare::wru_predict_race_wrapper(
 Let's take a look at the race probabilities:
 
 ```{r race_probs}
-print(bisg$bisg[, c(
-  "voterid",
+print(voter_file_with_race[, c(
+  "voter_id",
   "surname",
   "pred.whi",
   "pred.bla",
@@ -201,25 +201,9 @@ print(bisg$bisg[, c(
 )])
 ```
 
-For example, the `pred.whi` column implies that "ROSENBERG" has an 86% chance of being white given both the surname and location information. On the other hand, "JACKSON" has a 97% chance of being black, given that JACKSON is a surname that is predominantly black and this person is located in a largely black Census block. These race probabilities have to be merged back into the original voter file, producing a final voter file.
+For example, the `pred.whi` column implies that "ROSENBERG" has an 86% chance of being white given both the surname and location information. On the other hand, "JACKSON" has a 97% chance of being black, given that JACKSON is a surname that is predominantly black and this person is located in a largely black Census block.
 
-```{r merge_bisg}
-# Merge race information back into voter file
-voter_file_final <- dplyr::inner_join(
-  x = as.data.frame(voter_file_w_ward),
-  y = bisg$bisg[, c(
-    "voterid",
-    "pred.whi",
-    "pred.bla",
-    "pred.his",
-    "pred.asi",
-    "pred.oth"
-  )],
-  by = setNames("voterid", "voter_id")
-)
-```
-
-Lastly, we can get what we set out for: the racial makeup, per ward in the new map. This can be achieved with a simple group-by operation. In the toy voter file, the results won't make any sense since there's only five voters. So, let's look at the final results on an entire voter file.
+Lastly, we can get what we set out for: the racial makeup, per ward in the new map. This can be achieved with the `precinct_agg_combine` function, provided by `eiCompare`. In the toy voter file, the results won't make any sense since there's only five voters. So, let's look at the final results on an entire voter file.
 
 ## Running the entire performance analysis
 
@@ -285,7 +269,7 @@ options(repr.plot.width = 5, repr.plot.height = 5)
 
 # Get minority aggregate turnout
 performance <- results$results
-ersd_maps$MIN_AGG_FRAC_TURNOUT <- performance$black + performance$hispanic
+ersd_maps$MIN_AGG_FRAC_TURNOUT <- performance$pred.bla_prop + performance$pred.his_prop
 
 # Run performance analysis
 performance_comparison <- ggplot(ersd_maps, aes(x = MIN_AGG_FRAC, y = MIN_AGG_FRAC_TURNOUT)) +
