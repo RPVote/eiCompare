@@ -82,7 +82,7 @@ tidy_voter_file_wru <- function(voter_file,
 #' @param voter_file A dataframe denoting the voter file. If it is not a
 #'  geometry dataframe, it will be converted to one.
 #' @param shape_file The shapefile for the region, as an sf object.
-#' @param crs The PROJ4 string for the coordinate reference system.
+#' @param crs The PROJ4 string or int for the coordinate reference system.
 #' @param coords The columns, as a list, that refer to the longitude and
 #'  latitude.
 #' @param voter_id The column for the Voter ID.
@@ -92,17 +92,30 @@ tidy_voter_file_wru <- function(voter_file,
 #' @importFrom sf st_as_sf st_join st_set_crs st_transform
 merge_voter_file_to_shape <- function(voter_file,
                                       shape_file,
-                                      crs = "+proj=longlat +ellps=GRS80",
+                                      crs = NULL,
                                       coords = c("lon", "lat"),
                                       voter_id = "voter_id") {
-  # apply transform to the voter file longitude and latitude
+  # Apply transform to the voter file longitude and latitude
   voter_file <- sf::st_as_sf(voter_file, coords = coords)
-  voter_file <- sf::st_transform(sf::st_set_crs(voter_file, crs))
 
-  # apply transform to the shapefile
-  shape_file <- sf::st_transform(shape_file, crs = crs)
+  # If no provided CRS, use the shape file's CRS
+  if (is.null(crs)) {
+    if (is.na(sf::st_crs(shape_file))) {
+      # Shape file has no CRS
+      crs <- 4326
+      shape_file <- sf::st_set_crs(shape_file, crs)
+    } else {
+      crs <- sf::st_crs(shape_file)
+    }
+    voter_file <- sf::st_transform(sf::st_set_crs(voter_file, crs))
+  } else {
+    # Use the provided CRS for both voter and shape files
+    crs <- sf::st_crs(crs)
+    voter_file <- sf::st_transform(sf::st_set_crs(voter_file, crs))
+    shape_file <- sf::st_transform(shape_file, crs = crs)
+  }
 
-  # find the intersection between the voter file addresses
+  # Find the intersection between the voter file addresses
   voter_file_w_shape <- suppressMessages(sf::st_join(
     x = voter_file,
     y = shape_file
