@@ -14,13 +14,21 @@ Below are some steps to help you walk through the process of performing geocodin
 
 
 ### Step 1: Load R libraries/packages
+<<<<<<< HEAD
 Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
+=======
+>>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
 ```{r}
 # Install eiCompare
 suppressPackageStartupMessages({
   devtools::install_github("RPVote/eiCompare@master")
 })
 ```
+<<<<<<< HEAD
+=======
+
+Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
+>>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
 
 ```{r}
 # Load libraries
@@ -30,7 +38,6 @@ suppressPackageStartupMessages({
   library(readr)
   library(tidyverse)
   library(tidyr)
-  library(raster)
   library(foreach)
   library(parallel)
   library(doParallel)
@@ -387,6 +394,7 @@ gwin_fulton_map <- map_shape_points(
 )
 gwin_fulton_map
 ```
+<<<<<<< HEAD
 
 
 #### Interactive Maps
@@ -401,3 +409,5 @@ geo_combined_sp <- as(geo_combined, Class = "Spatial")
 voter_file_geo_latlon <- tidyr::extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 leaflet(voter_file_geo_latlon) %>% addCircles(lng = ~lon, lat = ~lat)
 ```
+=======
+>>>>>>> fbe3d416db3497c7d9437939c05d5c639f2dbb47
