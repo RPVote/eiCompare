@@ -5,14 +5,13 @@
 #' @param crs the Coordinate reference system, default is crs="+proj=latlong +ellps=GRS80 +no_defs"
 #' @param title the tile of the map
 #'
-#' @export shape_file
-#' @export shape_list
+#' @export map_shape_file
 #'
 #' @return Plots of mapped ecological units desired and voter latitude and longitudes
 #'
-#' @importFrom sf
-#' @importFrom ggplot2
-#' @importFrom ggmap
+#' @import sf
+#' @import ggplot2
+#' @import ggmap
 
 map_shape_file <- function(shape_file,
                            crs = "+proj=latlong +ellps=GRS80 +no_defs",
@@ -43,6 +42,20 @@ map_shape_file <- function(shape_file,
   return(shape_file)
 }
 
+#' Function for making basic choropleth maps with latitude and longitude points using the tigris package and ggplot
+#'
+#' @param voter_file a voter file with latitude, longitude, or latitude/longitude and other geographic data.
+#' @param shape_file a shape file based on desired ecologicla unit (i.e. state, county, block, tract)
+#' @param crs the Coordinate reference system, default is crs="+proj=latlong +ellps=GRS80 +no_defs"
+#' @param title the tile of the map
+#'
+#' @export map_shape_points
+#'
+#' @return Plots of mapped ecological units desired and voter latitude and longitudes
+#'
+#' @import sf
+#' @import ggplot2
+#' @import ggmap
 
 map_shape_points <- function(voter_file,
                              shape_file,
