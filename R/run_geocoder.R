@@ -3,17 +3,22 @@
 #'
 #' @param voter_file: A data frame contain the voter addresses, separated into columns for street, city, state, and zipcode
 #' @param geocoder: The options for selecting geocoders are "censusxy" and "opencage".
-#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. Running parallel processing requires the user to have at least 4 CPU cores. Use detectCores() to determine the number of CPUs on your device.
+#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data. Running parallel processing 
+#' requires the user to have at least 4 CPU cores. Use detectCores() to determine the number of CPUs on your device.
 #' @param voter_id: the unique identifier
 #' @param street: the street number, street name, and/or street suffix. Ex. 555 Main Street SW
 #' @param city: the location/town
 #' @param state: the abbreviated state (U.S. state categories such as "GA")
 #' @param zipcode: the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
 #' @param country: the abbreviated a nation or territory
-#' @param census_return: either "locations" or "geographies". "locations" returns the latitude and longitude coordinates. "geographies" returns the latitude, longitude, and FIPS codes for county, state, tract, and block.
-#' @param census_benchmark: a dataset of the snapshot of the US Census data. Data is collected two times a year. Public_AR_Current is the time period when we created the snapshot of the data (usually done twice yearly). For example, Public_AR_Current is the most recent snapshot of our dataset. Other options can be found at: _____<insert link>____________________.
+#' @param census_return: either "locations" or "geographies". "locations" returns the latitude and longitude coordinates. 
+#' "geographies" returns the latitude, longitude, and FIPS codes for county, state, tract, and block.
+#' @param census_benchmark: a dataset of the snapshot of the US Census data. Data is collected two times a year. 
+#' Public_AR_Current is the time period when we created the snapshot of the data (usually done twice yearly). 
+#' For example, Public_AR_Current is the most recent snapshot of our dataset.
 #' @param census_vintage: a dataset that details the survey or census that the census_benchmark uses.
-#' @param opencage_key: the Opencage Geocoder API key needed to run the Opencage Geocoder. The use of the key is limited to the level of membership on Opencage. Only 2500 rquests per day for free membership.
+#' @param opencage_key: the Opencage Geocoder API key needed to run the Opencage Geocoder. The use of the key is 
+#' limited to the level of membership on Opencage. Only 2500 rquests per day for free membership.
 #'
 #' @return The geocoded voter file with either added simple (latitude and longitude coordinates) or other geographies.
 #'
@@ -172,7 +177,7 @@ run_geocoder <- function(voter_file,
       dfList <- list()
 
       # Creates lists of dataframes that holds voter data in batches of 10000
-      for (i in 1:n_loops) {
+      for (i in 1:seq_len(n_loops)) {
         df <- voter_file[start_row:stop_row, ]
         if (start_row == last_row_start) {
           df <- voter_file[last_row_start:last_row_stop, ]
