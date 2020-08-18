@@ -25,7 +25,6 @@ suppressPackageStartupMessages({
   library(readr)
   library(tidyverse)
   library(tidyr)
-  library(raster)
   library(foreach)
   library(parallel)
   library(doParallel)
@@ -387,7 +386,7 @@ library(sp)
 geo_combined_sp <- as(geo_combined, Class = "Spatial")
 
 # Create lat and lon coordinates from geometry column of the full geometry voter file output
-voter_file_geo_latlon <- extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
+voter_file_geo_latlon <- tidyr::extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 leaflet(voter_file_geo_latlon) %>% addCircles(lng = ~lon, lat = ~lat)
 ```
 
