@@ -39,10 +39,12 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
 
 
   # Designate colors for each candidate
-  color_choice <- as.list(RColorBrewer::brewer.pal(length(unique(cands)), "Dark2"))
-  # This color brewer will have at least 3 colors.
-  # If less than 3 candidates, shorten to needed colors
-  if (length(unique(cands)) < 3) color_choice <- color_choice[1:length(unique(cands))]
+  # Designate color blind friendly scale
+  # from Color University Design at University of Tokyo
+  color_scale <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999")
+  # Repeat twice so can accomodate up to 16 candidates (with repeating colors)
+  color_scale <- c(color_scale, color_scale)
+  color_choice <- as.list(color_scale[1:length(unique(cands))])
   cand_colors <- stats::setNames(color_choice, as.list(gsub("pct_", "", cands)))
 
   # go through each
