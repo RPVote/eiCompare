@@ -205,11 +205,11 @@ performance_analysis <- function(voter_file,
     verbose = TRUE
   )
   # Add matching flags to voter file
-  voter_file_final$matched_surname <- bisg$voter_file$matched_surname
-  voter_file_final$matched_geocode <- bisg$voter_file$matched_geocode
+  voter_file_final$matched_surname <- bisg$matched_surname
+  voter_file_final$matched_geocode <- bisg$matched_geocode
   if (verbose) {
-    n_surname_match <- sum(bisg$voter_file$matched_surname)
-    n_geocode_match <- sum(bisg$voter_file$matched_geocode)
+    n_surname_match <- sum(bisg$matched_surname)
+    n_geocode_match <- sum(bisg$matched_geocode)
     message(paste0(
       paste("BISG didn't match", n_voters - n_surname_match, "surnames.\n"),
       paste("BISG didn't match", n_voters - n_geocode_match, "geocodes.")
@@ -219,7 +219,7 @@ performance_analysis <- function(voter_file,
   # Merge race information back into voter file
   voter_file_final_w_race <- dplyr::inner_join(
     x = as.data.frame(voter_file_final),
-    y = bisg$bisg[, c(
+    y = bisg[, c(
       "voterid",
       "pred.whi",
       "pred.bla",
