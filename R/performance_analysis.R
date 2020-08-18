@@ -185,7 +185,7 @@ performance_analysis <- function(voter_file,
     )
 
   # Apply BISG to the voter file to get race predictions
-  bisg <- wru_predict_race_wrapper(
+  voter_file_final_w_race <- wru_predict_race_wrapper(
     voter_file = as.data.frame(voter_file_final),
     census_data = census_data,
     voter_id = voter_id,
@@ -205,46 +205,32 @@ performance_analysis <- function(voter_file,
     verbose = TRUE
   )
   # Add matching flags to voter file
-  voter_file_final$matched_surname <- bisg$matched_surname
-  voter_file_final$matched_geocode <- bisg$matched_geocode
   if (verbose) {
-    n_surname_match <- sum(bisg$matched_surname)
-    n_geocode_match <- sum(bisg$matched_geocode)
+    n_surname_match <- sum(voter_file_final_w_race$matched_surname)
+    n_geocode_match <- sum(voter_file_final_w_race$matched_geocode)
     message(paste0(
       paste("BISG didn't match", n_voters - n_surname_match, "surnames.\n"),
       paste("BISG didn't match", n_voters - n_geocode_match, "geocodes.")
     ))
   }
 
-  # Merge race information back into voter file
-  voter_file_final_w_race <- dplyr::inner_join(
-    x = as.data.frame(voter_file_final),
-    y = bisg[, c(
-      "voterid",
-      "pred.whi",
-      "pred.bla",
-      "pred.his",
-      "pred.asi",
-      "pred.oth"
-    )],
-    by = setNames("voterid", voter_id)
-  )
-
   # Aggregate percentages across districts
-  results <- voter_file_final_w_race %>%
-    dplyr::group_by_at(district) %>%
-    dplyr::summarise(
-      "white" = mean(pred.whi),
-      "black" = mean(pred.bla),
-      "hispanic" = mean(pred.his),
-      "asian" = mean(pred.asi),
-      "other" = mean(pred.oth),
-      .groups = "drop"
-    )
+  results <- precinct_agg_combine(
+    voter_file = voter_file_final_w_race,
+    group_col = district,
+    race_cols = NULL,
+    include_total = FALSE
+  )
 
   # If necessary, normalize counts
   if (normalize) {
-    races <- c("white", "black", "hispanic", "asian", "other")
+    races <- c(
+      "pred.whi_prop",
+      "pred.bla_prop",
+      "pred.his_prop",
+      "pred.asi_prop",
+      "pred.oth_prop"
+    )
     sums <- rowSums(results[, races])
     results[, races] <- results[, races] / sums
   }
