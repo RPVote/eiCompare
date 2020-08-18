@@ -46,16 +46,10 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   )
   names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
 
-  # Set fill and color aesthetic ahead of time
-  scale_aes <- list(
-    scale_fill_manual(values = cols),
-    scale_color_manual(values = cols)
-  )
-
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
-    scale_aes +
+    scale_fill_manual(values = cols) +
     # Add titles
     ggplot2::ggtitle(paste0(
       gsub("pct_", "", cand_pair[1]), " vs ",
@@ -66,7 +60,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     ggplot2::xlab("Percent of vote") +
     ggplot2::ylab("Density") +
     ggplot2::geom_density(
-      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled..),
+      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled.., color = Candidate),
       adjust = 2
     ) +
     # Add vertical line for halfway
