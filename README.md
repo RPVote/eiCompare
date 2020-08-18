@@ -1,6 +1,7 @@
 # eiCompare
 [![R build status](https://github.com/DSSG-eiCompare/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=R-CMD-check)
 [![Style status](https://github.com/DSSG-eiCompare/eiCompare/workflows/Styler/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=Styler)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/scottyhq/eiCompare/binder?urlpath=lab)
 
 eiCompare development version
 

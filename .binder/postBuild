@@ -1,0 +1,4 @@
+# Install development version of eiCompare
+R --save -e 'library("remotes"); 
+             install_github("RPVote/eiCompare")'
+             '
