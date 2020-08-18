@@ -9,7 +9,7 @@
 #' ecological inference is run.
 #'
 #' This function wraps around the ei function from the ei R package. This
-#' function is unstable and can break in apparently arbitrary ways. Errors
+#' function is unstable and can break in arbitrary ways. Errors
 #' often emerge with particular values of the erho parameter. If the function
 #' breaks, it will automatically try adjusting the erho parameter, first to 20,
 #' then to 0.5.
@@ -44,7 +44,7 @@
 #' output.
 #'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach getDoParWorkers
+#' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom bayestestR ci
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
@@ -87,7 +87,7 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    clust <- makeCluster(parallel::detectCores() - 1)
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)
@@ -133,7 +133,9 @@ ei_iter <- function(
     }
   }
 
-  if (verbose) message(paste("Beginning", n_iters, "2x2 estimations..."))
+  if (verbose) {
+    message(paste("Beginning", n_iters, "2x2 estimations..."))
+  }
 
   # Init progressbar
   pb <- utils::txtProgressBar(
@@ -146,9 +148,10 @@ ei_iter <- function(
 
   # Loop through each 2x2 ei
   ei_results <- foreach::foreach(
-    i = 1:n_iters,
+    i = seq_len(n_iters),
     .inorder = FALSE,
-    .packages = c("ei", "stats", "utils"),
+    .packages = c("ei", "stats", "utils", "mvtnorm"),
+    .export = c("ei_sim", ".samp", "like", ".createR"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
@@ -161,103 +164,61 @@ ei_iter <- function(
     set.seed(seed)
 
     # Run 2x2 ei
-    # Calls to ei are wrapped in nested try-catches that try different erho
-    # parameters to get the function working. The underlying ei function is
-    # unstable and changing erho can break it.
-    tryCatch(
-      {
-        utils::capture.output({
-          ei_out <-
-            suppressMessages(
-              purrr::lift(ei::ei)(
-                data = data,
-                formula = formula,
-                total = totals_col,
-                erho = erho,
-                simulate = TRUE,
-                args_pass
+    # This loop tries three different erho values before returning an error.
+    # It first tries the default erho value, then the default for ei (0.5),
+    # then 20.
+    erhos <- c(erho, 0.5, 20)
+    ii <- 1
+    while (ii < 4) {
+      tryCatch(
+        {
+          utils::capture.output({
+            ei_out <-
+              suppressMessages(
+                purrr::lift(ei::ei)(
+                  data = data,
+                  formula = formula,
+                  total = totals_col,
+                  erho = erhos[ii],
+                  simulate = TRUE,
+                  args_pass
+                )
+              )
+          })
+          break
+          # This was meant to enable parameterization of the ei importance sample
+          # size, but its inclusion changes results dramatically.
+          # utils::capture.output({
+          #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+          # })
+        },
+        error = function(cond) {
+          if (ii == 3) {
+            stop(
+              message(
+                paste(
+                  format(formula),
+                  "iteration failed three times. Error on third failure:\n",
+                  cond,
+                  "Type ?ei_iter for guidance on how to proceed."
+                )
               )
             )
-        })
-
-        # This was meant to enable parameterization of the ei importance sample
-        # size, but its inclusion changes results dramatically.
-        # utils::capture.output({
-        #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
-        # })
-      },
-      error = function(cond) {
-        message(paste(
-          format(formula),
-          "iteration failed. Retrying with erho = 20...\n"
-        ))
-        tryCatch(
-          {
-            utils::capture.output({
-              ei_out <-
-                suppressMessages(
-                  purrr::lift(ei::ei)(
-                    data = data,
-                    formula = formula,
-                    total = totals_col,
-                    erho = 20,
-                    simulate = TRUE,
-                    args_pass
-                  )
-                )
-            })
-
-            # This was meant to enable parameterization of the ei importance
-            # sample size, but its inclusion changes results dramatically.
-            # utils::capture.output({
-            #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
-            # })
-          },
-          error = function(cond) {
+          } else {
+            ii <- ii + 1
             message(
               paste(
+                "\n",
                 format(formula),
-                "iteration failed again. Retrying with erho = 0.5...\n"
+                "iteration failed. Retrying with erho =",
+                as.character(erhos[ii]),
+                "..."
               )
             )
-            tryCatch(
-              {
-                utils::capture.output({
-                  ei_out <-
-                    suppressMessages(
-                      purrr::lift(ei::ei)(
-                        data = data,
-                        formula = formula,
-                        total = totals_col,
-                        erho = 20,
-                        simulate = TRUE,
-                        args_pass
-                      )
-                    )
-                })
-
-                # This was meant to enable parameterization of the ei importance
-                # sample size, but its inclusion changes results dramatically.
-                # utils::capture.output({
-                #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
-                # })
-              },
-              error = function(cond) {
-                stop(paste(
-                  formula,
-                  "failed with the following error:\n",
-                  cond,
-                  "Try a different erho parameter.",
-                  "If the problem persists, please submit an issue on the",
-                  "eiCompare git repository, including the error you",
-                  "received."
-                ))
-              }
-            )
           }
-        )
-      }
-    )
+        }
+      )
+    }
 
     # Plots to be added here
     if (plots) {
@@ -302,8 +263,8 @@ ei_iter <- function(
     # This works according to the aggregate formula in King, 1997, section 8.3
     aggs <- res$aggs
     ses <- c()
-    for (i in 1:ncol(aggs)) {
-      aggs_col <- aggs[, i]
+    for (k in 1:ncol(aggs)) {
+      aggs_col <- aggs[, k]
       m <- mean(aggs_col)
       nsims <- length(aggs_col)
       devs <- m - aggs_col
@@ -333,15 +294,13 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
-  # if (par_compute == TRUE) {
-  #  # Stop clusters (always done between uses)
-  #  parallel::stopCluster(clust)
-  #  # Garbage collection (in case of leakage)
-  #  gc()
-  #  #setTxtProgressBar(pb, i)
-  #
-  #  return(ei_out)
-  # }
+  # Stop clusters as soon as done parallel processing
+  if (par_compute) {
+    # Stop clusters (always done between uses)
+    stopCluster(clust)
+    # Garbage collection (in case of leakage)
+    gc()
+  }
 
   # close progress bar
   close(pb)
@@ -352,12 +311,6 @@ ei_iter <- function(
   agg_results <- sapply(ei_results, function(x) x[3])
   ei_objects <- sapply(ei_results, function(x) x[4])
 
-  if (par_compute) {
-    # Stop clusters (always done between uses)
-    parallel::stopCluster(clust)
-    # Garbage collection (in case of leakage)
-    gc()
-  }
 
   # Put results in dataframe
   results_table <- get_results_table(

@@ -73,7 +73,7 @@ pair, votes by other races and for other candidates are binned and 2x2
 ecological inference is run.
 
 This function wraps around the ei function from the ei R package. This
-function is unstable and can break in apparently arbitrary ways. Errors
+function is unstable and can break in arbitrary ways. Errors
 often emerge with particular values of the erho parameter. If the function
 breaks, it will automatically try adjusting the erho parameter, first to 20,
 then to 0.5.

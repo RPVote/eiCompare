@@ -8,6 +8,8 @@
 #' @param samples The number of samples to use.
 #'
 #' @return an ei object from the ei package.
+#'
+#'
 ei_sim <- function(ei.object, samples) {
   samples <- samples + 1
   hessian <- ei.object$hessianC
@@ -208,7 +210,7 @@ ei_sim <- function(ei.object, samples) {
     -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
       numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
     )
-    - phiv[i]
+    -phiv[i]
   })
 
   ok <- !is.nan(import1)

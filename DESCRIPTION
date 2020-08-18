@@ -41,7 +41,8 @@ Imports:
   tmvtnorm,
   ucminf,
   wru,
-  overlapping
+  overlapping,
+  coda
 NeedsCompilation: no
 Suggests:
   knitr,

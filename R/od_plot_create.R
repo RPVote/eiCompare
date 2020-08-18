@@ -19,10 +19,12 @@
 #'
 #' @export
 
-# utils::globalVariables(c("value", "Candidate", "..scaled..", "sd_minus", "sd_plus"))
-
 
 od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand_colors) {
+  # Set new variables to NULL
+  value <- Candidate <- sd_minus <- sd_plus <- NULL
+
+
   # Omit NAs and subset both density data and summmary table
   dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_pair), ])
   out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_pair), ]
@@ -44,6 +46,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   )
   names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
 
+
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
     scale_fill_manual(values = cols) +
@@ -56,7 +59,10 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     )) +
     ggplot2::xlab("Percent of vote") +
     ggplot2::ylab("Density") +
-    ggplot2::geom_density(alpha = 0.25, ggplot2::aes(x = value * 100, y = ..scaled..), adjust = 2) +
+    ggplot2::geom_density(
+      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled.., color = Candidate),
+      adjust = 2
+    ) +
     # Add vertical line for halfway
     ggplot2::geom_vline(xintercept = 50, color = "black", linetype = "dotted") +
     # Add vertical lines for means for density
@@ -90,8 +96,8 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     linetype = "dashed", data = out_sub
     ) +
     # Add sigma label
-    ggplot2::geom_text(x = max(out_sub$sd_plus[1], out_sub$sd_plus[1]), y = .12, label = "sigma", size = 3, parse = TRUE) +
-    ggplot2::geom_text(x = min(out_sub$sd_minus[2], out_sub$sd_minus[2]), y = .08, label = "sigma", size = 3, parse = TRUE) +
+    ggplot2::geom_text(x = max(out_sub$sd_plus[1], out_sub$sd_minus[1]), y = .12, label = "sigma", size = 3, parse = TRUE) +
+    ggplot2::geom_text(x = min(out_sub$sd_minus[2], out_sub$sd_plus[2]), y = .08, label = "sigma", size = 3, parse = TRUE) +
     # Add text label for means
     ggplot2::geom_label(
       x = out_sub$mean_size[1],
