@@ -50,7 +50,7 @@ map_shape_points <- function(voter_file,
                              title = "title") {
 
   # Create lat and lon coordinates from geometry column of the full geometry voter file output
-  voter_file_geo_latlon <- extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
+  voter_file_geo_latlon <- tidyr::extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
   # Transform to sf
   voter_file_geo_latlon <- st_as_sf(x = voter_file_geo_latlon, coords = (25:26))
