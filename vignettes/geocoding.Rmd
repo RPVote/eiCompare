@@ -25,6 +25,7 @@ suppressPackageStartupMessages({
   library(readr)
   library(tidyverse)
   library(tidyr)
+  library(raster)
   library(foreach)
   library(parallel)
   library(doParallel)
