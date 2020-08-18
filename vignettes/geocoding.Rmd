@@ -381,19 +381,3 @@ gwin_fulton_map <- map_shape_points(
 )
 gwin_fulton_map
 ```
-
-
-#### Interactive Maps
-
-##### Leaflet Maps
-```{r}
-# Convert sf object, geo_combined to an sp object
-library(sp)
-geo_combined_sp <- as(geo_combined, Class = "Spatial")
-
-# Create lat and lon coordinates from geometry column of the full geometry voter file output
-voter_file_geo_latlon <- tidyr::extract(geo_combined_df, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
-leaflet(voter_file_geo_latlon) %>% addCircles(lng = ~lon, lat = ~lat)
-```
-
-
