@@ -9,11 +9,15 @@ ei_iter(
   cand_cols,
   race_cols,
   totals_col,
+  name = "",
   erho = 10,
-  sample = 1000,
+  seed = NULL,
   plots = FALSE,
+  eiCompare_class = TRUE,
   betas = FALSE,
   par_compute = FALSE,
+  verbose = FALSE,
+  plot_path = "",
   ...
 )
 }
@@ -30,21 +34,34 @@ race}
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
 
-\item{erho}{A number passed directly to ei::ei(). Defaulted to 10}
+\item{name}{A unique identifier for the outputted eiCompare object.}
 
-\item{sample}{The number of samples used in ei estimation. Defaulted to 1000}
+\item{erho}{A number passed directly to ei::ei(). Defaulted to 10. Can also
+pass in a vector of erho values}
+
+\item{seed}{An integer seed value for replicating estimate results across
+runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{plots}{A boolean indicating whether or not to include density and
 tomography plots}
+
+\item{eiCompare_class}{default = TRUE}
 
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{par_compute}{A boolean to conduct ei using parallel processing}
 
+\item{verbose}{A boolean indicating whether to print out status messages.}
+
+\item{plot_path}{A string to specify plot save location. Defaulted to working
+directory.}
+
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
 \value{
-dataframe of results from iterative ei
+If eiCompare_class = TRUE, an object of class eiCompare is returned.
+Otherwise, a dataframe is returned that matches the formatting of ei_est_gen
+output.
 }
 \description{
 This function runs enables running iterative ecoligical inference (EI) to
@@ -55,6 +72,15 @@ different political candidates.
 Iterative EI iterates through all possible race-candidate pairs. For each
 pair, votes by other races and for other candidates are binned and 2x2
 ecological inference is run.
+
+This function wraps around the ei function from the ei R package. This
+function is unstable and can break in arbitrary ways. Errors
+often emerge with particular values of the erho parameter. If the function
+breaks, it will automatically try adjusting the erho parameter, first to 20,
+then to 0.5.
+
+If problems persist, please submit an issue on the eiCompare github
+repository and include the error message you receive.
 }
 \references{
 eiPack. Gary King (1997). A Solution to the Ecological Inference
@@ -63,5 +89,7 @@ Problem. Princeton: Princeton University Press.
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>
 
-Ari Decter-Frain
+Ari Decter-Frain <agd75@cornell.edu>
+
+Hikari Murayama <hikari_murayama@berkeley.edu>
 }

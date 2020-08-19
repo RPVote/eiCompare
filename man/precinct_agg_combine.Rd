@@ -2,28 +2,105 @@
 % Please edit documentation in R/precinct_agg_combine.R
 \name{precinct_agg_combine}
 \alias{precinct_agg_combine}
-\title{precinct_agg_combine}
+\title{Aggregates racial estimates across geographic units}
 \usage{
-precinct_agg_combine(dat, precinct = "precinct")
+precinct_agg_combine(
+  voter_file,
+  group_col = "precinct",
+  race_cols = NULL,
+  true_race_col = NULL,
+  true_race_keys = NULL,
+  include_total = FALSE
+)
 }
 \arguments{
-\item{dat}{data.frame() object}
+\item{voter_file}{The voter file, as a dataframe. Should contain columns that
+denote the race probabilities or the actual race of the voter.}
 
-\item{precinct}{Character of precinct column name. Default = "precinct",
-which is what is output from bisg_prep_race_predict()}
+\item{group_col}{A string denoting the column to aggregate over (e.g.,
+"precinct").}
+
+\item{race_cols}{A list of strings denoting which columns contain
+probabilistic estimates of race. By default, it assumes output from WRU.
+This function does not require all WRU output columns be present in the
+voter file; rather, it checks which outputs are present and uses those in
+aggregation.}
+
+\item{true_race_col}{A string denoting which (single) column in the voter
+file specifies the true race of the voter. If this variable is provided,
+then true_race_keys must also be provided, or an error is thrown.}
+
+\item{true_race_keys}{A named list, with keys denoting the new race groups
+(e.g., "white", "black", "hispanic", etc.). The value of each key is a
+string or list of strings that denote which columns in the voter file map
+onto the new ground truth race column. This is useful, for example, in
+mapping multiracial and Native American voters onto an "other" race
+category. This variable should only be provided if aggregating over the true
+race.}
+
+\item{include_total}{A logical denoting whether the total counts (potentially
+rounded) should be included in the output dataframe.}
 }
 \value{
 Aggregated dataset of nrow() precinct size, including racial size
-precinct estimates. Dataset suitable for EI/RxC.
+ precinct estimates. Dataset suitable for EI/RxC.
 }
 \description{
-Combines voter file surname geocoded data into aggregated precinct counts.
-To be performed on data object resulting from successful completion of
-bisg_prep_race_predict() function.
+Obtains aggregated precinct counts of racial groups from a voter file. This
+function is usually applied after application of BISG, when the voter file
+has probabilistic estimates of race. However, it can be applied more
+generally, aggregating actual counts of race. This function can perform
+aggregation over probabilistic estimates of race and ground truth race at the
+same time.
 }
 \examples{
+# Create synthetic voter file with typical BISG output
+voter_file <- data.frame(
+  precinct = c(1, 1, 2, 2),
+  pred.whi = c(0.10, 0.20, 0.30, 0.40),
+  pred.bla = c(0.40, 0.30, 0.20, 0.10),
+  pred.his = c(0.10, 0.20, 0.30, 0.40),
+  pred.asi = c(0.30, 0.20, 0.10, 0.00),
+  pred.oth = c(0.10, 0.10, 0.10, 0.10)
+)
+# Function uses these column names by default
+agg <- precinct_agg_combine(
+  voter_file = voter_file,
+  group_col = "precinct",
+  include_total = FALSE
+)
 
-}
-\author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+# Running aggregation with a ground truth race column
+voter_file <- data.frame(
+  precinct = c(1, 1, 1, 1, 2, 2, 2, 2),
+  race = c("BL", "WH", "NA", "MR", "BL", "WH", "BL", "BL")
+)
+# Need to specify race keys for true race column
+agg <- precinct_agg_combine(
+  voter_file = voter_file,
+  group_col = "precinct",
+  true_race_col = "race",
+  true_race_keys = list("whi" = "WH", "bla" = "BL", "oth" = c("NA", "MR")),
+  include_total = TRUE
+)
+
+# Running aggregation for both predicted and true race columns. Note the
+# change in column names, which means we need to specify column names.
+voter_file <- data.frame(
+  precinct = c(1, 1, 2, 2),
+  p.whi = c(0.10, 0.20, 0.30, 0.40),
+  p.bla = c(0.40, 0.30, 0.20, 0.10),
+  p.his = c(0.10, 0.20, 0.30, 0.40),
+  p.asi = c(0.30, 0.20, 0.10, 0.00),
+  p.oth = c(0.10, 0.10, 0.10, 0.10),
+  race = c("BL", "WH", "BL", "WH")
+)
+agg <- precinct_agg_combine(
+  voter_file = voter_file,
+  group_col = "precinct",
+  race_cols = c("p.whi", "p.bla", "p.his", "p.asi", "p.oth"),
+  true_race_col = "race",
+  true_race_keys = list("whi" = "WH", "bla" = "BL"),
+  include_total = FALSE
+)
 }

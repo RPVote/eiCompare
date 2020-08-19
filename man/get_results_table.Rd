@@ -4,7 +4,15 @@
 \alias{get_results_table}
 \title{Get results dataframe from a list of results as from ei_est_gen}
 \usage{
-get_results_table(district_results, cand_col, race_col, n_cand, n_race, n_iter)
+get_results_table(
+  district_results,
+  cand_col,
+  race_col,
+  n_cand,
+  n_race,
+  n_iter,
+  add_other = TRUE
+)
 }
 \arguments{
 \item{district_results}{A list of dataframes computed in the midst of ei_iter}
@@ -18,10 +26,17 @@ get_results_table(district_results, cand_col, race_col, n_cand, n_race, n_iter)
 \item{n_race}{Passed through from ei_iter}
 
 \item{n_iter}{Passed through from ei_iter}
+
+\item{add_other}{A boolean. If true, adds an 'other' column to the output
+when only one race group is included. Generally, set TRUE for ei_iter, FALSE
+for ei_good.}
 }
 \value{
 a dataframe of results that will work with table comparison funcs.
 }
 \description{
 Get results dataframe from a list of results as from ei_est_gen
+}
+\author{
+Ari Decter-Frain <agd75@cornell.edu>
 }

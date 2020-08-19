@@ -20,3 +20,6 @@ check_args(data, cand_cols, race_cols, totals_col, totals_null = FALSE)
 \description{
 Check for missing essential arguments from an ei function
 }
+\author{
+Ari Decter-Frain <agd75@cornell.edu>
+}

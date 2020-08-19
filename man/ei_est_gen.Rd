@@ -15,6 +15,7 @@ ei_est_gen(
   tomog = F,
   density_plot = F,
   beta_yes = F,
+  seed = NULL,
   ...
 )
 }
@@ -45,6 +46,9 @@ true will save pdf plot to working directory. Default is FALSE}
 
 \item{beta_yes}{Logical to export betas (b, w) in list object in addition to
 table of results. Default is FALSE}
+
+\item{seed}{An integer seed value for replicating estimate results across
+runs. If NULL, a random seed is chosen. Defaulted to NULL.}
 
 \item{\dots}{Arguments passed onto ei() function}
 }
