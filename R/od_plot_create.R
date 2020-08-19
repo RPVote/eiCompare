@@ -40,11 +40,13 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   overlap_point <- overlap_out$xpoints$`X1-X2`[[1]]
 
   # colors
-  cols <- c(
-    cand_colors[gsub("pct_", "", cand_pair[1])],
-    cand_colors[gsub("pct_", "", cand_pair[2])]
+  cols <- setNames(
+    c(
+      cand_colors[gsub("pct_", "", cand_pair[1])][[1]],
+      cand_colors[gsub("pct_", "", cand_pair[2])][[1]]
+    ),
+    c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
   )
-  names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
 
   # factor
   dens_data_sub$Candidate <- factor(dens_data_sub$Candidate,
