@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Visualizations"
-output: rmarkdown::github_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{pp-vignette}
   %\VignetteEngine{knitr::rmarkdown}

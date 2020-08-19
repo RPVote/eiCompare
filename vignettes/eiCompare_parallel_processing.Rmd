@@ -1,6 +1,6 @@
 ---
 title: "eiCompare: Parallel Processing"
-output: rmarkdown::github_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{pp-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -13,10 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-# devtools::install_github("DSSG-eiCompare/eiCompare@master")
 library(eiCompare)
-# install.packages("doSNOW" )
-library(doSNOW)
 
 data("corona")
 ```
