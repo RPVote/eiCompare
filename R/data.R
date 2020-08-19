@@ -183,3 +183,79 @@
 #' }
 #' @usage data(gwinnett)
 "gwinnett"
+
+#' Fulton County and Gwinnett County, GA, Census demographic dataset.
+#'
+#' This dataset contains the demographic information for Fulton and Gwinnett counties
+#' in Georgia.
+#'
+#' @format A nested list which can be sent to the `wru_predict_race_wrapper` function.
+#' Within "GA", the "block", "tract", and "county" keys contain the following columns.
+#' \describe{
+#'  \item{state}{State FIPS code}
+#'  \item{county}{County FIPS code}
+#'  \item{tract}{Tract FIPS code}
+#'  \item{block}{Block FIPS code}
+#'  \item{P005003}{White alone population}
+#'  \item{P005004}{Black or African American alone population}
+#'  \item{P005005}{American Indian and Alaska Native alone population}
+#'  \item{P005006}{Asian alone population}
+#'  \item{P005007}{Native Hawaiian and Other Pacific Islander alone population}
+#'  \item{P005008}{Some other race alone population}
+#'  \item{P005009}{Two or more races population}
+#'  \item{P005010}{Hispanic or Latino population}
+#'  \item{r_whi}{White voters; from Census Bureau.}
+#'  \item{r_bla}{Black voters; from Census Bureau.}
+#'  \item{r_his}{Hispanic voters; from Census Bureau.}
+#'  \item{r_asi}{Asian voters; from Census Bureau.}
+#'  \item{r_oth}{Other voters; from Census Bureau.}
+#' }
+#' @usage data(georgia_census)
+#' @source Census Bureau via the WRU package.
+"georgia_census"
+
+#' Voter file information that has been geocoded
+#'
+#' This dataset contains results from geocoding voter addresses using
+#' the U.S. Census Bureau. The geocoded voter file has 12 observations
+#' and 25 variables that include a geometry of latitude and longitude
+#' points and fips code values for state, county, tract, and block
+#' geographies.
+#'
+#' @format A data frame with 12 rows and 25 columns
+#' \describe{
+#' \item{county_code}{Unique identifier for counties in the state of Georgia}
+#' \item{county_name}{A list of the county name matching the county_code}
+#' \item{voter_id}{Unique identifier for registered voter identification}
+#' \item{voter_status}{The registration status of the voter}
+#' \item{last_name}{The last name of the voter}
+#' \item{first_name}{The first name of the voter}
+#' \item{street_number}{The street number of the voter address}
+#' \item{street_name}{The name of the street of the voter address}
+#' \item{street_suffix}{The suufix of the street that is commonly directional}
+#' \item{city}{The city of the voter address}
+#' \item{state}{The state of the voter address}
+#' \item{zipcode}{The 5 or 9 digit zipcode of the voter address}
+#' \item{street_address}{The street number and street name, concatenated}
+#' \item{final_address}{The street_address, city, state, and zipcode
+#' concatenated}
+#' \item{cxy_address}{The address generated and predicted by the
+#' US Census Geocoder}
+#' \item{cxy_status}{The US Census Geocoder flag for whether an addresses
+#' was matched in the US Census Geocoder}
+#' \item{cxy_quality}{The determinant of whether the addresses matched exctly}
+#' \item{cxy_matched_address}{The address used to compare with the voter
+#' address inputted
+#' into the Geocoder API to determine whether a match has occurred}
+#' \item{cxy_tiger_line_id}{unique identifier from the Tiger line database
+#' that captures
+#' geographic aras of interests like roads, railroads, rivers, etc.}
+#' \item{cxy_tiger_side}{a directional identifier in the Tiger Line database}
+#' \item{STATEFP10}{the FIPS code for the state geograhic level}
+#' \item{COUNTYFP10}{the FIPS code for the county geographic level}
+#' \item{TRACTCE10}{the FIPS code for the tract geographic level}
+#' \item{BLOCKCE10}{the FIPS code for the block geographic level}
+#' \item{geometry}{latitude and longitude coordinates}
+#' }
+#' @usage data(ga_geo)
+"ga_geo"
