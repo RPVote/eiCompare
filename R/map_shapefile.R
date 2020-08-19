@@ -1,8 +1,10 @@
-#' Function for making basic choropleth maps of shape_file using the tigris package and ggplot
+#' Function for making basic choropleth maps of shape_file
+#' using the tigris package and ggplot
 #'
-#' @param voter_file a voter file with latitude, longitude, or latitude/longitude and other geographic data.
-#' @param shape_file a shape file based on desired ecologicla unit (i.e. state, county, block, tract)
-#' @param crs the Coordinate reference system, default is crs="+proj=latlong +ellps=GRS80 +no_defs"
+#' @param shape_file a shape file based on desired ecological
+#'  unit (i.e. state, county, block, tract)
+#' @param crs the Coordinate reference system, default is
+#' crs="+proj=latlong +ellps=GRS80 +no_defs"
 #' @param title the tile of the map
 #'
 #' @export map_shape_file
@@ -11,7 +13,8 @@
 #'
 #' @import sf
 #' @import ggplot2
-#' @import ggmap
+#' @importFrom sf st_transform st_centroid st_coordinates st_intersection st_crs
+#' @importFrom tidyr extract
 
 map_shape_file <- function(shape_file,
                            crs = "+proj=latlong +ellps=GRS80 +no_defs",
@@ -42,28 +45,33 @@ map_shape_file <- function(shape_file,
   return(shape_file)
 }
 
-#' Function for making basic choropleth maps of longitude and latitude points using the tigris package and ggplot
+#' Function for making basic choropleth maps of longitude and latitude
+#'  points using the tigris package and ggplot
 #'
-#' @param voter_file a voter file with latitude, longitude, or latitude/longitude and other geographic data.
-#' @param shape_file a shape file based on desired ecologicla unit (i.e. state, county, block, tract)
-#' @param crs the Coordinate reference system, default is crs="+proj=latlong +ellps=GRS80 +no_defs"
+#' @param voter_file a voter file with latitude, longitude, or
+#' latitude/longitude and other geographic data.
+#' @param shape_file a shape file based on desired ecologicla
+#' unit (i.e. state, county, block, tract)
+#' @param crs the Coordinate reference system, default is
+#' crs="+proj=latlong +ellps=GRS80 +no_defs"
 #' @param title the tile of the map
 #'
 #' @export map_shape_points
 #'
-#' @return Plots of mapped ecological units desired and voter latitude and longitudes
+#' @return Plots of mapped ecological units desired and
+#' voter latitude and longitudes
 #'
 #' @import sf
 #' @import ggplot2
-#' @import ggmap
-#' @import tidyr
+#' @importFrom tidyr extract
 
 map_shape_points <- function(voter_file,
                              shape_file,
                              crs = "+proj=longlat +ellps=GRS80",
                              title = "title") {
 
-  # Create lat and lon coordinates from geometry column of the full geometry voter file output
+  # Create lat and lon coordinates from geometry column of the
+  # full geometry voter file output
   voter_file_geo_latlon <- tidyr::extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
   # Transform to sf

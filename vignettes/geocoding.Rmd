@@ -1,11 +1,15 @@
 ---
 title: "Geocoding Your Voter File"
-output: rmarkdown::html_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Geocoding Your Voter File}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 ------
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 In this vignette, we will walk-through how to geocode a dataset that includes addresses used to apply the BISG method for estimating the race/ethnicity of registered voters.
 
@@ -16,11 +20,11 @@ One of the first steps to performing ecological inference using eiCompare is geo
 
 Below are some steps to help you walk through the process of performing geocoding on your voter file. 
 
-### Step 1: Load R libraries/packages
+## Step 1: Load R libraries/packages
 ```{r}
 # Install eiCompare
 suppressPackageStartupMessages({
-  devtools::install_github("RPVote/eiCompare@master")
+  devtools::install_github("RPVote/eiCompare@geocoding_vignette", force = TRUE)
 })
 ```
 

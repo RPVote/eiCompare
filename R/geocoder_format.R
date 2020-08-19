@@ -1,31 +1,29 @@
-#' Pre-processes voter file by checking zipcode, and any special characters or typos within the address.
+#' Pre-processes voter file by checking zipcode, and any special
+#' characters or typos within the address.
 #'
 #'
 #' @param voter_file A voter file containing the address of the voter.
-#' @param address_type Either "single" or "split". single addresses are one line address that include street, city, state, and zipcode on one line. A split address
-#' @param street_number The number attached to the street name. Ex. 1442
-#' @param street_name The name of the place in which a voter lives. Ex. Market Street
-#' @param city The name of the city that the voter lives in.
-#' @param state The state (based on the United States 50 states) that the voter lives in.
-#' @param zipcode The United States Postal Service (USPS) postal code.
-#'
-#' @return The voter file with pre-processed format for each address variable.
+#' @param address The voter address in the structure of street
+#' number-street name-city-state-zipcode
+#' @param delimiter The symbol/character used to parse address."space"
+#' is used to indicate that the address is parsed by spaces.
+#' @return The voter file with pre-processed format for each address
+#' variable.
 #'
 #' @export split_add_nocommas
 #'
 #' @import data.table
 #' @import stringr
-#' @import tidyverse
 #'
 
 split_add_nocommas <- function(voter_file,
-                               voter_id = "voter_id",
                                address = "address",
                                delimiter = "space") {
 
-  # If the voter file contains a one-line address (i.e. with street name, city, state, and zipcode)
-  # with no commas, parse out the address in columns
-  if (!is.na(address) && delimiter == "space") {
+  # If the voter file contains a one-line address (i.e. with street name,
+  # city, state, and zipcode) with no commas, parse out the address
+  # in columns
+  if (!is.na(voter_file[[address]]) & delimiter == "space") {
 
     # Split address
     split_add <- strsplit(voter_file[[address]])
@@ -44,31 +42,27 @@ split_add_nocommas <- function(voter_file,
   # NOTE: Plan to try and come up with a way to split the street and city
 }
 
-#' Pre-processes voter file by checking zipcode, and any special characters or typos within the address.
-#'
+#' Pre-processes voter file by checking zipcode, and any special
+#' characters or typos within the address.
 #'
 #' @param voter_file A voter file containing the address of the voter.
-#' @param address_type Either "single" or "split". single addresses are one line address that include street, city, state, and zipcode on one line. A split address
-#' @param street_number The number attached to the street name. Ex. 1442
-#' @param street_name The name of the place in which a voter lives. Ex. Market Street
-#' @param city The name of the city that the voter lives in.
-#' @param state The state (based on the United States 50 states) that the voter lives in.
-#' @param zipcode The United States Postal Service (USPS) postal code.
-#'
-#' @return The voter file with pre-processed format for each address variable.
+#' @param address Either "single" or "split". single addresses are one
+#' line address that include street, city, state, and zipcode on one line.
+#' @param delimiter The type of delimiter (comma, hyphen, dash) that the
+#' address parts are split into.
+#' @return The voter file with pre-processed format for each address
+#' variable.
 #'
 #' @export add_split_comma
 #'
 #' @import data.table
 #' @import stringr
-#' @import tidyverse
-
 
 add_split_comma <- function(voter_file,
-                            voter_id = "voter_id",
                             address = "address",
                             delimiter = "comma") {
-  # This function makes separate columns for each part of the address and puts them into columns
+  # This function makes separate columns for each part of the address
+  # and puts them into columns
   if (delimiter == "comma") {
     # Obtain the address column from the original dataset
     add_col <- voter_file[[address]]
@@ -103,16 +97,15 @@ add_split_comma <- function(voter_file,
   }
 }
 
-#' Pre-processes voter file by checking zipcode, and any special characters or typos within the address.
+#' Pre-processes voter file by checking zipcode, and any special characters
+#' or typos within the address.
 #'
 #'
 #' @param voter_file A voter file containing the address of the voter.
-#' @param address_type Either "single" or "split". single addresses are one line address that include street, city, state, and zipcode on one line. A split address
 #' @param street_number The number attached to the street name. Ex. 1442
-#' @param street_name The name of the place in which a voter lives. Ex. Market Street
-#' @param city The name of the city that the voter lives in.
-#' @param state The state (based on the United States 50 states) that the voter lives in.
-#' @param zipcode The United States Postal Service (USPS) postal code.
+#' @param street_name The name of the place in which a voter lives.
+#' Ex. Market Street
+#' @param street_suffix A directional abbreviation such as NE for northeast or SW for southwest.
 #'
 #' @return The voter file with pre-processed format for each address variable.
 #'
@@ -120,11 +113,10 @@ add_split_comma <- function(voter_file,
 #'
 #' @import data.table
 #' @import stringr
-#' @import tidyverse
+
 
 # Addresses with separate street number and street name
 concat_streetname <- function(voter_file,
-                              voter_id = "voter_id",
                               street_number = "street_number",
                               street_name = "street_name",
                               street_suffix = "street_suffix") {
@@ -145,11 +137,11 @@ concat_streetname <- function(voter_file,
 #' This function concatenate the final address
 #'
 #' @param voter_file A voter file containing the address of the voter.
-#' @param address_type Either "single" or "split". single addresses are one line address that include street, city, state, and zipcode on one line. A split address
-#' @param street_number The number attached to the street name. Ex. 1442
-#' @param street_name The name of the place in which a voter lives. Ex. Market Street
+#' @param street_address The street number and street name of the voters
+#' address. Ex. 1442 Market Street
 #' @param city The name of the city that the voter lives in.
-#' @param state The state (based on the United States 50 states) that the voter lives in.
+#' @param state The state (based on the United States 50 states) that
+#' the voter lives in.
 #' @param zipcode The United States Postal Service (USPS) postal code.
 #'
 #' @return The voter file with pre-processed format for each address variable.
@@ -158,9 +150,8 @@ concat_streetname <- function(voter_file,
 #'
 #' @import data.table
 #' @import stringr
-#' @import tidyverse
+
 concat_final_address <- function(voter_file,
-                                 voter_id = "voter_id",
                                  street_address = "street_address",
                                  city = "city",
                                  state = "GA",
@@ -180,24 +171,21 @@ concat_final_address <- function(voter_file,
   return(voter_file)
 }
 
-#' Pre-processes voter file by checking zipcode, and any special characters or typos within the address.
+#' Pre-processes voter file by checking zipcode, and any special
+#' characters or typos within the address.
 #'
 #'
 #' @param voter_file A voter file containing the address of the voter.
-#' @param address_type Either "single" or "split". single addresses are one line address that include street, city, state, and zipcode on one line. A split address
-#' @param street_number The number attached to the street name. Ex. 1442
-#' @param street_name The name of the place in which a voter lives. Ex. Market Street
-#' @param city The name of the city that the voter lives in.
-#' @param state The state (based on the United States 50 states) that the voter lives in.
+#' @param voter_id The unique identifier linked to the voter.
 #' @param zipcode The United States Postal Service (USPS) postal code.
 #'
-#' @return The voter file with pre-processed format for each address variable.
+#' @return The voter file with pre-processed format for each address
+#' variable.
 #'
 #' @export zip_hyphen
 #'
 #' @import data.table
 #' @import stringr
-#' @import tidyverse
 #'
 zip_hyphen <- function(voter_file,
                        voter_id = "registration_number",
@@ -211,11 +199,13 @@ zip_hyphen <- function(voter_file,
     # Extract the zipcodes with 9 characters, no hyphen
     zip9_ids <- which(nchar(voter_file[[zipcode]]) == 9)
 
-    # Print message stating how many 9-digit zipcodes have been fixed with a hyphen.
+    # Print message stating how many 9-digit zipcodes have been fixed
+    # with a hyphen.
     paste("There are", zip9_ids, "9-digit zipcodes in the dataset that have been 
                         formatted.", sep = " ")
 
-    # Create a dataframe for 9-digit zipcodes that need a hyphen and make zipcode a character variable
+    # Create a dataframe for 9-digit zipcodes that need a hyphen and
+    # make zipcode a character variable
     zip9_df <- data.frame(cbind(
       voter_id = voter_file[[voter_id]][zip9_ids],
       zipcode = as.character(voter_file[[zipcode]][zip9_ids])
@@ -224,7 +214,8 @@ zip_hyphen <- function(voter_file,
     # Add a hyphen to the zipcode using the format XXXXX-XXXX
     zip9_df$new_zipcode <- gsub("(\\d{5})(\\d{4})$", "\\1-\\2", zip9_df$zipcode)
 
-    # Merge the hyphenated zipcodes with the exitsing zipcodes in the original dataframe.
+    # Merge the hyphenated zipcodes with the exitsing zipcodes in
+    # the original dataframe.
     voter_file$zipcode[match(zip9_df$voter_id, voter_file[[voter_id]])] <- zip9_df$new_zipcode
   }
   return(voter_file)

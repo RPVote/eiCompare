@@ -2,32 +2,37 @@
 #' and/or census geographies.
 #'
 #'
-#' @param voter_file: A data frame contain the voter addresses, separated into
+#' @param voter_file A data frame contain the voter addresses, separated into
 #' columns for street, city, state, and zipcode
-#' @param geocoder: The options for selecting geocoders are "censusxy" and "opencage".
-#' @param parallel: TRUE or FALSE. The option to run parallel processing on the data.
+#' @param geocoder The options for selecting geocoders are "censusxy" and "opencage".
+#' @param parallel TRUE or FALSE. The option to run parallel processing on the data.
 #' Running parallel processing
 #' requires the user to have at least 4 CPU cores. Use detectCores() to determine the
 #' number of CPUs on your device.
-#' @param voter_id: the unique identifier
-#' @param street: the street number, street name, and/or street suffix.
+#' @param voter_id the unique identifier
+#' @param street the street number, street name, and/or street suffix.
 #' Ex. 555 Main Street SW
-#' @param city: the location/town
-#' @param state: the abbreviated state (U.S. state categories such as "GA")
-#' @param zipcode: the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
-#' @param country: the abbreviated a nation or territory
-#' @param census_return: either "locations" or "geographies". "locations" returns
+#' @param city the location/town
+#' @param state the abbreviated state (U.S. state categories such as "GA")
+#' @param zipcode the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
+#' @param country the abbreviated a nation or territory
+#' @param census_return either "locations" or "geographies". "locations" returns
 #' the latitude and longitude coordinates.
 #' "geographies" returns the latitude, longitude, and FIPS codes for county, state,
 #' tract, and block.
-#' @param census_benchmark: a dataset of the snapshot of the US Census data. Data is
+#' @param census_benchmark a dataset of the snapshot of the US Census data. Data is
 #' collected two times a year.
 #' Public_AR_Current is the time period when we created the snapshot of the data
 #' (usually done twice yearly).
 #' For example, Public_AR_Current is the most recent snapshot of our dataset.
-#' @param census_vintage: a dataset that details the survey or census that the
+#' @param census_vintage a dataset that details the survey or census that the
 #' census_benchmark uses.
-#' @param opencage_key: the Opencage Geocoder API key needed to run the Opencage
+#' @param census_output "single" or "full". "single" indicates that only latitude
+#' and longitude are returned. "full" indicates that latitude, longitude, and FIPS
+#' codes are returned.
+#' @param census_class "sf" indicates returning a shape file in the R class, sf.
+#' Other file types like "json" and "csv" can also be used.
+#' @param opencage_key the Opencage Geocoder API key needed to run the Opencage
 #' Geocoder. The use of the key is
 #' limited to the level of membership on Opencage. Only 2500 rquests per day
 #' for free membership.
@@ -41,9 +46,7 @@
 #' @import foreach
 #' @import parallel
 #' @import doParallel
-#' @import censusxy
-#' @importFrom opencage
-#'
+
 
 run_geocoder <- function(voter_file,
                          geocoder = "census",
@@ -73,7 +76,7 @@ run_geocoder <- function(voter_file,
 
     packageStartupMessage("Initializing...", appendLF = FALSE)
 
-    census_voter_file <- censusxy::cxy_geocode(
+    census_voter_file <- cxy_geocode(
       .data = voter_file,
       id = voter_id,
       street = street,
@@ -120,7 +123,7 @@ run_geocoder <- function(voter_file,
       start_time_2 <- Sys.time()
 
       census_voter_file <- foreach(i = 1, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        censusxy::cxy_geocode(
+        cxy_geocode(
           .data = voter_file,
           id = voter_id,
           street = street,
@@ -207,7 +210,7 @@ run_geocoder <- function(voter_file,
       start_time_2 <- Sys.time()
 
       census_voter_file <- foreach(i = 1:n_loops, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        censusxy::cxy_geocode(
+        cxy_geocode(
           .data = dfList[[i]],
           id = voter_id,
           street = street,
@@ -252,7 +255,7 @@ run_geocoder <- function(voter_file,
       for (m in 1:seq_len(num_obs)) {
         tryCatch(
           {
-            opencage_latlon <- opencage::opencage_forward(
+            opencage_latlon <- opencage_forward(
               placename = voter_file$opencage_address[m],
               country = NULL,
               key = opencage_key
