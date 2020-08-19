@@ -81,7 +81,7 @@
 bayes_table_make <- function(ei_bayes_object, cand_vector, table_names) {
   # Interleave the candidate names with "se" strings
   se_cols <- rep("se", length(cand_vector))
-  rn <- c(rbind(cand_vector, se_cols))
+  new_col_names <- c(rbind(cand_vector, se_cols))
 
   # Summarize Bayes object to get posterior means/devs
   ei_bayes_object <- summary(ei_bayes_object)
@@ -92,21 +92,21 @@ bayes_table_make <- function(ei_bayes_object, cand_vector, table_names) {
   # Have to break apart the data to put in correct order
   list_holder <- list()
 
-  for (i in seq_len(length(cand_vector))) {
+  for (ii in seq_len(length(cand_vector))) {
     # use grep() to collect appropriate subsetted column names
-    subs <- grep(cand_vector[i], colnames(means), value = T)
+    subs <- grep(cand_vector[ii], colnames(means), value = T)
     # extract that data and put into list
     subs_data <- means[, subs]
     # need to put on same column names for rbind() later
     colnames(subs_data) <- table_names
-    list_holder[[i]] <- subs_data
+    list_holder[[ii]] <- subs_data
   }
 
   # Put lists together into table
   out <- do.call("rbind", list_holder) * 100
   rownames(out) <- seq_len(nrow(out))
   # Add on column of names
-  out <- data.frame(rn, out)
+  out <- data.frame(new_col_names, out)
 
   # Adding on total rows
   tot <- colSums(out[seq(1, nrow(out), 2), 2:ncol(out)])
