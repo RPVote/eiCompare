@@ -40,16 +40,24 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   overlap_point <- overlap_out$xpoints$`X1-X2`[[1]]
 
   # colors
-  cols <- c(
-    cand_colors[gsub("pct_", "", cand_pair[1])],
-    cand_colors[gsub("pct_", "", cand_pair[2])]
+  cols <- setNames(
+    c(
+      cand_colors[gsub("pct_", "", cand_pair[1])][[1]],
+      cand_colors[gsub("pct_", "", cand_pair[2])][[1]]
+    ),
+    c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
   )
-  names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
+
+  # factor
+  dens_data_sub$Candidate <- factor(dens_data_sub$Candidate,
+    levels = gsub("pct_", "", cand_pair),
+    ordered = TRUE
+  )
 
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
-    scale_fill_manual(values = cols) +
+    scale_fill_manual(values = cols, aesthetics = c("color", "fill")) +
     # Add titles
     ggplot2::ggtitle(paste0(
       gsub("pct_", "", cand_pair[1]), " vs ",
@@ -60,7 +68,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     ggplot2::xlab("Percent of vote") +
     ggplot2::ylab("Density") +
     ggplot2::geom_density(
-      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled.., color = Candidate),
+      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled.., colour = Candidate),
       adjust = 2
     ) +
     # Add vertical line for halfway
