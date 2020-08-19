@@ -22,6 +22,7 @@ Below are some steps to help you walk through the process of performing geocodin
 
 ## Step 1: Load R libraries/packages
 ```{r}
+#
 # Install eiCompare
 suppressPackageStartupMessages({
   devtools::install_github("RPVote/eiCompare@geocoding_vignette", force = TRUE)
