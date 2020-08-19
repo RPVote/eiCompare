@@ -49,7 +49,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
-    scale_fill_manual(values = cols) +
+    scale_fill_manual(values = cols, aesthetics = c("color", "fill")) +
     # Add titles
     ggplot2::ggtitle(paste0(
       gsub("pct_", "", cand_pair[1]), " vs ",
