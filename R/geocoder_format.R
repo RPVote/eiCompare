@@ -154,7 +154,7 @@ concat_streetname <- function(voter_file,
 concat_final_address <- function(voter_file,
                                  street_address = "street_address",
                                  city = "city",
-                                 state = "GA",
+                                 state = "state",
                                  zipcode = "zipcode") {
 
   # Concatenate final address column
