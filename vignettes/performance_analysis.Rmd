@@ -50,7 +50,6 @@ Let's take a look at a map proposed by the defendants, ERSD. The district map is
 ```{r load_data}
 # Load the map
 data("ersd_maps")
-st_crs(ersd_maps) <- 4326
 ```
 
 
@@ -118,7 +117,7 @@ Now, there's only one row for voter "SMITH" with voter ID "5". Importantly, it's
 
 ### Spatial join between the voter and shape files
 
-Next, we need to identify which wards these voters are located in. Performing this spatial join is abstracted in the `merge_voter_file_to_shape()` function, which can convert the voter file to a geometry object and join on location. This function, in addition to requiring the voter and shape files, also requires a Coordinates Reference System to use (as a PROJ4 string) as well as the column names for the longitude, latitude, and voter ID (in order to de-duplicate the voter file after the spatial join).
+Next, we need to identify which wards these voters are located in. Performing this spatial join is abstracted in the `merge_voter_file_to_shape()` function, which can convert the voter file to a geometry object and join on location. This function, in addition to requiring the voter and shape files, also uses a Coordinate Reference System (CRS) to use (as a string or integer) as well as the column names for the longitude, latitude, and voter ID (in order to de-duplicate the voter file after the spatial join). The CRS can be ommitted if the shape file comes with its own CRS, which is the case.
 
 ```{r merge_to_ward}
 voter_file_w_ward <- eiCompare::merge_voter_file_to_shape(
