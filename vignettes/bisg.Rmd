@@ -1,12 +1,13 @@
 ---
-title: "Bayesian Improved Surname Geocoding (BISG)"
-author: "null"
-date: "8/5/2020"
-output:
-  html_document: default
-  pdf_document: default
+title: "Using Bayesian Improved Surname Geocoding (BISG) to Identify the Race and Ethnicity of Voters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BISG}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
-This vignette demonstrates how to perform Bayesian Improved Surname Geocoding when the race/ethncity of individuals are unknown within a dataset.
+
+This tutorial demonstrates how to perform Bayesian Improved Surname Geocoding when the race/ethncity of individuals are unknown within a dataset.
 
 ## *What is Bayesian Improved Surname Geocoding?*
 
@@ -30,7 +31,7 @@ Let's begin by loading your geocoded voter data into R/RStudio.
 ### Step 1: Load R libraries/packages, voter file, and census data
 Load the R packages needed to perform BISG. If you have not already downloaded the following packages, please install these packages.
 
-```{r}
+```{r, echo=FALSE}
 # Install eiCompare
 suppressPackageStartupMessages({
   devtools::install_github("RPVote/eiCompare@master")
@@ -49,14 +50,14 @@ suppressPackageStartupMessages({
   library(eiCompare)
   library(wru)
   library(readr)
+  library(tidyr)
 })
 ```
 
 Load in census data, the shape file and geocoded voter registation data with latitude and longitude coordinates.
 ```{r}
 # Load Georgia census data
-path_census <- "~/shared/georgia/"
-census_data <- readRDS(paste(path_census, "georgia_census.rds", sep = ""))
+data(georgia_census)
 ```
 
 We will use the tigris package to load the shape file.
@@ -70,7 +71,7 @@ shape_file <- blocks(state = "GA", county = c("Gwinnett", "Fulton"))
 Load geocoded voter file.
 ```{r}
 # Load geocoded voter registration file
-voter_file_geocoded <- read_csv("~/github/eiCompare/data/ga_geo.csv")
+voter_file_geocoded <- data(ga_geo)
 ```
 
 Obtain the first six rows of the voter file to check that the file has downloaded properly.
@@ -95,7 +96,7 @@ There are 12 voters (or observations) and 25 columns in the voter file.
 Convert geometry column name into two columns for latitude and longitude points.
 ```{r}
 voter_file_geocoded <- voter_file_geocoded %>%
-  extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
+  tidyr::extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
 ```
 
 ### Step 2: De-duplicate the voter file.
