@@ -124,7 +124,6 @@ Next, we need to identify which wards these voters are located in. Performing th
 voter_file_w_ward <- eiCompare::merge_voter_file_to_shape(
   voter_file = voter_file,
   shape_file = ersd_maps,
-  crs = "+proj=longlat +ellps=GRS80",
   coords = c("lon", "lat"),
   voter_id = "voter_id"
 )
@@ -247,7 +246,7 @@ results <- eiCompare::performance_analysis(
   census_county_col = "county",
   census_tract_col = "tract",
   census_block_col = "block",
-  crs = "+proj=longlat +ellps=GRS80",
+  crs = NULL,
   coords = c("lon", "lat"),
   census_geo = "block",
   use_surname = TRUE,
