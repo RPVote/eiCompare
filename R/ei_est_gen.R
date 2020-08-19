@@ -18,6 +18,8 @@
 #' plot to working directory. Default is FALSE
 #' @param density_plot Logical to display density plot of betab and betaw. If
 #' true will save pdf plot to working directory. Default is FALSE
+#' @param seed An integer seed value for replicating estimate results across
+#' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param beta_yes Logical to export betas (b, w) in list object in addition to
 #' table of results. Default is FALSE
 #' @param \dots Arguments passed onto ei() function
@@ -85,8 +87,18 @@
 #'
 #'
 #' @export
-ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_names,
-                       sample = 1000, tomog = F, density_plot = F, beta_yes = F, ...) {
+ei_est_gen <- function(cand_vector,
+                       race_group,
+                       total,
+                       rho = 10,
+                       data,
+                       table_names,
+                       sample = 1000,
+                       tomog = F,
+                       density_plot = F,
+                       beta_yes = F,
+                       seed = NULL,
+                       ...) {
   list_extract <- function(x) x[, 1:2]
   seq_split <- 2:length(cand_vector)
   if (length(cand_vector) == 1) {
@@ -103,6 +115,7 @@ ei_est_gen <- function(cand_vector, race_group, total, rho = 10, data, table_nam
     beta_container <- list()
     for (i in 1:length(cand_vector)) {
       form <- stats::formula(paste(cand_vector[i], race_group[k]))
+      if (!is.null(seed)) set.seed(seed)
       try(ei_out <- ei::ei(form,
         total = total, erho = rho,
         data = data, sample = sample, ...

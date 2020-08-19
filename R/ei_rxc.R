@@ -8,6 +8,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ntunes Integer number of pre-MCMC tuning runs, defaulted to 10
 #' @param totaldraws Integer number of iterations per run in pre-MCMC tuning
 #' runs, defaulted to 10000
@@ -20,7 +21,6 @@
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
 #' @param eiCompare_class default = TRUE
-#' @param name A unique identifier for the outputted eiCompare object.
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
@@ -34,6 +34,7 @@
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
@@ -56,13 +57,13 @@ ei_rxc <- function(
                    cand_cols,
                    race_cols,
                    totals_col,
+                   name = "",
                    ntunes = 10,
                    totaldraws = 10000,
                    samples = 100000,
                    thin = 1,
                    burnin = 10000,
                    ci_size = 0.95,
-                   name = "",
                    seed = NULL,
                    eiCompare_class = TRUE,
                    ret_mcmc = FALSE,
@@ -106,8 +107,8 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws,
-      ...
+      totaldraws = totaldraws # ,
+      # ...
     )
   )
 
@@ -228,8 +229,8 @@ ei_rxc <- function(
         thin = thin,
         burnin = burnin,
         ret.mcmc = TRUE,
-        tune.list = tune_nocov,
-        ...
+        tune.list = tune_nocov # ,
+        # ...
       )
     )
 
@@ -251,6 +252,9 @@ ei_rxc <- function(
 
     # Get point estimates and standard errors
     estimate <- mcmcse::mcse.mat(chains_pr)
+
+    # Get standard deviation of each distribution
+    sds <- apply(chains_pr, 2, sd)
 
     # The upper and lower CI estimates also have standard errors. Here these
     # errors are conservatively used to extend the 95% confidence bound further
@@ -294,15 +298,21 @@ ei_rxc <- function(
     colnames(chains_pr) <- names
 
     # Create, name an output table
-    results_table <- data.frame(cbind(estimate, lower, upper))
+    results_table <- data.frame(cbind(estimate[, 1], sds, lower, upper))
     results_table <- cbind(cand_col, race_col, results_table)
     if (!eiCompare_class) {
+      message(
+        paste(
+          "This results output is deprecated by the eiCompare class",
+          "object. It will be removed in the near future."
+        )
+      )
       colnames(results_table) <- c(
-        "cand", "race", "mean", "se", "ci_lower", "ci_upper"
+        "cand", "race", "mean", "sd", "ci_lower", "ci_upper"
       )
     } else {
       colnames(results_table) <- c(
-        "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
+        "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
       )
     }
 

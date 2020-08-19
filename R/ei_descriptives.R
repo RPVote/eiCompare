@@ -9,6 +9,8 @@
 #' each candidate
 #' @param race_cols A character vector listing the column names for turnout by
 #' race
+#' @param corrs A boolean indicating whether to include correlation coefficients
+#' on the plot.
 #' @param save A boolean indicating whether to save the plot to a file.
 #' @param path A string to specify plot save location. Defaulted to
 #' working directory
@@ -20,6 +22,7 @@ plot_bivariate <- function(
                            data,
                            cand_cols,
                            race_cols,
+                           corrs = FALSE,
                            save = FALSE,
                            path = "") {
   data <- data[, c(cand_cols, race_cols)]
@@ -74,6 +77,22 @@ plot_bivariate <- function(
       panel.spacing = ggplot2::unit(1.25, "lines")
     )
 
+  # Add correlations if requested.
+  if (corrs) {
+    corrs <- race_cand_cors(data, cand_cols, race_cols)
+    corrs$candidate <- rownames(corrs)
+    corrs_long <- corrs %>%
+      tidyr::pivot_longer(race_cols, names_to = "race", values_to = "corr")
+    bivariate_plot <- bivariate_plot +
+      ggplot2::geom_text(
+        data = corrs_long,
+        ggplot2::aes(label = paste("r = ", round(corr, 2), sep = "")),
+        x = .91,
+        y = 0.93,
+        size = ifelse(max(n_races, n_cands) > 3, 2, 3)
+      )
+  }
+
   if (save) {
     ggplot2::ggsave(
       paste0(path, "bivariate_plot_", n_cands, "x", n_races, ".png"),
@@ -83,4 +102,20 @@ plot_bivariate <- function(
     )
   }
   return(bivariate_plot)
+}
+
+#' Table of bivariate correlations
+#'
+#' @param data A data.frame() object containing precinct-level turnout data by
+#' race and candidate
+#' @param cand_cols A character vector listing the column names for turnout for
+#' each candidate
+#' @param race_cols A character vector listing the column names for turnout by
+#' race
+#'
+#' @export
+#'
+#' @importFrom stats cor
+race_cand_cors <- function(data, cand_cols, race_cols) {
+  as.data.frame(cor(data[, c(cand_cols)], data[, c(race_cols)]))
 }
