@@ -46,20 +46,20 @@
 
 #' East Ramapo School District Proposed Maps
 #'
-#' This dataset contains proposed maps and CVAP totals for East Ramapo School
-#' District.
+#' This dataset contains proposed maps and Citizen Voting Age Population (CVAP)
+#' totals for East Ramapo School District.
 #'
 #' @name ersd_maps
-#' @format A data frame with 46 observations on the following 12 variables:
+#' @format A data frame with 8 observations on the following 8 variables:
 #' \describe{
-#'  \item{WARD}{Precinct ID number.}
-#'  \item{TOT_CVAP}{The total vote, per precinct.}
-#'  \item{WHI_CVAP}{Percent of vote for Husted.}
-#'  \item{BLA_CVAP}{Percent of vote for Spiegel.}
-#'  \item{HIS_CVAP}{Percent of vote for Ruth.}
-#'  \item{ASI_CVAP}{Percent of vote for Button.}
-#'  \item{MIN_AGG_FRAC}{Percent of vote for Montanez.}
-#'  \item{geometry}{Percent of vote for Fox.}
+#'  \item{WARD}{The ward ID number.}
+#'  \item{TOT_CVAP}{The total vote, according to CVAP, per precinct.}
+#'  \item{WHI_CVAP}{The number of white CVAP voters, per precinct.}
+#'  \item{BLA_CVAP}{The number of Black CVAP voters, per precinct.}
+#'  \item{HIS_CVAP}{The number of Hispanic CVAP voters, per precinct.}
+#'  \item{ASI_CVAP}{The number of Asian CVAP voters, per precinct.}
+#'  \item{MIN_AGG_FRAC}{The number of Black/Hispanic CVAP voters, per precinct.}
+#'  \item{geometry}{The geomtry for each ward.}
 #' }
 #' @usage data(ersd_maps)
 #' @source East Ramapo School District
@@ -126,6 +126,30 @@
 #' @usage data(ny_voter)
 #' @source East Ramapo School District Board of Elections.
 "ny_voter"
+
+
+#' East Ramapo School District 2018 Voter File
+#'
+#' This dataset contains a subset of the voter file for voters in East Ramapo
+#' School District, in 2018. This file has been modified to protect the privacy
+#' of the voters. The voter IDs have been replaced, surnames have been replaced
+#' with "similar" surnames, and the file comes already geocoded into Census
+#' block and ward.
+#'
+#' @name ramapo2018
+#' @format A data frame with 9401 observations on the following 7 variables:
+#' \describe{
+#'  \item{voter_id}{The voter ID, recoded to protect voter privacy.}
+#'  \item{last_name}{The surname of the voter.}
+#'  \item{ward}{The ward, as a character, that the voter is located in.}
+#'  \item{state}{FIPS code of state for voter.}
+#'  \item{county}{FIPS code of Census county for voter.}
+#'  \item{tract}{FIPS code of Census tract for voter.}
+#'  \item{block}{FIPS code of Census block for voter.}
+#' }
+#' @usage data(ramapo2018)
+#' @source East Ramapo School District
+"ramapo2018"
 
 
 #' Rockland County, NY, Census demographic dataset.
