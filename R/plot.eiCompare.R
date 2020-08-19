@@ -9,6 +9,8 @@
 #' @return A ggplot comparing eiCompare objects.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#'
 #' @export
 plot.eiCompare <- function(x, ...) {
   # Consolidate eiCompare objects
@@ -38,7 +40,7 @@ plot.eiCompare <- function(x, ...) {
   # Construct error bar plot
   ggplot2::ggplot(
     data = data,
-    ggplot2::aes(x = mean, y = cand, fill = name)
+    ggplot2::aes(x = mean, y = .data$cand, fill = .data$name)
   ) +
     ggplot2::geom_errorbarh(
       ggplot2::aes(xmin = (mean - sd), xmax = (mean + sd)),

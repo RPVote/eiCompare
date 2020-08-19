@@ -38,6 +38,7 @@ Imports:
   purrr,
   R.utils,
   RJSONIO,
+  rlang,
   sf,
   stringr,
   tidyr,

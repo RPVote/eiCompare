@@ -108,8 +108,8 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws # ,
-      # ...
+      totaldraws = totaldraws,
+      ...
     )
   )
 
@@ -153,7 +153,7 @@ ei_rxc <- function(
     opts <- list(progress = progress)
 
     md_mcmc <- foreach::foreach(
-      chain = seq_len(n_chains),
+      chain = seq_along(n_chains),
       .inorder = FALSE,
       .packages = c("ei"),
       .options.snow = opts
@@ -182,7 +182,7 @@ ei_rxc <- function(
 
       # Loop through races to get proportion of race voting for each cand
       # This loop is required to get proportions within races
-      for (i in 1:length(race_cols)) {
+      for (i in seq_len(race_cols)) {
         race_indices <- grep(race_cols[i], colnames(chains_raw))
         race_draws <- chains_raw[, race_indices]
         race_pr <- race_draws / rowSums(race_draws)
@@ -230,8 +230,8 @@ ei_rxc <- function(
         thin = thin,
         burnin = burnin,
         ret.mcmc = TRUE,
-        tune.list = tune_nocov # ,
-        # ...
+        tune.list = tune_nocov,
+        ...
       )
     )
 
@@ -244,7 +244,7 @@ ei_rxc <- function(
 
     # Loop through races to get proportion of race voting for each cand
     # This loop is required to get proportions within races
-    for (i in 1:length(race_cols)) {
+    for (i in seq_len(race_cols)) {
       race_indices <- grep(race_cols[i], colnames(chains_raw))
       race_draws <- chains_raw[, race_indices]
       race_pr <- race_draws / rowSums(race_draws)

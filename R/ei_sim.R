@@ -241,6 +241,9 @@ ei_sim <- function(ei.object, samples) {
 #' @param ealphab passed by .samp
 #' @param ealphaw passed by .samp
 #' @param Rfun passed by .samp#'
+#'
+#' @importFrom stats dnorm pnorm
+#'
 like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
                  ealphab, ealphaw, Rfun) {
 
@@ -292,7 +295,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   res <- NULL
   b.s <- (bounds[ok, ][, 2] - ebb[ok]) / s[ok]
   as <- (bounds[ok, ][, 1] - ebb[ok]) / s[ok]
-  res[ok] <- log(pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
+  res[ok] <- log(stats::pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
   # res[ok] <- ifelse(abs(res[ok])==Inf, log(1*10^-15),res[ok])
   # res[ok] <- ifelse(abs(res[ok])==Inf, NaN,res[ok])
   # res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) -
@@ -421,7 +424,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
 
   # Priors
   prior <- 0
-  lpdfnorm <- log(dnorm(rho0, 0, sd = erho))
+  lpdfnorm <- log(stats::dnorm(rho0, 0, sd = erho))
   if (esigma > 0) prior <- prior - (1 / (2 * esigma^2)) * (sigb2 + sigw2)
   if (erho > 0) prior <- prior + lpdfnorm
   if (ebeta > 0 & (mean(bb) < 0)) prior <- prior - .5 * ((mean(bb)^2) / ebeta)
@@ -458,6 +461,9 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
 #' @param numb passed from ei_sim()
 #' @param numw passed from ei_sim()
 #'
+#' @importFrom mnormt sadmvn
+#' @importFrom mvtnorm pmvnorm
+#'
 .createR <- function(sub, Rfun, bb, bw, sb, sw, rho, x, numb, numw) {
   out <- NULL
   lower <- cbind(-bb[sub] / sb, -bw[sub] / sw)
@@ -468,12 +474,15 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   if (Rfun == 1) {
     out <- NULL
     makeR <- function(i) {
-      qi <- pmvnorm(
+      qi <- mvtnorm::pmvnorm(
         lower = lower[i, ], upper = upper[i, ], mean = mean,
         corr = corr
       )
     }
-    out <- foreach(i = 1:length(x[sub]), .combine = "c") %dopar% makeR(i)
+    out <- foreach::foreach(
+      i = 1:length(x[sub]),
+      .combine = "c"
+    ) %dopar% makeR(i)
     # out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
     out <- ifelse(out < 0 | out == 0, 1 * 10^-322, out)
     out <- log(out)
@@ -483,7 +492,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   }
   if (Rfun == 2) {
     makeR <- function(i) {
-      qi <- sadmvn(
+      qi <- mnormt::sadmvn(
         lower = lower[i, ], upper = upper[i, ], mean = mean,
         varcov = corr
       )
@@ -505,7 +514,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     return(out)
   }
   if (Rfun == 3) {
-    fun <- function(x) dmvnorm(x, mean, corr)
+    fun <- function(x) mvtnorm::dmvnorm(x, mean, corr)
     for (i in 1:length(x[sub])) {
       qi <- adaptIntegrate(fun,
         lowerLimit = lower[i, ],
