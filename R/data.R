@@ -226,13 +226,13 @@
 #' \describe{
 #' \item{county_code}{Unique identifier for counties in the state of Georgia}
 #' \item{county_name}{A list of the county name matching the county_code}
-#' \item{voter_id}{Unique identifier for registered voter identification}
+#' \item{registration_number}{Unique identifier for registered voter identification}
 #' \item{voter_status}{The registration status of the voter}
 #' \item{last_name}{The last name of the voter}
 #' \item{first_name}{The first name of the voter}
-#' \item{street_number}{The street number of the voter address}
-#' \item{street_name}{The name of the street of the voter address}
-#' \item{street_suffix}{The suufix of the street that is commonly directional}
+#' \item{str_num}{The street number of the voter address}
+#' \item{str_name}{The name of the street of the voter address}
+#' \item{str_suffix}{The suufix of the street that is commonly directional}
 #' \item{city}{The city of the voter address}
 #' \item{state}{The state of the voter address}
 #' \item{zipcode}{The 5 or 9 digit zipcode of the voter address}
