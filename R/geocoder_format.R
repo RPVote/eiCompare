@@ -122,7 +122,7 @@ add_split_comma <- function(voter_file,
 #' @import stringr
 #' @import tidyverse
 
-# If you have a separate street number and street name
+# Addresses with separate street number and street name
 concat_streetname <- function(voter_file,
                               voter_id = "voter_id",
                               street_number = "street_number",

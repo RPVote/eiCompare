@@ -73,7 +73,7 @@ run_geocoder <- function(voter_file,
 
     packageStartupMessage("Initializing...", appendLF = FALSE)
 
-    census_voter_file <- cxy_geocode(
+    census_voter_file <- censusxy::cxy_geocode(
       .data = voter_file,
       id = voter_id,
       street = street,
@@ -96,7 +96,7 @@ run_geocoder <- function(voter_file,
   #################################################################################################
   if (geocoder == "census" & parallel == TRUE & num_obs <= 10000) {
     # Detect the number of cores on user's machine
-    n_cores <- detectCores()
+    n_cores <- parallel::detectCores()
 
     # Send warning message if number of cores is less than 4 cores
     if (n_cores < 4) {
@@ -114,13 +114,13 @@ run_geocoder <- function(voter_file,
       packageStartupMessage("Initializing...", appendLF = FALSE)
 
       # Run Census Geocoder API
-      clust <- makeCluster(detectCores() - 2)
+      clust <- parallel::makeCluster(detectCores() - 2)
       registerDoParallel(clust)
 
       start_time_2 <- Sys.time()
 
       census_voter_file <- foreach(i = 1, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        cxy_geocode(
+        censusxy::cxy_geocode(
           .data = voter_file,
           id = voter_id,
           street = street,
@@ -158,7 +158,7 @@ run_geocoder <- function(voter_file,
 
   if (geocoder == "census" & parallel == TRUE & num_obs > 10000) {
     # Detect the number of cores on user's machine
-    n_cores <- detectCores()
+    n_cores <- parallel::detectCores()
 
     # Send warning message if number of cores is less than 4 cores
     if (n_cores < 4) {
@@ -201,13 +201,13 @@ run_geocoder <- function(voter_file,
       }
 
       # Run Census Geocoder API
-      clust <- makeCluster(detectCores() - 2)
+      clust <- parallel::makeCluster(detectCores() - 2)
       registerDoParallel(clust)
 
       start_time_2 <- Sys.time()
 
       census_voter_file <- foreach(i = 1:n_loops, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        cxy_geocode(
+        censusxy::cxy_geocode(
           .data = dfList[[i]],
           id = voter_id,
           street = street,
@@ -249,10 +249,10 @@ run_geocoder <- function(voter_file,
         sep = ","
       )
       # Geocode using new address format for opencage and create columns for geographies
-      for (m in 1:num_obs) {
+      for (m in 1:seq_len(num_obs)) {
         tryCatch(
           {
-            opencage_latlon <- opencage_forward(
+            opencage_latlon <- opencage::opencage_forward(
               placename = voter_file$opencage_address[m],
               country = NULL,
               key = opencage_key

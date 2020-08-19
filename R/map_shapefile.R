@@ -7,7 +7,7 @@
 #'
 #' @export map_shape_file
 #'
-#' @return Plots of mapped ecological units desired and voter latitude and longitudes
+#' @return Plots of mapped ecological units desired shape
 #'
 #' @import sf
 #' @import ggplot2
@@ -26,7 +26,7 @@ map_shape_file <- function(shape_file,
     )
 
     suppressMessages(
-      sf_points <- cbind(shape_file, st_coordinates(st_centroid(shape_file$geometry)))
+      sf_points <- cbind(shape_file, sf::st_coordinates(sf::st_centroid(shape_file$geometry)))
     )
 
     shape_file <- shape_file %>%
@@ -67,14 +67,14 @@ map_shape_points <- function(voter_file,
   voter_file_geo_latlon <- tidyr::extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
 
   # Transform to sf
-  voter_file_geo_latlon <- st_as_sf(x = voter_file_geo_latlon, coords = (25:26))
+  voter_file_geo_latlon <- sf::st_as_sf(x = voter_file_geo_latlon, coords = (25:26))
 
 
   # Establish Coordinate Reference System (CRS)
   crs <- "+proj=longlat +ellps=GRS80"
   voter_file_geo_latlon <- sf::st_transform(sf::st_set_crs(voter_file_geo_latlon, crs))
-  voter_file_geo_latlon <- sf::st_transform(voter_file_geo_latlon, crs = st_crs(shape_file))
-  st_crs(voter_file_geo_latlon) <- st_crs(shape_file)
+  voter_file_geo_latlon <- sf::st_transform(voter_file_geo_latlon, crs = sf::st_crs(shape_file))
+  st_crs(voter_file_geo_latlon) <- sf::st_crs(shape_file)
 
   # Merge files
   voter_file_geo_onlyint <- sf::st_intersection(voter_file_geo_latlon, shape_file)
