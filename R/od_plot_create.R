@@ -46,6 +46,12 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   )
   names(cols) <- c(gsub("pct_", "", cand_pair[1]), gsub("pct_", "", cand_pair[2]))
 
+  # factor
+  dens_data_sub$Candidate <- factor(dens_data_sub$Candidate,
+    levels = gsub("pct_", "", cand_pair),
+    ordered = TRUE
+  )
+
 
   densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
     # Set colors according to candidate
