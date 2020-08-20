@@ -57,7 +57,7 @@ suppressPackageStartupMessages({
 Load in census data, the shape file and geocoded voter registation data with latitude and longitude coordinates.
 ```{r}
 # Load Georgia census data
-data("georgia_census")
+data(georgia_census)
 head(georgia_census)
 ```
 
@@ -72,7 +72,7 @@ shape_file <- blocks(state = "GA", county = c("Gwinnett", "Fulton"))
 Load geocoded voter file.
 ```{r}
 # Load geocoded voter registration file
-data("ga_geo")
+data(ga_geo)
 voter_file_geocoded <- ga_geo
 ```
 
