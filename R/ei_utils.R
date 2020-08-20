@@ -74,17 +74,9 @@ get_results_table <- function(
   }
 
   # Add first column of candidate info
-  seq_split <- 2:n_cand
-  results_table[, 1] <-
-    c(
-      R.utils::insert(
-        cand_col,
-        ats = seq_split,
-        values = rep("se", n_cand - 1)
-      ),
-      "se",
-      "Total"
-    )
+  se_cols <- rep("se", length(cand_col))
+  results_table[, 1] <- c(rbind(cand_col, se_cols), "Total")
+
   return(results_table)
 }
 

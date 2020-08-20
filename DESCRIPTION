@@ -34,7 +34,6 @@ Imports:
   plotrix,
   plyr,
   purrr,
-  R.utils,
   RJSONIO,
   rlang,
   sf,
