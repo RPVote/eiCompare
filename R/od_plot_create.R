@@ -68,7 +68,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     ggplot2::xlab("Percent of vote") +
     ggplot2::ylab("Density") +
     ggplot2::geom_density(
-      alpha = 0.5, ggplot2::aes(x = value * 100, y = ..scaled.., colour = Candidate),
+      alpha = 0.5, ggplot2::aes_string(x = "value * 100", y = "..scaled..", colour = "Candidate"),
       adjust = 2
     ) +
     # Add vertical line for halfway
