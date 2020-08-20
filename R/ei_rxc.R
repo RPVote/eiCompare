@@ -8,6 +8,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ntunes Integer number of pre-MCMC tuning runs, defaulted to 10
 #' @param totaldraws Integer number of iterations per run in pre-MCMC tuning
 #' runs, defaulted to 10000
@@ -19,13 +20,21 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
+#' @param eiCompare_class default = TRUE
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
 #' @param verbose A boolean indicating whether to print out status messages.
+#' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC
+#' parameters (will return all chain results)
+#' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
+#' @param plots A boolean indicating whether or not to include voter density plots
+#' @param plot_path A string to specify plot save location. Defaulted to working directory
+#' @param par_compute Boolean. If true, diagnostic test will be run in parallel.
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
@@ -37,6 +46,10 @@
 #' @export
 #'
 #' @importFrom mcmcse mcse.mat mcse.q.mat
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach getDoParWorkers %dopar% %do%
+#' @importFrom utils capture.output setTxtProgressBar
+#' @importFrom coda as.mcmc mcmc.list gelman.plot
 #'
 #' @return A dataframe of ei results
 ei_rxc <- function(
@@ -44,6 +57,7 @@ ei_rxc <- function(
                    cand_cols,
                    race_cols,
                    totals_col,
+                   name = "",
                    ntunes = 10,
                    totaldraws = 10000,
                    samples = 100000,
@@ -51,8 +65,14 @@ ei_rxc <- function(
                    burnin = 10000,
                    ci_size = 0.95,
                    seed = NULL,
+                   eiCompare_class = TRUE,
                    ret_mcmc = FALSE,
                    verbose = FALSE,
+                   diagnostic = FALSE,
+                   n_chains = 3,
+                   plots = FALSE,
+                   plot_path = "",
+                   par_compute = FALSE,
                    ...) {
 
   # Check for valid arguments
@@ -87,95 +107,247 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws,
-      ...
+      totaldraws = totaldraws # ,
+      # ...
     )
   )
 
   if (verbose) {
     message("Collecting samples...")
   }
-  # Bayes model estimation
-  suppressWarnings(
-    md_out <- ei.MD.bayes(
-      formula = formula,
-      sample = samples,
-      data = data,
-      total = totals_col,
-      thin = thin,
-      burnin = burnin,
-      ret.mcmc = TRUE,
-      tune.list = tune_nocov,
-      ...
+
+  if (diagnostic) {
+    if (verbose) message("Running diagnostic")
+    # Preparation for parallel processing if user specifies parallelization
+    if (par_compute) {
+      # Detect the number of cores you have
+      parallel::detectCores()
+
+      if (parallel::detectCores() < 4) {
+        stop("It is not recommended to run parallel ei with less than 4 cores")
+      } else if (parallel::detectCores() == 4) {
+        warning("4 cores is the minimum recommended to run parallel ei")
+      }
+      if (verbose) message("Running in paralllel")
+
+      # Standard to use 1 less core for clusters
+      clust <- makeCluster(parallel::detectCores() - 1)
+
+      # Register parallel processing cluster
+      doSNOW::registerDoSNOW(clust)
+
+      # Check to make sure that cores are set up correctly
+      foreach::getDoParWorkers()
+    }
+    # Set infix option for parallel or not parallel
+    `%myinfix%` <- ifelse(par_compute, `%dopar%`, `%do%`)
+
+    # Init progressbar
+    pb <- utils::txtProgressBar(
+      min = 0,
+      max = n_chains,
+      style = 3
     )
-  )
+    progress <- function(n) setTxtProgressBar(pb, n)
+    opts <- list(progress = progress)
 
-  # Extract district-level MCMC chains
-  # These initially present raw population count estimates
-  chains_raw <- md_out$draws$Cell.counts
+    md_mcmc <- foreach::foreach(
+      chain = seq_len(n_chains),
+      .inorder = FALSE,
+      .packages = c("ei"),
+      .options.snow = opts
+    ) %myinfix% {
+      # Bayes model estimation
+      suppressWarnings(
+        md_out <- ei.MD.bayes(
+          formula = formula,
+          sample = samples,
+          data = data,
+          total = totals_col,
+          thin = thin,
+          burnin = burnin,
+          ret.mcmc = TRUE,
+          tune.list = tune_nocov,
+          ...
+        )
+      )
 
-  # Convert population estimates to proportions
-  chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
+      # Extract district-level MCMC chains
+      # These initially present raw population count estimates
+      chains_raw <- md_out$draws$Cell.counts
 
-  # Loop through races to get proportion of race voting for each cand
-  # This loop is required to get proportions within races
-  for (i in 1:length(race_cols)) {
-    race_indices <- grep(race_cols[i], colnames(chains_raw))
-    race_draws <- chains_raw[, race_indices]
-    race_pr <- race_draws / rowSums(race_draws)
-    chains_pr[, race_indices] <- race_pr
-  }
+      # Convert population estimates to proportions
+      chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
 
-  # Get upper, lower CI limits
-  ci_lower <- (1 - ci_size) / 2
-  ci_upper <- 1 - ci_lower
+      # Loop through races to get proportion of race voting for each cand
+      # This loop is required to get proportions within races
+      for (i in 1:length(race_cols)) {
+        race_indices <- grep(race_cols[i], colnames(chains_raw))
+        race_draws <- chains_raw[, race_indices]
+        race_pr <- race_draws / rowSums(race_draws)
+        chains_pr[, race_indices] <- race_pr
+      }
 
-  if (verbose) {
-    message(paste("Setting CI lower bound equal to", ci_lower))
-    message(paste("Setting CI upper bound equal to", ci_upper))
-  }
+      setTxtProgressBar(pb, chain)
 
-  # Get point estimates and credible interval bounds
-  estimate <- mcmcse::mcse.mat(chains_pr)
+      # Make CODA object
+      chains_pr <- coda::as.mcmc(chains_pr)
+    }
 
-  # The upper and lower CI estimates also have standard errors. Here these
-  # errors are conservatively used to extend the 95% confidence bound further
+    if (par_compute == TRUE) {
+      # Stop clusters (always done between uses)
+      stopCluster(clust)
+      # Garbage collection (in case of leakage)
+      gc()
+    }
+    # close progress bar
+    close(pb)
 
-  # look for function that just finds the 95% CI
+    # Combine chains
+    chains_list <- coda::mcmc.list(md_mcmc)
 
-  # Lower CI estimate
-  lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
-  lower_est <- lower[, 1]
-  lower_se <- lower[, 2]
-  lower <- lower_est - lower_se
+    if (verbose) message("Creating and saving plots")
+    # Generate trace and general density plots
+    pdf(paste0(plot_path, "trace_density.pdf"))
+    plot(chains_list)
+    grDevices::dev.off()
 
-  # Upper CI estimate
-  upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
-  upper_est <- upper[, 1]
-  upper_se <- upper[, 2]
-  upper <- upper_est + upper_se
+    # Generate Gelman plot for convergence
+    pdf(paste0(plot_path, "gelman.pdf"))
+    coda::gelman.plot(chains_list)
+    grDevices::dev.off()
 
-  # This gets uses base R to get the correct candidate and race names from the
-  # output of the chains
-  cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
-  cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
-  cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
-  race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
-
-  # Create, name an output table
-  results_table <- data.frame(cbind(estimate, lower, upper))
-  results_table <- cbind(cand_col, race_col, results_table)
-  colnames(results_table) <- c(
-    "cand", "race", "mean", "se", "ci_lower", "ci_upper"
-  )
-
-  # Match expected output
-  results_table <- get_md_bayes_gen_output(results_table, race_cols)
-
-  # Return results and chains if requested
-  if (ret_mcmc) {
-    return(list(table = results_table, chains = chains_pr))
+    return(chains_list)
   } else {
-    return(results_table)
+    # Bayes model estimation
+    suppressWarnings(
+      md_out <- ei.MD.bayes(
+        formula = formula,
+        sample = samples,
+        data = data,
+        total = totals_col,
+        thin = thin,
+        burnin = burnin,
+        ret.mcmc = TRUE,
+        tune.list = tune_nocov # ,
+        # ...
+      )
+    )
+
+    # Extract district-level MCMC chains
+    # These initially present raw population count estimates
+    chains_raw <- md_out$draws$Cell.counts
+
+    # Convert population estimates to proportions
+    chains_pr <- matrix(NA, nrow = nrow(chains_raw), ncol = ncol(chains_raw))
+
+    # Loop through races to get proportion of race voting for each cand
+    # This loop is required to get proportions within races
+    for (i in 1:length(race_cols)) {
+      race_indices <- grep(race_cols[i], colnames(chains_raw))
+      race_draws <- chains_raw[, race_indices]
+      race_pr <- race_draws / rowSums(race_draws)
+      chains_pr[, race_indices] <- race_pr
+    }
+
+    # Get point estimates and standard errors
+    estimate <- mcmcse::mcse.mat(chains_pr)
+
+    # Get standard deviation of each distribution
+    sds <- apply(chains_pr, 2, sd)
+
+    # The upper and lower CI estimates also have standard errors. Here these
+    # errors are conservatively used to extend the 95% confidence bound further
+
+    # Set bounds according to
+    if (eiCompare_class) {
+      # eiCompare class object reports fixed CIs
+      ci_lower <- 0.025
+      ci_upper <- 0.975
+    } else {
+      # Get upper, lower CI limits
+      ci_lower <- (1 - ci_size) / 2
+      ci_upper <- 1 - ci_lower
+      if (verbose) {
+        message(paste("Setting CI lower bound equal to", ci_lower))
+        message(paste("Setting CI upper bound equal to", ci_upper))
+      }
+    }
+
+    # Lower CI estimate
+    lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
+    lower_est <- lower[, 1]
+    lower_se <- lower[, 2]
+    lower <- lower_est - lower_se
+
+    # Upper CI estimate
+    upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
+    upper_est <- upper[, 1]
+    upper_se <- upper[, 2]
+    upper <- upper_est + upper_se
+
+    # This gets uses base R to get the correct candidate and race names from the
+    # output of the chains
+    cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
+    cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
+    cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
+    race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
+
+    # Put names on chains_pr
+    names <- paste(cand_col, race_col, sep = "_")
+    colnames(chains_pr) <- names
+
+    # Create, name an output table
+    results_table <- data.frame(cbind(estimate[, 1], sds, lower, upper))
+    results_table <- cbind(cand_col, race_col, results_table)
+    if (!eiCompare_class) {
+      message(
+        paste(
+          "This results output is deprecated by the eiCompare class",
+          "object. It will be removed in the near future."
+        )
+      )
+      colnames(results_table) <- c(
+        "cand", "race", "mean", "sd", "ci_lower", "ci_upper"
+      )
+    } else {
+      colnames(results_table) <- c(
+        "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
+      )
+    }
+
+    if (plots) {
+      # colnames(chains_pr) <- gsub("ccount.", "betas.", colnames(md_out$draws$Cell.counts))
+      colnames(chains_pr) <- paste0("betas.", colnames(chains_pr))
+      # Create density plots
+      density_plots <- overlay_density_plot(chains_pr, results_table,
+        race_cols, cand_cols,
+        plot_path,
+        ei_type = "rxc"
+      )
+    }
+
+    if (!eiCompare_class) {
+      # Match expected output
+      results_table <- get_md_bayes_gen_output(results_table)
+
+      # Return results and chains if requested
+      if (ret_mcmc) {
+        return(list(table = results_table, chains = chains_pr))
+      } else {
+        return(results_table)
+      }
+    } else {
+      output <- list(
+        "type" = "RxC",
+        "estimates" = results_table,
+        "district_samples" = as.data.frame(chains_pr),
+        "precinct_samples" = NULL,
+        "stat_objects" = list(md_out),
+        "name" = name
+      )
+      class(output) <- "eiCompare"
+      return(output)
+    }
   }
 }

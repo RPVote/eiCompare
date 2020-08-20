@@ -1,3 +1,21 @@
+#' Sum row-wise over columns in a dataframe
+#'
+#' Simple wrapper of rowSums for checking row sums of race, candidate columns
+#'
+#' @param data A data.frame() object containing precinct-level turnout data by
+#' race and candidate
+#' @param cols A set of columns to sum over. Typically, enter cand_cols or
+#' race_cols here.
+#'
+#' @export
+#'
+#' @return A vector of row-wise sums across the column vector entered as
+#' argument.
+sum_over_cols <- function(data, cols) {
+  return(rowSums(data[, cols]))
+}
+
+
 #' Remove or identify duplicated precincts
 #'
 #' Removes any rows in the dataset that are fully duplicated. If necessary, adds
@@ -421,6 +439,9 @@ stdize_votes_all <- function(data,
     avg_dev_cand <- Inf
   }
 
+  if (verbose) {
+    message("Standardizing candidate columns...")
+  }
   # Get candidate standardized proportions
   cand_prps <- stdize_votes(
     data = data,
@@ -433,6 +454,9 @@ stdize_votes_all <- function(data,
     diagnostic = diagnostic
   )
 
+  if (verbose) {
+    message("Standardizing race columns...")
+  }
   # Get race standardized proportions
   race_prps <- stdize_votes(
     data = data,
@@ -468,6 +492,15 @@ stdize_votes_all <- function(data,
   if (sum(names(all_proportions) == "total") > 1) {
     all_proportions <-
       all_proportions[, -match("total", names(all_proportions))]
+  }
+
+  # Rename totals column to the original inputed name
+  if (!new_names) {
+    if (!is.null(totals_col)) {
+      totals_index <- which(colnames(all_proportions) == "total")
+      all_proportions$total <- data[, totals_col]
+      colnames(all_proportions)[totals_index] <- totals_col
+    }
   }
 
   return(all_proportions)
