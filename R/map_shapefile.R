@@ -11,14 +11,12 @@
 #'
 #' @return Plots of mapped ecological units desired shape
 #'
-#' @import sf
 #' @import ggplot2
 #' @importFrom sf st_transform st_centroid st_coordinates st_intersection st_crs
 #' @importFrom tidyr extract
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Juandalyn Burke <jcburke@@uw.edu>
-
 map_shape_file <- function(shape_file,
                            crs = "+proj=latlong +ellps=GRS80 +no_defs",
                            title = "Title of the Shapefile") {
@@ -32,14 +30,17 @@ map_shape_file <- function(shape_file,
     )
 
     suppressMessages(
-      sf_points <- cbind(shape_file, sf::st_coordinates(sf::st_centroid(shape_file$geometry)))
+      sf_points <- cbind(
+        shape_file,
+        sf::st_coordinates(sf::st_centroid(shape_file$geometry))
+      )
     )
 
     shape_file <- shape_file %>%
       ggplot() +
       geom_sf() +
       geom_text(
-        data = sf_points, aes(x = X, y = Y, label = NAME),
+        data = sf_points, aes_string(x = "X", y = "Y", label = "NAME"),
         color = "darkblue", fontface = "bold", check_overlap = FALSE
       ) +
       labs(title) +
@@ -64,10 +65,9 @@ map_shape_file <- function(shape_file,
 #' @return Plots of mapped ecological units desired and
 #' voter latitude and longitudes
 #'
-#' @import sf
 #' @import ggplot2
+#' @importFrom sf st_as_sf st_crs st_intersection st_transform
 #' @importFrom tidyr extract
-
 map_shape_points <- function(voter_file,
                              shape_file,
                              crs = "+proj=longlat +ellps=GRS80",
@@ -75,20 +75,37 @@ map_shape_points <- function(voter_file,
 
   # Create lat and lon coordinates from geometry column of the
   # full geometry voter file output
-  voter_file_geo_latlon <- tidyr::extract(voter_file, geometry, into = c("lat", "lon"), "\\((.*),(.*)\\)", conv = T)
+  voter_file_geo_latlon <- tidyr::extract(
+    voter_file,
+    "geometry",
+    into = c("lat", "lon"),
+    "\\((.*),(.*)\\)",
+    conv = TRUE
+  )
 
   # Transform to sf
-  voter_file_geo_latlon <- sf::st_as_sf(x = voter_file_geo_latlon, coords = (25:26))
+  voter_file_geo_latlon <- sf::st_as_sf(
+    x = voter_file_geo_latlon,
+    coords = (25:26)
+  )
 
 
   # Establish Coordinate Reference System (CRS)
   crs <- "+proj=longlat +ellps=GRS80"
-  voter_file_geo_latlon <- sf::st_transform(sf::st_set_crs(voter_file_geo_latlon, crs))
-  voter_file_geo_latlon <- sf::st_transform(voter_file_geo_latlon, crs = sf::st_crs(shape_file))
-  st_crs(voter_file_geo_latlon) <- sf::st_crs(shape_file)
+  voter_file_geo_latlon <- sf::st_transform(
+    sf::st_set_crs(voter_file_geo_latlon, crs)
+  )
+  voter_file_geo_latlon <- sf::st_transform(
+    voter_file_geo_latlon,
+    crs = sf::st_crs(shape_file)
+  )
+  sf::st_crs(voter_file_geo_latlon) <- sf::st_crs(shape_file)
 
   # Merge files
-  voter_file_geo_onlyint <- sf::st_intersection(voter_file_geo_latlon, shape_file)
+  voter_file_geo_onlyint <- sf::st_intersection(
+    voter_file_geo_latlon,
+    shape_file
+  )
 
   # Distinguish between the different counties
   shape_file_polygons <- voter_file_geo_onlyint %>%
