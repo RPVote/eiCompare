@@ -25,7 +25,6 @@ ei_est_gen.
 \examples{
 
 # Toy data example
-\dontrun{
 canda <- runif(5)
 candb <- 1 - canda
 white <- runif(5)
@@ -51,6 +50,7 @@ ei_bayes_res <- bayes_table_make(ei_bayes,
 ei_bayes_res
 
 # Example 2: Corona data
+\dontrun{
 data(corona)
 # create character vectors
 cands <- c(
