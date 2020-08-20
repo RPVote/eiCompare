@@ -105,7 +105,8 @@ ei_est_gen <- function(cand_vector,
     rn <- c(cand_vector, "se")
   }
   else {
-    rn <- c(R.utils::insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
+    se_cols <- rep("se", length(cand_vector))
+    rn <- c(rbind(cand_vector, se_cols))
   }
   data <- na.omit(data)
   race_group_table <- list()
@@ -208,8 +209,7 @@ ei_est_gen <- function(cand_vector,
     beta_names <- as.vector(unlist(beta_names))
     beta_b <- paste("betab", beta_names, sep = "_")
     beta_w <- paste("betaw", beta_names, sep = "_")
-    beta_names <- R.utils::insert(beta_b, ats = 1:length(beta_b) +
-      1, values = beta_w)
+    beta_names <- c(rbind(beta_b, beta_w))
     beta_full_hold <- as.data.frame(beta_full_hold)
     names(beta_full_hold) <- beta_names
     return(list(race_group_table = race_group_table, all_betas = beta_full_hold))

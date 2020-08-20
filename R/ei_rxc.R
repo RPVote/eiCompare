@@ -114,6 +114,9 @@ ei_rxc <- function(
     )
   )
 
+  # declare chain
+  chain <- NULL
+
   if (verbose) {
     message("Collecting samples...")
   }

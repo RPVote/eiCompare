@@ -55,13 +55,8 @@ md_bayes_table <- function(md_results) {
     rn <- c(rnames, "se", "Total")
   } else {
     # more than one candidate
-    rn <- c(
-      R.utils::insert(rnames,
-        ats = seq_split,
-        values = rep("se", len - 1)
-      ),
-      "se", "Total"
-    )
+    se_cols <- rep("se", length(cand_vector))
+    rn <- c(rbind(cand_vector, se_cols))
   }
 
   # result NA matrix holder

@@ -31,7 +31,6 @@ Imports:
   msm,
   overlapping,
   purrr,
-  R.utils,
   RJSONIO,
   rlang,
   sf,
