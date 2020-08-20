@@ -46,7 +46,6 @@
 
 #' East Ramapo School District Proposed Maps
 #'
-<<<<<<< HEAD
 #' This dataset contains proposed maps and Citizen Voting Age Population (CVAP)
 #' totals for East Ramapo School District.
 #'
@@ -61,22 +60,6 @@
 #'  \item{ASI_CVAP}{The number of Asian CVAP voters, per precinct.}
 #'  \item{MIN_AGG_FRAC}{The number of Black/Hispanic CVAP voters, per precinct.}
 #'  \item{geometry}{The geomtry for each ward.}
-=======
-#' This dataset contains proposed maps and CVAP totals for East Ramapo School
-#' District.
-#'
-#' @name ersd_maps
-#' @format A data frame with 46 observations on the following 12 variables:
-#' \describe{
-#'  \item{WARD}{Precinct ID number.}
-#'  \item{TOT_CVAP}{The total vote, per precinct.}
-#'  \item{WHI_CVAP}{Percent of vote for Husted.}
-#'  \item{BLA_CVAP}{Percent of vote for Spiegel.}
-#'  \item{HIS_CVAP}{Percent of vote for Ruth.}
-#'  \item{ASI_CVAP}{Percent of vote for Button.}
-#'  \item{MIN_AGG_FRAC}{Percent of vote for Montanez.}
-#'  \item{geometry}{Percent of vote for Fox.}
->>>>>>> update performance analysis; include maps for vignette
 #' }
 #' @usage data(ersd_maps)
 #' @source East Ramapo School District
