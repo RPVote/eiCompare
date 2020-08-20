@@ -60,7 +60,7 @@ plot_bivariate <- function(
     data = data_long,
     ggplot2::aes(x = .data$pct_of_voters, y = .data$pct_of_vote)
   ) +
-    ggplot2::geom_point(alpha = 0.5, size = .data$dot_size) +
+    ggplot2::geom_point(alpha = 0.5, size = dot_size) +
     ggplot2::facet_grid(.data$candidate ~ .data$race) +
     ggplot2::scale_x_continuous(
       limits = c(0, 1),
