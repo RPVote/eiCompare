@@ -2,7 +2,7 @@
 title: "eiCompare: Visualizations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pp-vignette}
+  %\VignetteIndexEntry{eiCompare: Visualizations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
