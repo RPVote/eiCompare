@@ -89,22 +89,18 @@ So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, Mont
 
 ## `ei_iter()`: Tomography, Density comparison, Density voter choice
 
-With that, let's run ei_ter to output the first set of visuals. If you want to to opt to create plots for `ei_iter` you'll need to set `plots` to `TRUE`. In addition, if you'd like to specificy where you would like to save your plots, you can specify a `plots_path`. 
-
-``` {r}
-save_path <- "~/hikari-stuff/eiCompare/plots/"
-```
+With that, let's run ei_ter to output the first set of visuals. If you want to to opt to create plots for `ei_iter` you'll need to set `plots` to `TRUE`. In addition, if you'd like to specificy where you would like to save your plots, you can specify a `plot_path`. 
 
 Time to run our iterative ei!
 
-```{r eval=FALSE}
+```{r}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
 race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
 
 # Run with plots =
 ei_results <- ei_iter(corona, cand_cols, race_cols, totals_col,
-  plots = TRUE, plot_path = save_path
+  plots = TRUE, plot_path = ""
 )
 ```
 
@@ -161,7 +157,7 @@ In addition, to assess your RxC parameter set up, we recommend running a diagnos
 ```{r}
 rxc_diag <- ei_rxc(
   data = corona, cand_cols, race_cols, totals_col, diagnostic = TRUE,
-  par_compute = TRUE, verbose = TRUE
+  verbose = TRUE
 )
 ```
 
