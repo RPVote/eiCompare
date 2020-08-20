@@ -21,7 +21,6 @@ Imports:
   doParallel,
   doSNOW,
   dplyr,
-  ellipse,
   foreach,
   ggplot2,
   graphics,
@@ -31,8 +30,6 @@ Imports:
   methods,
   msm,
   overlapping,
-  plotrix,
-  plyr,
   purrr,
   R.utils,
   RJSONIO,
@@ -42,7 +39,7 @@ Imports:
   tidyr,
   tidyselect,
   tidyverse,
-  tigris,
+  tigris
 NeedsCompilation: no
 Suggests:
   knitr,
