@@ -1,10 +1,10 @@
 ---
-title: "Using Bayesian Improved Surname Geocoding (BISG) to Identify the Race and Ethnicity of Voters"
-output: rmarkdown::html_vignette
+title: "Bayesian Improved Surname Geocoding (BISG)"
+output: rmarkdown::html_document
 vignette: >
-  %\VignetteIndexEntry{BISG}
+  %\VignetteIndexEntry{bisg}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 This tutorial demonstrates how to perform Bayesian Improved Surname Geocoding when the race/ethncity of individuals are unknown within a dataset.
@@ -27,6 +27,13 @@ We will perform BISG using the previous Gwinnett and Fulton county voter registr
 The first step in performing BISG is to geocode your voter file addresses. For information on geocoding, visit the Geocoding Vignette. 
 
 Let's begin by loading your geocoded voter data into R/RStudio.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ### Step 1: Load R libraries/packages, voter file, and census data
 Load the R packages needed to perform BISG. If you have not already downloaded the following packages, please install these packages.
@@ -57,175 +64,176 @@ suppressPackageStartupMessages({
 Load in census data, the shape file and geocoded voter registation data with latitude and longitude coordinates.
 ```{r}
 # Load Georgia census data
-data(georgia_census)
+data("georgia_census")
+head(georgia_census)
 ```
 
-We will use the tigris package to load the shape file.
-The tigris package uses the US Census Bureau's Geocoding API which is publicly available so no API key is needed.
-Make sure to load your census data according to a geographic level (i.e. counties, cities, tracts, blocks, etc.)
-```{r, echo=FALSE}
-# Load Georgia block shape file
-shape_file <- blocks(state = "GA", county = c("Gwinnett", "Fulton"))
-```
+<!-- We will use the tigris package to load the shape file. -->
+<!-- The tigris package uses the US Census Bureau's Geocoding API which is publicly available so no API key is needed. -->
+<!-- Make sure to load your census data according to a geographic level (i.e. counties, cities, tracts, blocks, etc.) -->
+<!-- ```{r, echo=FALSE} -->
+<!-- # Load Georgia block shape file -->
+<!-- shape_file <- blocks(state = "GA", county = c("Gwinnett", "Fulton")) -->
+<!-- ``` -->
 
-Load geocoded voter file.
-```{r}
-# Load geocoded voter registration file
-data(ga_geo)
-voter_file_geocoded <- ga_geo
-```
+<!-- Load geocoded voter file. -->
+<!-- ```{r} -->
+<!-- # Load geocoded voter registration file -->
+<!-- data("ga_geo") -->
+<!-- voter_file_geocoded <- ga_geo -->
+<!-- ``` -->
 
-Obtain the first six rows of the voter file to check that the file has downloaded properly.
-```{r}
-# Check the first six rows of the voter file
-head(voter_file_geocoded, 6)
-```
+<!-- Obtain the first six rows of the voter file to check that the file has downloaded properly. -->
+<!-- ```{r} -->
+<!-- # Check the first six rows of the voter file -->
+<!-- head(voter_file_geocoded, 6) -->
+<!-- ``` -->
 
-View the column names of the voter file. Some of these columns will be used along the journey to performing BISG.
-```{r}
-# Find out names of columns in voter file
-names(voter_file_geocoded)
-```
+<!-- View the column names of the voter file. Some of these columns will be used along the journey to performing BISG. -->
+<!-- ```{r} -->
+<!-- # Find out names of columns in voter file -->
+<!-- names(voter_file_geocoded) -->
+<!-- ``` -->
 
-Check the dimensions (the number of rows and columns) of the voter file.
-```{r}
-# Get the dimensions of the voter file
-dim(voter_file_geocoded)
-```
-There are 12 voters (or observations) and 25 columns in the voter file.
+<!-- Check the dimensions (the number of rows and columns) of the voter file. -->
+<!-- ```{r} -->
+<!-- # Get the dimensions of the voter file -->
+<!-- dim(voter_file_geocoded) -->
+<!-- ``` -->
+<!-- There are 12 voters (or observations) and 25 columns in the voter file. -->
 
-Convert geometry column name into two columns for latitude and longitude points.
-```{r}
-voter_file_geocoded <- voter_file_geocoded %>%
-  tidyr::extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE)
-```
+<!-- Convert geometry column name into two columns for latitude and longitude points. -->
+<!-- ```{r} -->
+<!-- voter_file_geocoded <- voter_file_geocoded %>% -->
+<!--   tidyr::extract(geometry, c("lon", "lat"), "\\((.*), (.*)\\)", convert = TRUE) -->
+<!-- ``` -->
 
-### Step 2: De-duplicate the voter file.
+<!-- ### Step 2: De-duplicate the voter file. -->
 
-The next step involves removing duplicate voter IDs from the voter file, using the `dedupe_voter_file` function. 
+<!-- The next step involves removing duplicate voter IDs from the voter file, using the `dedupe_voter_file` function.  -->
 
-```{r}
-# Remove duplicate voter IDs (the unique identifier for each voter)
-voter_file_dedupe <- dedupe_voter_file(voter_file = voter_file_geocoded, voter_id = "registration_number")
-```
+<!-- ```{r} -->
+<!-- # Remove duplicate voter IDs (the unique identifier for each voter) -->
+<!-- voter_file_dedupe <- dedupe_voter_file(voter_file = voter_file_geocoded, voter_id = "registration_number") -->
+<!-- ``` -->
 
-There are no duplicate voter IDs in the dataset.
+<!-- There are no duplicate voter IDs in the dataset. -->
 
-### Step 3: Perform BISG and obtain the predicted race/ethnicity of each voter.
-```{r}
-# Convert the voter_shaped_merged file into a data frame for performing BISG.
-voter_file_complete <- as.data.frame(voter_file_dedupe)
-class(voter_file_complete)
-```
+<!-- ### Step 3: Perform BISG and obtain the predicted race/ethnicity of each voter. -->
+<!-- ```{r} -->
+<!-- # Convert the voter_shaped_merged file into a data frame for performing BISG. -->
+<!-- voter_file_complete <- as.data.frame(voter_file_dedupe) -->
+<!-- class(voter_file_complete) -->
+<!-- ``` -->
 
-```{r}
-# Perform BISG
-bisg_file <- eiCompare::wru_predict_race_wrapper(
-  voter_file = voter_file_complete,
-  census_data = census_data,
-  voter_id = "registration_number",
-  surname = "last_name",
-  state = "GA",
-  county = "COUNTYFP10",
-  tract = "TRACTCE10",
-  block = "BLOCKCE10",
-  census_geo = "block",
-  use_surname = TRUE,
-  surname_only = FALSE,
-  surname_year = 2010,
-  use_age = FALSE,
-  use_sex = FALSE,
-  return_surname_flag = TRUE,
-  return_geocode_flag = TRUE,
-  verbose = TRUE
-)
-```
+<!-- ```{r} -->
+<!-- # Perform BISG -->
+<!-- bisg_file <- eiCompare::wru_predict_race_wrapper( -->
+<!--   voter_file = voter_file_complete, -->
+<!--   census_data = census_data, -->
+<!--   voter_id = "registration_number", -->
+<!--   surname = "last_name", -->
+<!--   state = "GA", -->
+<!--   county = "COUNTYFP10", -->
+<!--   tract = "TRACTCE10", -->
+<!--   block = "BLOCKCE10", -->
+<!--   census_geo = "block", -->
+<!--   use_surname = TRUE, -->
+<!--   surname_only = FALSE, -->
+<!--   surname_year = 2010, -->
+<!--   use_age = FALSE, -->
+<!--   use_sex = FALSE, -->
+<!--   return_surname_flag = TRUE, -->
+<!--   return_geocode_flag = TRUE, -->
+<!--   verbose = TRUE -->
+<!-- ) -->
+<!-- ``` -->
 
-```{r}
-# Check BISG output
-head(bisg_file$bisg)
+<!-- ```{r} -->
+<!-- # Check BISG output -->
+<!-- head(bisg_file$bisg) -->
 
-# Assign BISG list data frame, bisg$bisg, to bisg_tbl
-bisg_tbl <- bisg_file$bisg
-```
+<!-- # Assign BISG list data frame, bisg$bisg, to bisg_tbl -->
+<!-- bisg_tbl <- bisg_file$bisg -->
+<!-- ``` -->
 
 
-## Summarizing BISG output
-```{r}
-summary(bisg_tbl)
-```
+<!-- ## Summarizing BISG output -->
+<!-- ```{r} -->
+<!-- summary(bisg_tbl) -->
+<!-- ``` -->
 
-### Look at BISG race predictions by county
-```{r}
-# Obtain aggregate values for the BISG results by county
-bisg_agg <- precinct_agg_combine(
-  voter_file = bisg_tbl,
-  group_col = "county",
-  race_cols = c("pre.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth"),
-  race_keys = c("White", "Black", "Hispanic", "Asian", "Other"),
-  include_total = FALSE
-)
+<!-- ### Look at BISG race predictions by county -->
+<!-- ```{r} -->
+<!-- # Obtain aggregate values for the BISG results by county -->
+<!-- bisg_agg <- precinct_agg_combine( -->
+<!--   voter_file = bisg_tbl, -->
+<!--   group_col = "county", -->
+<!--   race_cols = c("pre.whi", "pred.bla", "pred.his", "pred.asi", "pred.oth"), -->
+<!--   race_keys = c("White", "Black", "Hispanic", "Asian", "Other"), -->
+<!--   include_total = FALSE -->
+<!-- ) -->
 
-# Assign values to county names for barplot
-bisg_agg$county[bisg_agg$county == "121"] <- "Fulton"
-bisg_agg$county[bisg_agg$county == "135"] <- "Gwinnett"
+<!-- # Assign values to county names for barplot -->
+<!-- bisg_agg$county[bisg_agg$county == "121"] <- "Fulton" -->
+<!-- bisg_agg$county[bisg_agg$county == "135"] <- "Gwinnett" -->
 
-# Table with BISG race predictions by county
-head(bisg_agg)
-```
+<!-- # Table with BISG race predictions by county -->
+<!-- head(bisg_agg) -->
+<!-- ``` -->
 
-### Barplot of BISG results
-```{r}
-bisg_bar <- bisg_agg %>%
-  gather("Type", "Value", -county) %>%
-  ggplot(aes(county, Value, fill = Type)) +
-  geom_bar(position = "dodge", stat = "identity") +
-  labs(title = "BISG Predictions for Fulton and Gwinnett Counties", y = "Proportion", x = "Counties") +
-  theme_bw()
+<!-- ### Barplot of BISG results -->
+<!-- ```{r} -->
+<!-- bisg_bar <- bisg_agg %>% -->
+<!--   gather("Type", "Value", -county) %>% -->
+<!--   ggplot(aes(county, Value, fill = Type)) + -->
+<!--   geom_bar(position = "dodge", stat = "identity") + -->
+<!--   labs(title = "BISG Predictions for Fulton and Gwinnett Counties", y = "Proportion", x = "Counties") + -->
+<!--   theme_bw() -->
 
-bisg_bar + scale_color_discrete(name = "Race/Ethnicity Proportions")
-```
+<!-- bisg_bar + scale_color_discrete(name = "Race/Ethnicity Proportions") -->
+<!-- ``` -->
 
-### Choropleth Map
-Finally, we will map the BISG data onto choropleth maps.
+<!-- ### Choropleth Map -->
+<!-- Finally, we will map the BISG data onto choropleth maps. -->
 
-```{r}
-bisg_df <- bisg_tbl %>%
-  select(block, pred.whi, pred.bla, pred.his, pred.asi, pred.oth)
+<!-- ```{r} -->
+<!-- bisg_df <- bisg_tbl %>% -->
+<!--   select(block, pred.whi, pred.bla, pred.his, pred.asi, pred.oth) -->
 
-bisg_df
-```
+<!-- bisg_df -->
+<!-- ``` -->
 
-```{r}
-# Rename the by= variable to fips code name
-names(bisg_df)[names(bisg_df) == "block"] <- "BLOCKCE10"
+<!-- ```{r} -->
+<!-- # Rename the by= variable to fips code name -->
+<!-- names(bisg_df)[names(bisg_df) == "block"] <- "BLOCKCE10" -->
 
-# Join bisg and shape file
-bisg_sf <- left_join(shape_file, bisg_df, by = "BLOCKCE10")
-```
+<!-- # Join bisg and shape file -->
+<!-- bisg_sf <- left_join(shape_file, bisg_df, by = "BLOCKCE10") -->
+<!-- ``` -->
 
-#### Plot Map of Proportion of Black Voters
-```{r, results=FALSE}
-# Plot choropleth map of race/ethnicity predictions for Fulton and Gwinnett counties
-plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG")
-```
+<!-- #### Plot Map of Proportion of Black Voters -->
+<!-- ```{r, results=FALSE} -->
+<!-- # Plot choropleth map of race/ethnicity predictions for Fulton and Gwinnett counties -->
+<!-- plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG") -->
+<!-- ``` -->
 
-#### Plot Map of Proportion of White Voters
-```{r, results=FALSE}
-plot(bisg_sf["pred.whi"], main = "Proportion of White Voters identified by BISG")
-```
+<!-- #### Plot Map of Proportion of White Voters -->
+<!-- ```{r, results=FALSE} -->
+<!-- plot(bisg_sf["pred.whi"], main = "Proportion of White Voters identified by BISG") -->
+<!-- ``` -->
 
-#### Plot Map of Proportion of Hispanic Voters
-```{r, results=FALSE}
-plot(bisg_sf["pred.his"], main = "Proportion of Hispanic Voters identified by BISG")
-```
+<!-- #### Plot Map of Proportion of Hispanic Voters -->
+<!-- ```{r, results=FALSE} -->
+<!-- plot(bisg_sf["pred.his"], main = "Proportion of Hispanic Voters identified by BISG") -->
+<!-- ``` -->
 
-#### Plot Map of Proportion of Asian Voters
-```{r, results=FALSE}
-plot(bisg_sf["pred.asi"], main = "Proportion of Asian Voters identified by BISG")
-```
+<!-- #### Plot Map of Proportion of Asian Voters -->
+<!-- ```{r, results=FALSE} -->
+<!-- plot(bisg_sf["pred.asi"], main = "Proportion of Asian Voters identified by BISG") -->
+<!-- ``` -->
 
-#### Plot Map of Proportion of Other Voters
-```{r, results=FALSE}
-plot(bisg_sf["pred.oth"], main = "Proportion of 'Other' Voters identified by BISG")
-```
+<!-- #### Plot Map of Proportion of Other Voters -->
+<!-- ```{r, results=FALSE} -->
+<!-- plot(bisg_sf["pred.oth"], main = "Proportion of 'Other' Voters identified by BISG") -->
+<!-- ``` -->
