@@ -47,6 +47,7 @@
 #'
 #' @importFrom mcmcse mcse.mat mcse.q.mat
 #' @importFrom doSNOW registerDoSNOW
+#' @importFrom stats sd
 #' @importFrom foreach getDoParWorkers %dopar% %do%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom utils capture.output setTxtProgressBar
@@ -108,8 +109,8 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws # ,
-      # ...
+      totaldraws = totaldraws,
+      ...
     )
   )
 
@@ -230,8 +231,8 @@ ei_rxc <- function(
         thin = thin,
         burnin = burnin,
         ret.mcmc = TRUE,
-        tune.list = tune_nocov # ,
-        # ...
+        tune.list = tune_nocov,
+        ...
       )
     )
 
@@ -255,7 +256,7 @@ ei_rxc <- function(
     estimate <- mcmcse::mcse.mat(chains_pr)
 
     # Get standard deviation of each distribution
-    sds <- apply(chains_pr, 2, sd)
+    sds <- apply(chains_pr, 2, stats::sd)
 
     # The upper and lower CI estimates also have standard errors. Here these
     # errors are conservatively used to extend the 95% confidence bound further
