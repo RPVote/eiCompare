@@ -7,7 +7,7 @@
 merge_voter_file_to_shape(
   voter_file,
   shape_file,
-  crs = "+proj=longlat +ellps=GRS80",
+  crs = NULL,
   coords = c("lon", "lat"),
   voter_id = "voter_id"
 )
@@ -18,7 +18,7 @@ geometry dataframe, it will be converted to one.}
 
 \item{shape_file}{The shapefile for the region, as an sf object.}
 
-\item{crs}{The PROJ4 string for the coordinate reference system.}
+\item{crs}{The PROJ4 string or int for the coordinate reference system.}
 
 \item{coords}{The columns, as a list, that refer to the longitude and
 latitude.}

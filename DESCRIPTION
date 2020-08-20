@@ -10,9 +10,11 @@ License: GPL-3 + file LICENSE
 Depends:
   R (>= 3.5.0),
   eiPack,
-  ei
+  ei,
+  wru
 Imports:
   bayestestR,
+  coda,
   cubature,
   data.table,
   doParallel,
@@ -28,20 +30,17 @@ Imports:
   mnormt,
   msm,
   mvtnorm,
+  overlapping,
   plotrix,
   purrr,
   R.utils,
-  RCurl,
   RJSONIO,
   sf,
-  sjmisc,
   stringr,
   tidyr,
   tidyselect,
   tmvtnorm,
-  ucminf,
-  wru,
-  overlapping
+  ucminf
 NeedsCompilation: no
 Suggests:
   knitr,
