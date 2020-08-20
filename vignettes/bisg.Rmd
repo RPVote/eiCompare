@@ -205,27 +205,27 @@ bisg_sf <- left_join(shape_file, bisg_df, by = "BLOCKCE10")
 ```
 
 #### Plot Map of Proportion of Black Voters
-```{r}
+```{r, results=FALSE}
 # Plot choropleth map of race/ethnicity predictions for Fulton and Gwinnett counties
 plot(bisg_sf["pred.bla"], main = "Proportion of Black Voters identified by BISG")
 ```
 
 #### Plot Map of Proportion of White Voters
-```{r}
+```{r, results=FALSE}
 plot(bisg_sf["pred.whi"], main = "Proportion of White Voters identified by BISG")
 ```
 
 #### Plot Map of Proportion of Hispanic Voters
-```{r}
+```{r, results=FALSE}
 plot(bisg_sf["pred.his"], main = "Proportion of Hispanic Voters identified by BISG")
 ```
 
 #### Plot Map of Proportion of Asian Voters
-```{r}
+```{r, results=FALSE}
 plot(bisg_sf["pred.asi"], main = "Proportion of Asian Voters identified by BISG")
 ```
 
 #### Plot Map of Proportion of Other Voters
-```{r}
+```{r, results=FALSE}
 plot(bisg_sf["pred.oth"], main = "Proportion of 'Other' Voters identified by BISG")
 ```
