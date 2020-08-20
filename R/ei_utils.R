@@ -197,7 +197,7 @@ check_args <- function(data,
   if (length(missing) > 0) {
     message <- paste(
       "The following specified columns are not in the dataset:",
-      missing
+      paste(missing, collapse = "\n")
     )
     stop(message)
   }

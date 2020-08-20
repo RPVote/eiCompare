@@ -5,16 +5,16 @@
 \alias{ersd_maps}
 \title{East Ramapo School District Proposed Maps}
 \format{
-A data frame with 46 observations on the following 12 variables:
+A data frame with 8 observations on the following 8 variables:
 \describe{
- \item{WARD}{Precinct ID number.}
- \item{TOT_CVAP}{The total vote, per precinct.}
- \item{WHI_CVAP}{Percent of vote for Husted.}
- \item{BLA_CVAP}{Percent of vote for Spiegel.}
- \item{HIS_CVAP}{Percent of vote for Ruth.}
- \item{ASI_CVAP}{Percent of vote for Button.}
- \item{MIN_AGG_FRAC}{Percent of vote for Montanez.}
- \item{geometry}{Percent of vote for Fox.}
+ \item{WARD}{The ward ID number.}
+ \item{TOT_CVAP}{The total vote, according to CVAP, per precinct.}
+ \item{WHI_CVAP}{The number of white CVAP voters, per precinct.}
+ \item{BLA_CVAP}{The number of Black CVAP voters, per precinct.}
+ \item{HIS_CVAP}{The number of Hispanic CVAP voters, per precinct.}
+ \item{ASI_CVAP}{The number of Asian CVAP voters, per precinct.}
+ \item{MIN_AGG_FRAC}{The number of Black/Hispanic CVAP voters, per precinct.}
+ \item{geometry}{The geomtry for each ward.}
 }
 }
 \source{
@@ -24,7 +24,7 @@ East Ramapo School District
 data(ersd_maps)
 }
 \description{
-This dataset contains proposed maps and CVAP totals for East Ramapo School
-District.
+This dataset contains proposed maps and Citizen Voting Age Population (CVAP)
+totals for East Ramapo School District.
 }
 \keyword{datasets}

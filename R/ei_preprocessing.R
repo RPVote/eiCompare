@@ -496,8 +496,11 @@ stdize_votes_all <- function(data,
 
   # Rename totals column to the original inputed name
   if (!new_names) {
-    totals_index <- which(colnames(all_proportions) == "total")
-    colnames(all_proportions)[totals_index] <- totals_col
+    if (!is.null(totals_col)) {
+      totals_index <- which(colnames(all_proportions) == "total")
+      all_proportions$total <- data[, totals_col]
+      colnames(all_proportions)[totals_index] <- totals_col
+    }
   }
 
   return(all_proportions)
