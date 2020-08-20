@@ -7,16 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE, include=FALSE}
-#
-# Install eiCompare
-library(devtools)
-
-suppressPackageStartupMessages({
-  devtools::install_github("RPVote/eiCompare@geocoding_vignette", force = TRUE)
-})
-```
-
 In this vignette, we will walk-through how to geocode a dataset that includes addresses used to apply the BISG method for estimating the race/ethnicity of registered voters.
 
 
