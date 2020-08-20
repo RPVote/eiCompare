@@ -175,7 +175,7 @@ The `coda` package enables creating trace and density plots, side-by-side for ea
 
 
 ```{r echo=FALSE,  out.width='0.75\\linewidth'}
-knitr::include_graphics("trace_density.pdf")
+knitr::include_graphics("trace_density.png")
 ```
 
 
@@ -183,7 +183,7 @@ knitr::include_graphics("trace_density.pdf")
 The Gelman-Rubin diagnostic is one method to test for convergence to see if the sample is close to the posterior distribution. You'll get one plot for each parameter and produces the scale reduction factor. In these plots you'll be looking to for values below a factor of ~1.1 so these plots will give you a good sense of any changes you'll need for burn-in.
 
 ```{r echo=FALSE,  out.width='0.75\\linewidth'}
-knitr::include_graphics("gelman.pdf")
+knitr::include_graphics("gelman.png")
 ```
 
 
