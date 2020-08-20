@@ -110,8 +110,8 @@ map_shape_points <- function(voter_file,
   # Distinguish between the different counties
   shape_file_polygons <- voter_file_geo_onlyint %>%
     ggplot() +
-    geom_sf(aes(fill = factor(COUNTYFP10))) +
-    geom_sf(data = shape_file, aes(fill = factor(fips))) +
+    geom_sf(aes_string(fill = factor("COUNTYFP10"))) +
+    geom_sf(data = shape_file, aes_string(fill = factor("fips"))) +
     labs(fill = "COUNTYFP10") +
     theme_minimal()
 
