@@ -5,3 +5,4 @@
 ^R/plot\.ei_compare\.R$
 ^R/summary\.ei\.R$
 ^R/plot\.ei\.R$
+^R/ei_sim\.R$

@@ -29,9 +29,7 @@ Imports:
   magrittr,
   mcmcse,
   methods,
-  mnormt,
   msm,
-  mvtnorm,
   overlapping,
   plotrix,
   plyr,
@@ -45,8 +43,6 @@ Imports:
   tidyselect,
   tidyverse,
   tigris,
-  tmvtnorm,
-  ucminf
 NeedsCompilation: no
 Suggests:
   knitr,
