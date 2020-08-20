@@ -190,159 +190,159 @@ colnames(geocoded_data_simple)
 ```
 
 
-Next, we will use parallel processing to make our geocoder run faster by setting `parallel`=`TRUE` and obtain simple geographies by setting `census_output`="simple".
-```{r, results="hide", message=FALSE}
-# Getting the latitude and longitude coordinates only.
-geocoded_data_simple_para <- run_geocoder(
-  voter_file = voter_data,
-  geocoder = "census",
-  parallel = TRUE,
-  voter_id = "registration_number",
-  street = "street_address",
-  city = "city",
-  state = "state",
-  zipcode = "zipcode",
-  country = "US",
-  census_return = "locations",
-  census_benchmark = "Public_AR_Current",
-  census_output = "simple",
-  census_class = "sf",
-  census_vintage = 4,
-  opencage_key = NULL
-)
-```
+<!-- Next, we will use parallel processing to make our geocoder run faster by setting `parallel`=`TRUE` and obtain simple geographies by setting `census_output`="simple". -->
+<!-- ```{r, results="hide", message=FALSE} -->
+<!-- # Getting the latitude and longitude coordinates only. -->
+<!-- geocoded_data_simple_para <- run_geocoder( -->
+<!--   voter_file = voter_data, -->
+<!--   geocoder = "census", -->
+<!--   parallel = TRUE, -->
+<!--   voter_id = "registration_number", -->
+<!--   street = "street_address", -->
+<!--   city = "city", -->
+<!--   state = "state", -->
+<!--   zipcode = "zipcode", -->
+<!--   country = "US", -->
+<!--   census_return = "locations", -->
+<!--   census_benchmark = "Public_AR_Current", -->
+<!--   census_output = "simple", -->
+<!--   census_class = "sf", -->
+<!--   census_vintage = 4, -->
+<!--   opencage_key = NULL -->
+<!-- ) -->
+<!-- ``` -->
 
-The voter file now includes latitude and longitude points.
-```{r}
-head(geocoded_data_simple_para)
-```
+<!-- The voter file now includes latitude and longitude points. -->
+<!-- ```{r} -->
+<!-- head(geocoded_data_simple_para) -->
+<!-- ``` -->
 
-Using parallel processing, we geocoded addresses much faster, even though the difference is seconds apart. We will now demonstrate how to add the the coordinates and FIPS codes by setting the `census_output` variable to "full".
-```{r, results="hide", message=FALSE}
-geocoded_data_full_geo <- run_geocoder(
-  voter_file = voter_data,
-  geocoder = "census",
-  parallel = TRUE,
-  voter_id = "registration_number",
-  street = "street_address",
-  city = "city",
-  state = "state",
-  zipcode = "zipcode",
-  country = "US",
-  census_return = "geographies",
-  census_benchmark = "Public_AR_Current",
-  census_output = "full",
-  census_class = "sf",
-  census_vintage = 4,
-  opencage_key = NULL
-)
-```
-
-
-The `geocoded_data_full_geo` should be an additional column called `geometry` with latitude, longitude coordinates, and other variables for geographies.
-```{r}
-# Check the first six rows of the geocoded_dataset object
-head(geocoded_data_full_geo)
-```
+<!-- Using parallel processing, we geocoded addresses much faster, even though the difference is seconds apart. We will now demonstrate how to add the the coordinates and FIPS codes by setting the `census_output` variable to "full". -->
+<!-- ```{r, results="hide", message=FALSE} -->
+<!-- geocoded_data_full_geo <- run_geocoder( -->
+<!--   voter_file = voter_data, -->
+<!--   geocoder = "census", -->
+<!--   parallel = TRUE, -->
+<!--   voter_id = "registration_number", -->
+<!--   street = "street_address", -->
+<!--   city = "city", -->
+<!--   state = "state", -->
+<!--   zipcode = "zipcode", -->
+<!--   country = "US", -->
+<!--   census_return = "geographies", -->
+<!--   census_benchmark = "Public_AR_Current", -->
+<!--   census_output = "full", -->
+<!--   census_class = "sf", -->
+<!--   census_vintage = 4, -->
+<!--   opencage_key = NULL -->
+<!-- ) -->
+<!-- ``` -->
 
 
-If there are any missing geocoded addresses, use the run_geocoder() function to re-run the geocoder on those missing geocoded addresses. We will use the `geocoded_data_full_geo` data to demonstrate how to re-run the geocoder on missing addresses.
-```{r, warning=FALSE, message=FALSE, results="hide"}
-# The number of rows missing in new dataframe
-num_miss_geo <- nrow(voter_data) - nrow(geocoded_data_full_geo)
-
-# Only re-run the geocoder if missing data is present.
-if (num_miss_geo > 0) {
-
-  # Find non-geocoded data
-  missing_lonlat_df <- anti_join(voter_data, as.data.frame(geocoded_data_full_geo))
-
-  # Run the geocoder on the missing data
-  rerun_data <- run_geocoder(
-    voter_file = missing_lonlat_df,
-    geocoder = "census",
-    parallel = TRUE,
-    voter_id = "registration_number",
-    street = "street_address",
-    city = "city",
-    state = "state",
-    zipcode = "zipcode",
-    country = "US",
-    census_return = "geographies",
-    census_benchmark = "Public_AR_Current",
-    census_output = "full",
-    census_class = "sf",
-    census_vintage = 4,
-    opencage_key = NULL
-  )
-}
-```
+<!-- The `geocoded_data_full_geo` should be an additional column called `geometry` with latitude, longitude coordinates, and other variables for geographies. -->
+<!-- ```{r} -->
+<!-- # Check the first six rows of the geocoded_dataset object -->
+<!-- head(geocoded_data_full_geo) -->
+<!-- ``` -->
 
 
-Some of the missing addresses were able to be geocoded. Next, we will combine the newly geocoded data from the `rerun_data` object and the original geocoded data, `geocoded_data`, object.
-```{r}
-geo_combined <- rbind(geocoded_data_full_geo, rerun_data)
-```
+<!-- If there are any missing geocoded addresses, use the run_geocoder() function to re-run the geocoder on those missing geocoded addresses. We will use the `geocoded_data_full_geo` data to demonstrate how to re-run the geocoder on missing addresses. -->
+<!-- ```{r, warning=FALSE, message=FALSE, results="hide"} -->
+<!-- # The number of rows missing in new dataframe -->
+<!-- num_miss_geo <- nrow(voter_data) - nrow(geocoded_data_full_geo) -->
+
+<!-- # Only re-run the geocoder if missing data is present. -->
+<!-- if (num_miss_geo > 0) { -->
+
+<!--   # Find non-geocoded data -->
+<!--   missing_lonlat_df <- anti_join(voter_data, as.data.frame(geocoded_data_full_geo)) -->
+
+<!--   # Run the geocoder on the missing data -->
+<!--   rerun_data <- run_geocoder( -->
+<!--     voter_file = missing_lonlat_df, -->
+<!--     geocoder = "census", -->
+<!--     parallel = TRUE, -->
+<!--     voter_id = "registration_number", -->
+<!--     street = "street_address", -->
+<!--     city = "city", -->
+<!--     state = "state", -->
+<!--     zipcode = "zipcode", -->
+<!--     country = "US", -->
+<!--     census_return = "geographies", -->
+<!--     census_benchmark = "Public_AR_Current", -->
+<!--     census_output = "full", -->
+<!--     census_class = "sf", -->
+<!--     census_vintage = 4, -->
+<!--     opencage_key = NULL -->
+<!--   ) -->
+<!-- } -->
+<!-- ``` -->
 
 
-```{r}
-# Check the dimensions of the combined geocoded voter registration dataset
-dim(geo_combined)
-
-# rename columns to US Census FIPS code variable names
-names(geo_combined)[names(geo_combined) == "cxy_state_id"] <- "STATEFP10"
-names(geo_combined)[names(geo_combined) == "cxy_county_id"] <- "COUNTYFP10"
-names(geo_combined)[names(geo_combined) == "cxy_tract_id"] <- "TRACTCE10"
-names(geo_combined)[names(geo_combined) == "cxy_block_id"] <- "BLOCKCE10"
-```
-
-```{r}
-geo_combined_df <- as.data.frame(geo_combined)
-class(geo_combined_df)
-```
-
-### <u>Step 4: Plot your geocoded data</u>
-We will map the area or ecological unit we are interested in using the tigris package for loading in US Census shapefiles.
-
-```{r, warning=FALSE, message=FALSE, results="hide"}
-# Load shapefile for the state of Georgia using tigris package
-shape_file <- counties(state = "GA")
-
-# Concatenate the state and county codes into column called fips
-shape_file$fips <- paste0(shape_file$STATEFP, shape_file$COUNTYFP)
-
-# Filter shape_file for the counties: Gwinnett and Fulton using the tigris package
-shape_file <- shape_file[shape_file$fips == "13121" | shape_file$fips == "13135", ]
-shape_file$fulton <- ifelse(shape_file$fips == "13121", 1, 0)
-shape_file$gwinnett <- ifelse(shape_file$fips == "13121", 1, 0)
-```
+<!-- Some of the missing addresses were able to be geocoded. Next, we will combine the newly geocoded data from the `rerun_data` object and the original geocoded data, `geocoded_data`, object. -->
+<!-- ```{r} -->
+<!-- geo_combined <- rbind(geocoded_data_full_geo, rerun_data) -->
+<!-- ``` -->
 
 
-```{r, warning=FALSE, message=FALSE, results="hide"}
-# Map shape_file
-county_shape <- map_shape_file(
-  shape_file = shape_file,
-  crs = "+proj=latlong +ellps=GRS80 +no_defs",
-  title = "Gwinnett and Fulton counties"
-)
-```
+<!-- ```{r} -->
+<!-- # Check the dimensions of the combined geocoded voter registration dataset -->
+<!-- dim(geo_combined) -->
+
+<!-- # rename columns to US Census FIPS code variable names -->
+<!-- names(geo_combined)[names(geo_combined) == "cxy_state_id"] <- "STATEFP10" -->
+<!-- names(geo_combined)[names(geo_combined) == "cxy_county_id"] <- "COUNTYFP10" -->
+<!-- names(geo_combined)[names(geo_combined) == "cxy_tract_id"] <- "TRACTCE10" -->
+<!-- names(geo_combined)[names(geo_combined) == "cxy_block_id"] <- "BLOCKCE10" -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- geo_combined_df <- as.data.frame(geo_combined) -->
+<!-- class(geo_combined_df) -->
+<!-- ``` -->
+
+<!-- ### <u>Step 4: Plot your geocoded data</u> -->
+<!-- We will map the area or ecological unit we are interested in using the tigris package for loading in US Census shapefiles. -->
+
+<!-- ```{r, warning=FALSE, message=FALSE, results="hide"} -->
+<!-- # Load shapefile for the state of Georgia using tigris package -->
+<!-- shape_file <- counties(state = "GA") -->
+
+<!-- # Concatenate the state and county codes into column called fips -->
+<!-- shape_file$fips <- paste0(shape_file$STATEFP, shape_file$COUNTYFP) -->
+
+<!-- # Filter shape_file for the counties: Gwinnett and Fulton using the tigris package -->
+<!-- shape_file <- shape_file[shape_file$fips == "13121" | shape_file$fips == "13135", ] -->
+<!-- shape_file$fulton <- ifelse(shape_file$fips == "13121", 1, 0) -->
+<!-- shape_file$gwinnett <- ifelse(shape_file$fips == "13121", 1, 0) -->
+<!-- ``` -->
 
 
-We now will look at the block level of Fulton and Gwinnett county.
-```{r, warning=FALSE, message=FALSE, results="hide"}
-# Load shape file using tidycensus
-gwin_fulton_blocks <- blocks(state = "GA", county = c("Gwinnett", "Fulton"))
+<!-- ```{r, warning=FALSE, message=FALSE, results="hide"} -->
+<!-- # Map shape_file -->
+<!-- county_shape <- map_shape_file( -->
+<!--   shape_file = shape_file, -->
+<!--   crs = "+proj=latlong +ellps=GRS80 +no_defs", -->
+<!--   title = "Gwinnett and Fulton counties" -->
+<!-- ) -->
+<!-- ``` -->
 
-# Concatenate the state and county codes into column called fips
-gwin_fulton_blocks$fips <- paste0(gwin_fulton_blocks$STATEFP, gwin_fulton_blocks$COUNTYFP)
-```
+
+<!-- We now will look at the block level of Fulton and Gwinnett county. -->
+<!-- ```{r, warning=FALSE, message=FALSE, results="hide"} -->
+<!-- # Load shape file using tidycensus -->
+<!-- gwin_fulton_blocks <- blocks(state = "GA", county = c("Gwinnett", "Fulton")) -->
+
+<!-- # Concatenate the state and county codes into column called fips -->
+<!-- gwin_fulton_blocks$fips <- paste0(gwin_fulton_blocks$STATEFP, gwin_fulton_blocks$COUNTYFP) -->
+<!-- ``` -->
 
 
-```{r, warning=FALSE, message=FALSE, results="hide"}
-gwin_fulton_map <- map_shape_points(
-  voter_file = geo_combined_df,
-  shape_file = gwin_fulton_blocks,
-  crs = "+proj=longlat +ellps=GRS80",
-  title = "Gwinnett and Fulton Counties - All Registered Voters"
-)
-```
+<!-- ```{r, warning=FALSE, message=FALSE, results="hide"} -->
+<!-- gwin_fulton_map <- map_shape_points( -->
+<!--   voter_file = geo_combined_df, -->
+<!--   shape_file = gwin_fulton_blocks, -->
+<!--   crs = "+proj=longlat +ellps=GRS80", -->
+<!--   title = "Gwinnett and Fulton Counties - All Registered Voters" -->
+<!-- ) -->
+<!-- ``` -->
