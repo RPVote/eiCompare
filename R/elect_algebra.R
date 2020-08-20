@@ -1,17 +1,30 @@
 #' Election Algebra for 2x2 Case
 #'
-#' Creates data.frame() table of algebraically defined white/non-white preferences for candidates. Typically used when analyst has high confidence in white turnout and voting behavior but needs to deduce minority voting behavior when only CVAP available. First, estimate white/non-white turnout using ei/rxc. Second, gather overall CVAP numbers. Third, estimate candidate preference by white/non-white using ei/rxc. Then enter values into function.
+#' Creates data.frame() table of algebraically defined white/non-white 
+#' preferences for candidates. Typically used when analyst has high confidence 
+#' in white turnout and voting behavior but needs to deduce minority voting 
+#' behavior when only CVAP available. First, estimate white/non-white turnout 
+#' using ei/rxc. Second, gather overall CVAP numbers. Third, estimate candidate 
+#' preference by white/non-white using ei/rxc. Then enter values into function.
 #' 
 #' elect_algebra
 #'
-#' @param to numeric vector of voter turnout for c(white, non_white), probably estimated from ei or rxc; e.g.: c(.2876, .1529)
-#' @param cvap numeric vector of Citizen Voting Age Population for white/non-white full population; e.g.: c(36472, 23851) 
-#' @param c1_ei_res numeric vector of 2x2 EI candidate results by white voters, estimated from ei or rxc; e.g. c(0.2796, 0.7204) = whites voted 28\% for candidate-a and 72\% for candidate-b
-#' @param c2_ei_res numeric vector of 2x2 EI candidate results by non-white voters, estimated from ei or rxc
-#' @param cand_names Character vector of candidate names used for output, e.g.: c("Collingwood", "Barreto")
+#' @param totals data.frame(), dimensions 2x2. Row 1 is white, row 2 is 
+#' minority. First column is turnout (probably estimated from ei or rxc; 
+#' e.g.: c(.2876, .1529)); second column is Citizen Voting Age 
+#' Population (CVAP); e.g.: c(36472, 23851)  
+#' @param c1_ei_res numeric vector of 2x2 EI candidate results by white voters, 
+#' estimated from ei or rxc; e.g. c(0.2796, 0.7204) = whites voted 28\% for 
+#' candidate-a and 72\% for candidate-b
+#' @param c2_ei_res numeric vector of 2x2 EI candidate results by non-white 
+#' voters, estimated from ei or rxc
+#' @param cand_names Character vector of candidate names used for output, e.g.: 
+#' c("Collingwood", "Barreto")
 #' 
-#' @return Table with estimated candidate A/B votes by race, with columns for percent vote too
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; <loren.collingwood@@gmail.com>
+#' @return Table with estimated candidate A/B votes by race, with columns for 
+#' percent vote too
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; 
+#' <loren.collingwood@@gmail.com>
 #' @author Matt Barreto <barretom@@ucla.edu>
 #' 
 #' @examples
@@ -49,11 +62,8 @@
 #'#        )
 #'
 #'# Turnout by Race, Estimated: 27-28% White Turnout; 16-17% Minority Turnout
-#'# These numbers are taken from above #
-#'turn_out <- c(0.2786, 0.1663)
-#'
-#'# Citizen Voting Age Population for Whole Jurisdiction
-#'cvap <- c(36472, 23851) # White, Non-White
+#'# Citizen Voting Age Population for Whole Jurisdiction; White, Non-White
+#'totals <- data.frame(turnout = c(0.2786, 0.1663), cvap = c(36472, 23851))
 #'
 #'# Not Run: Estimate Vote Choice 
 #'# set.seed(197485)
@@ -68,31 +78,30 @@
 #' #Set up vectors for function #
 #' cand_names <- c("Cand A", "Cand B")
 #' # Execute elect_algebra()
-#' elect_algebra(to = turn_out, cvap, c1_ei_res, c2_ei_res, cand_names)
+#' elect_algebra(totals = totals, c1_ei_res, c2_ei_res, cand_names)
 #'
 #' @export elect_algebra
 
-elect_algebra <- function(to, 
-                          cvap, 
+elect_algebra <- function(totals, 
                           c1_ei_res, 
                           c2_ei_res, 
                           cand_names) {
     
-    df <- data.frame(to, cvap, stringsAsFactors = F)
+    df <- totals
     
     # Set Column Output Names #
-    cnames =c("White_Vote", "NonWhite_Vote")
+    cnames <- c("White_Vote", "NonWhite_Vote")
     
     # 1 is whites, 2 is non-whites
     votes <- round(apply(df, 1, prod), 0) 
     votes <- c(votes, sum(votes))
     
     # White Vote (for 2 candidates)
-    wv <- round( votes[1] * c1_ei_res, 0)
+    wv <- round(votes[1] * c1_ei_res, 0)
     
     # Non-White Vote (for 2 candidates)
-    nwv <- round( votes[2] * c2_ei_res, 0)
-    out <-  data.frame (wv, nwv, total = wv + nwv, stringsAsFactors = F) 
+    nwv <- round(votes[2] * c2_ei_res, 0)
+    out <- data.frame (wv, nwv, total = wv + nwv, stringsAsFactors = F) 
     out <- rbind(out, votes)
     
     # Collect column/row names 
@@ -100,11 +109,11 @@ elect_algebra <- function(to,
     row.names(out) <- c(cand_names, "Total")
     
     # Add back on Percentages #
-    out$Pct_White <- c(round( out$White_Vote[1] / out$White_Vote[3],3),
-                       round( out$White_Vote[2] / out$White_Vote[3],3), "")
+    out$Pct_White <- c(round(out$White_Vote[1] / out$White_Vote[3],3),
+                       round(out$White_Vote[2] / out$White_Vote[3],3), "")
     
-    out$Pct_NonWhite <- c(round( out$NonWhite_Vote[1] / out$NonWhite_Vote[3],3),
-                          round( out$NonWhite_Vote[2] / out$NonWhite_Vote[3],3), "")
+    out$Pct_NonWhite <- c(round(out$NonWhite_Vote[1] / out$NonWhite_Vote[3],3),
+                          round(out$NonWhite_Vote[2] / out$NonWhite_Vote[3],3), "")
     
     # Return Table #
     return(out)

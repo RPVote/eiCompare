@@ -4,24 +4,35 @@
 \alias{elect_algebra}
 \title{Election Algebra for 2x2 Case}
 \usage{
-elect_algebra(to, cvap, c1_ei_res, c2_ei_res, cand_names)
+elect_algebra(totals, c1_ei_res, c2_ei_res, cand_names)
 }
 \arguments{
-\item{to}{numeric vector of voter turnout for c(white, non_white), probably estimated from ei or rxc; e.g.: c(.2876, .1529)}
+\item{totals}{data.frame(), dimensions 2x2. Row 1 is white, row 2 is 
+minority. First column is turnout (probably estimated from ei or rxc; 
+e.g.: c(.2876, .1529)); second column is Citizen Voting Age 
+Population (CVAP); e.g.: c(36472, 23851)}
 
-\item{cvap}{numeric vector of Citizen Voting Age Population for white/non-white full population; e.g.: c(36472, 23851)}
+\item{c1_ei_res}{numeric vector of 2x2 EI candidate results by white voters, 
+estimated from ei or rxc; e.g. c(0.2796, 0.7204) = whites voted 28\% for 
+candidate-a and 72\% for candidate-b}
 
-\item{c1_ei_res}{numeric vector of 2x2 EI candidate results by white voters, estimated from ei or rxc; e.g. c(0.2796, 0.7204) = whites voted 28\% for candidate-a and 72\% for candidate-b}
+\item{c2_ei_res}{numeric vector of 2x2 EI candidate results by non-white 
+voters, estimated from ei or rxc}
 
-\item{c2_ei_res}{numeric vector of 2x2 EI candidate results by non-white voters, estimated from ei or rxc}
-
-\item{cand_names}{Character vector of candidate names used for output, e.g.: c("Collingwood", "Barreto")}
+\item{cand_names}{Character vector of candidate names used for output, e.g.: 
+c("Collingwood", "Barreto")}
 }
 \value{
-Table with estimated candidate A/B votes by race, with columns for percent vote too
+Table with estimated candidate A/B votes by race, with columns for 
+percent vote too
 }
 \description{
-Creates data.frame() table of algebraically defined white/non-white preferences for candidates. Typically used when analyst has high confidence in white turnout and voting behavior but needs to deduce minority voting behavior when only CVAP available. First, estimate white/non-white turnout using ei/rxc. Second, gather overall CVAP numbers. Third, estimate candidate preference by white/non-white using ei/rxc. Then enter values into function.
+Creates data.frame() table of algebraically defined white/non-white 
+preferences for candidates. Typically used when analyst has high confidence 
+in white turnout and voting behavior but needs to deduce minority voting 
+behavior when only CVAP available. First, estimate white/non-white turnout 
+using ei/rxc. Second, gather overall CVAP numbers. Third, estimate candidate 
+preference by white/non-white using ei/rxc. Then enter values into function.
 }
 \details{
 elect_algebra
@@ -61,11 +72,8 @@ pct_cand_b_voters = c(0.6828794, 0.1013269, 0.9804255, 0.9551935, 0.7570533,
 #        )
 
 # Turnout by Race, Estimated: 27-28\% White Turnout; 16-17\% Minority Turnout
-# These numbers are taken from above #
-turn_out <- c(0.2786, 0.1663)
-
-# Citizen Voting Age Population for Whole Jurisdiction
-cvap <- c(36472, 23851) # White, Non-White
+# Citizen Voting Age Population for Whole Jurisdiction; White, Non-White
+totals <- data.frame(turnout = c(0.2786, 0.1663), cvap = c(36472, 23851))
 
 # Not Run: Estimate Vote Choice 
 # set.seed(197485)
@@ -80,11 +88,12 @@ c2_ei_res <- c(0.7013, 0.2987)
 #Set up vectors for function #
 cand_names <- c("Cand A", "Cand B")
 # Execute elect_algebra()
-elect_algebra(to = turn_out, cvap, c1_ei_res, c2_ei_res, cand_names)
+elect_algebra(totals = totals, c1_ei_res, c2_ei_res, cand_names)
 
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>; <loren.collingwood@gmail.com>
+Loren Collingwood <loren.collingwood@ucr.edu>; 
+<loren.collingwood@gmail.com>
 
 Matt Barreto <barretom@ucla.edu>
 }
