@@ -41,16 +41,16 @@ Load the R packages needed to perform BISG. If you have not already downloaded t
 ```{r}
 # Load libraries
 suppressPackageStartupMessages({
-  library(devtools)
+  library(eiCompare)
   library(tidyverse)
   library(stringr)
   library(tigris)
   library(leaflet)
   library(sf)
-  library(eiCompare)
   library(wru)
   library(readr)
   library(tidyr)
+  library(tigris)
 })
 ```
 

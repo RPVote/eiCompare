@@ -38,6 +38,7 @@ Imports:
   stringr,
   tidyr,
   tidyselect,
+  tidyverse,
   tmvtnorm,
   ucminf,
   wru,
