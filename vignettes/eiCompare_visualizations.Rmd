@@ -92,12 +92,12 @@ So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, Mont
 With that, let's run ei_ter to output the first set of visuals. If you want to to opt to create plots for `ei_iter` you'll need to set `plots` to `TRUE`. In addition, if you'd like to specificy where you would like to save your plots, you can specify a `plots_path`. 
 
 ``` {r}
-save_path <- "~/hikari-stuff/eiCompare/vignettes/"
+save_path <- "~/hikari-stuff/eiCompare/plots/"
 ```
 
 Time to run our iterative ei!
 
-```{r}
+```{r eval=FALSE}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
 race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
