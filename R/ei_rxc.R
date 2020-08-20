@@ -8,10 +8,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-<<<<<<< HEAD
 #' @param name A unique identifier for the outputted eiCompare object.
-=======
->>>>>>> Text edits to vignette
 #' @param ntunes Integer number of pre-MCMC tuning runs, defaulted to 10
 #' @param totaldraws Integer number of iterations per run in pre-MCMC tuning
 #' runs, defaulted to 10000
@@ -23,10 +20,7 @@
 #' discarded, defaulted to 10000
 #' @param ci_size Numeric desired probability within the upper and lower
 #' credible-interval bounds, defaulted to 0.95
-<<<<<<< HEAD
 #' @param eiCompare_class default = TRUE
-=======
->>>>>>> Text edits to vignette
 #' @param seed A numeric seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param ret_mcmc Boolean. If true, the full sample chains are returned
