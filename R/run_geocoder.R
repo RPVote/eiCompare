@@ -46,6 +46,9 @@
 #' @import foreach
 #' @import parallel
 #' @import doParallel
+#'
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Juandalyn Burke <jcburke@@uw.edu>
 
 
 run_geocoder <- function(voter_file,

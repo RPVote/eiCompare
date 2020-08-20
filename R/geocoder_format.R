@@ -15,6 +15,8 @@
 #' @import data.table
 #' @import stringr
 #'
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Juandalyn Burke <jcburke@@uw.edu>
 
 split_add_nocommas <- function(voter_file,
                                address = "address",

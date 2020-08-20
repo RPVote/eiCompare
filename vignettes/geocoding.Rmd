@@ -2,16 +2,19 @@
 title: "Geocoding the Voter File"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Geocoding the Voter File}
+  %\VignetteIndexEntry{geocoding}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{utf8}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=FALSE} 
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r, echo=FALSE, include=FALSE}
+#
+# Install eiCompare
+library(devtools)
+
+suppressPackageStartupMessages({
+  devtools::install_github("RPVote/eiCompare@geocoding_vignette", force = TRUE)
+})
 ```
 
 In this vignette, we will walk-through how to geocode a dataset that includes addresses used to apply the BISG method for estimating the race/ethnicity of registered voters.
@@ -21,15 +24,14 @@ In this vignette, we will walk-through how to geocode a dataset that includes ad
 
 One of the first steps to performing ecological inference using eiCompare is geocoding your voter file addresses in order to perform Bayesian Improved Surname Geocoding (BISG).  Geocoding is the process of using an address or place of location to find geographic coordinates (i.e. latitude/longitude) of that location on a map. In relation to performing BISG, the values of the geographic coordinates are compared to other census data containing self-reported race and ethnicity to determine the likelihood of an individual living in an ecological unit area (i.e. county, block, tract) being of a certain race given their address. This probability is then used to update a prior probability in the BISG analysis. For more information on BISG, please refer to the BISG vignette. Below are some steps to help you walk through the process of performing geocoding on your voter file. 
 
-### <u>Step 1: Load R libraries/packages</u>
-
-```{r, echo=FALSE}
-#
-# Install eiCompare
-suppressPackageStartupMessages({
-  devtools::install_github("RPVote/eiCompare@geocoding_vignette", force = TRUE)
-})
+```{r, echo=FALSE} 
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
 ```
+
+### <u>Step 1: Load R libraries/packages</u>
 
 Each library/package loaded allows you to use certain functions needed to prep your data for geocoding and run the geocoding tool(s).
 ```{r}
@@ -37,14 +39,12 @@ Each library/package loaded allows you to use certain functions needed to prep y
 suppressPackageStartupMessages({
   library(eiCompare)
   library(stringr)
-  library(readr)
   library(tidyverse)
   library(tidyr)
   library(foreach)
   library(parallel)
   library(doParallel)
   library(data.table)
-  library(gmodels)
   library(plyr)
   library(censusxy)
   library(tigris)
@@ -129,9 +129,9 @@ Prepare/Structure your voter data for geocoding.
 # Concatenate columns for street address.
 voter_data <- concat_streetname(
   voter_file = voter_data,
-  "str_num",
-  "str_name",
-  "str_suffix"
+  street_number = "str_num",
+  street_name = "str_name",
+  street_suffix = "str_suffix"
 )
 ```
 

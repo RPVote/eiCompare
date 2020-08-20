@@ -15,6 +15,9 @@
 #' @import ggplot2
 #' @importFrom sf st_transform st_centroid st_coordinates st_intersection st_crs
 #' @importFrom tidyr extract
+#'
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Juandalyn Burke <jcburke@@uw.edu>
 
 map_shape_file <- function(shape_file,
                            crs = "+proj=latlong +ellps=GRS80 +no_defs",

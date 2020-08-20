@@ -12,6 +12,7 @@ Depends:
   eiPack,
   ei
 Imports:
+  censusxy,
   cubature,
   data.table,
   doParallel,
@@ -21,6 +22,7 @@ Imports:
   foreach,
   ggplot2,
   graphics,
+  leaflet,
   magrittr,
   mcmcse,
   methods,
@@ -28,6 +30,7 @@ Imports:
   msm,
   mvtnorm,
   plotrix,
+  plyr,
   purrr,
   R.utils,
   RCurl,
@@ -37,6 +40,8 @@ Imports:
   stringr,
   tidyr,
   tidyselect,
+  tidyverse,
+  tigris,
   tmvtnorm,
   ucminf,
   wru,
