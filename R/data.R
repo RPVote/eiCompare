@@ -189,6 +189,7 @@
 #' This dataset contains the demographic information for Fulton and Gwinnett counties
 #' in Georgia.
 #'
+#' @name georgia_census
 #' @format A nested list which can be sent to the `wru_predict_race_wrapper` function.
 #' Within "GA", the "block", "tract", and "county" keys contain the following columns.
 #' \describe{
@@ -222,6 +223,7 @@
 #' points and fips code values for state, county, tract, and block
 #' geographies.
 #'
+#' @name ga_geo
 #' @format A data frame with 12 rows and 25 columns
 #' \describe{
 #' \item{county_code}{Unique identifier for counties in the state of Georgia}
