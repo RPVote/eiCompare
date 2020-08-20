@@ -38,13 +38,6 @@ knitr::opts_chunk$set(
 ### Step 1: Load R libraries/packages, voter file, and census data
 Load the R packages needed to perform BISG. If you have not already downloaded the following packages, please install these packages.
 
-```{r, echo=FALSE}
-# Install eiCompare
-suppressPackageStartupMessages({
-  devtools::install_github("RPVote/eiCompare@master")
-})
-```
-
 ```{r}
 # Load libraries
 suppressPackageStartupMessages({
