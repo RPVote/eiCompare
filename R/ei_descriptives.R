@@ -2,6 +2,8 @@
 #' race/ethnicities
 #'
 #' @import ggplot2
+#' @importFrom tidyr pivot_longer
+#' @importFrom rlang .data
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
@@ -56,10 +58,10 @@ plot_bivariate <- function(
 
   bivariate_plot <- ggplot2::ggplot(
     data = data_long,
-    ggplot2::aes(x = pct_of_voters, y = pct_of_vote)
+    ggplot2::aes(x = .data$pct_of_voters, y = .data$pct_of_vote)
   ) +
-    ggplot2::geom_point(alpha = 0.5, size = dot_size) +
-    ggplot2::facet_grid(candidate ~ race) +
+    ggplot2::geom_point(alpha = 0.5, size = .data$dot_size) +
+    ggplot2::facet_grid(.data$candidate ~ .data$race) +
     ggplot2::scale_x_continuous(
       limits = c(0, 1),
       name = "Race % of Turnout",
@@ -86,7 +88,7 @@ plot_bivariate <- function(
     bivariate_plot <- bivariate_plot +
       ggplot2::geom_text(
         data = corrs_long,
-        ggplot2::aes(label = paste("r = ", round(corr, 2), sep = "")),
+        ggplot2::aes(label = paste("r = ", round(.data$corr, 2), sep = "")),
         x = .91,
         y = 0.93,
         size = ifelse(max(n_races, n_cands) > 3, 2, 3)
