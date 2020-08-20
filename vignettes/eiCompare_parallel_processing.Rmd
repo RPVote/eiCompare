@@ -93,7 +93,7 @@ corona$pct_hisp + corona$pct_non_lat == 1
 
 So for this analysis there are 6 candidates (Husted, Spiegel, Ruth, Button, and Montanez) and 3 racial groups (Hispanic/Latino, Asian, and White). With that, let's set up the inputs we need for the function and time it to see how long it takes to complete the iterative ei analysis without parallelization.
 
-```{r}
+```{r eval=FALSE}
 cand_cols <- c("pct_husted", "pct_spiegel", "pct_ruth", "pct_button", "pct_montanez", "pct_fox")
 race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
@@ -105,13 +105,13 @@ results_test <- ei_iter(corona, cand_cols, race_cols, totals_col)
 ```
 
 To run in this parallel, all you need to do is toggle `par_compute` to be TRUE.
-```{r}
+```{r eval=FALSE}
 # Run with paralleization
 start_time <- Sys.time()
 results_test <- ei_iter(corona, cand_cols, race_cols, totals_col, par_compute = TRUE)
 (end_time <- Sys.time() - start_time)
 ```
-This saves us a about a minute for this specific data set. With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.
+This saves us a about a minute for this specific data set (on the computer we ran this on, but times will vary). With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.
 
 ## Expectations for parallelization
 
