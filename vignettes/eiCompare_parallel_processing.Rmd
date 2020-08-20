@@ -2,7 +2,7 @@
 title: "eiCompare: Parallel Processing"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{pp-vignette}
+  %\VignetteIndexEntry{eiCompare: Parallel Processing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
