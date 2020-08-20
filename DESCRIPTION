@@ -13,6 +13,7 @@ Depends:
   ei,
   wru
 Imports:
+  censusxy,
   bayestestR,
   coda,
   cubature,
@@ -24,6 +25,7 @@ Imports:
   foreach,
   ggplot2,
   graphics,
+  leaflet,
   magrittr,
   mcmcse,
   methods,
@@ -32,6 +34,7 @@ Imports:
   mvtnorm,
   overlapping,
   plotrix,
+  plyr,
   purrr,
   R.utils,
   RJSONIO,
@@ -39,6 +42,8 @@ Imports:
   stringr,
   tidyr,
   tidyselect,
+  tidyverse,
+  tigris,
   tmvtnorm,
   ucminf
 NeedsCompilation: no
