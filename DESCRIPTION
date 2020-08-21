@@ -48,43 +48,35 @@ Imports:
   censusxy,
   bayestestR,
   coda,
-  cubature,
   data.table,
   doParallel,
   doSNOW,
   dplyr,
-  ellipse,
   foreach,
   ggplot2,
   graphics,
-  leaflet,
   magrittr,
   mcmcse,
   methods,
-  mnormt,
   msm,
-  mvtnorm,
   overlapping,
-  plotrix,
-  plyr,
   purrr,
-  R.utils,
-  RJSONIO,
+  rlang,
   sf,
   stringr,
   tidyr,
-  tidyselect,
-  tidyverse,
-  tigris,
-  tmvtnorm,
-  ucminf
+  tidyselect
 NeedsCompilation: no
 Suggests:
   knitr,
+  leaflet,
+  opencage,
   rmarkdown,
-  testthat,
   reshape2,
-  RColorBrewer
+  RColorBrewer,
+  RJSONIO,
+  testthat,
+  tigris
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
