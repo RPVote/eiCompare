@@ -12,12 +12,10 @@
 #'
 #' @export split_add_nocommas
 #'
-#' @import data.table
-#' @import stringr
+#' @importFrom utils tail
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Juandalyn Burke <jcburke@@uw.edu>
-
 split_add_nocommas <- function(voter_file,
                                address = "address",
                                delimiter = "space") {
@@ -33,16 +31,25 @@ split_add_nocommas <- function(voter_file,
     # Assign the last value to the zipcode column
     voter_file$zipcode <- voter_file[[address]] %>%
       strsplit(" ") %>%
-      sapply(tail, 1)
+      sapply(utils::tail, 1)
 
     # Split the address and assign the second to last value to the state column
-    voter_file$state <- sub(".*\\b([A-Z]{2}) \\d{5}.*", "\\1", voter_file[[address]])
+    voter_file$state <- sub(
+      ".*\\b([A-Z]{2}) \\d{5}.*",
+      "\\1",
+      voter_file[[address]]
+    )
 
     # Select every part of the address except the city, state, and zipcode
-    voter_file$split_add_city <- gsub("[[:alpha:]]{2}[[:space:]][[:digit:]]{5}", "", address)
+    voter_file$split_add_city <- gsub(
+      "[[:alpha:]]{2}[[:space:]][[:digit:]]{5}",
+      "",
+      address
+    )
   }
   # NOTE: Plan to try and come up with a way to split the street and city
 }
+
 
 #' Pre-processes voter file by checking zipcode, and any special
 #' characters or typos within the address.
@@ -55,11 +62,8 @@ split_add_nocommas <- function(voter_file,
 #' @return The voter file with pre-processed format for each address
 #' variable.
 #'
+#' @importFrom utils read.table
 #' @export add_split_comma
-#'
-#' @import data.table
-#' @import stringr
-
 add_split_comma <- function(voter_file,
                             address = "address",
                             delimiter = "comma") {
@@ -77,7 +81,7 @@ add_split_comma <- function(voter_file,
 
     # For 4 columns, include address names and a secondary address
     if (voter_file$num_col == 4) {
-      df <- strsplit(read.table(add_col,
+      df <- strsplit(utils::read.table(add_col,
         sep = ",", colClasses = "character",
         col.names = c(
           "street_address", "street_address2",
@@ -99,6 +103,7 @@ add_split_comma <- function(voter_file,
   }
 }
 
+
 #' Pre-processes voter file by checking zipcode, and any special characters
 #' or typos within the address.
 #'
@@ -107,24 +112,21 @@ add_split_comma <- function(voter_file,
 #' @param street_number The number attached to the street name. Ex. 1442
 #' @param street_name The name of the place in which a voter lives.
 #' Ex. Market Street
-#' @param street_suffix A directional abbreviation such as NE for northeast or SW for southwest.
+#' @param street_suffix A directional abbreviation such as NE for northeast or
+#'  SW for southwest.
 #'
 #' @return The voter file with pre-processed format for each address variable.
 #'
 #' @export concat_streetname
-#'
-#' @import data.table
-#' @import stringr
-
-
-# Addresses with separate street number and street name
 concat_streetname <- function(voter_file,
                               street_number = "street_number",
                               street_name = "street_name",
                               street_suffix = "street_suffix") {
 
   # Concatenate columns for street address
-  if (!is.null(voter_file[[street_number]]) & !is.null(voter_file[[street_name]])) {
+  if (
+    !is.null(voter_file[[street_number]]) & !is.null(voter_file[[street_name]])
+  ) {
     voter_file$street_address <- paste(voter_file[[street_number]],
       voter_file[[street_name]],
       voter_file[[street_suffix]],
@@ -135,6 +137,7 @@ concat_streetname <- function(voter_file,
   }
   return(voter_file)
 }
+
 
 #' This function concatenate the final address
 #'
@@ -149,10 +152,6 @@ concat_streetname <- function(voter_file,
 #' @return The voter file with pre-processed format for each address variable.
 #'
 #' @export concat_final_address
-#'
-#' @import data.table
-#' @import stringr
-
 concat_final_address <- function(voter_file,
                                  street_address = "street_address",
                                  city = "city",
@@ -173,9 +172,9 @@ concat_final_address <- function(voter_file,
   return(voter_file)
 }
 
+
 #' Pre-processes voter file by checking zipcode, and any special
 #' characters or typos within the address.
-#'
 #'
 #' @param voter_file A voter file containing the address of the voter.
 #' @param voter_id The unique identifier linked to the voter.
@@ -185,10 +184,6 @@ concat_final_address <- function(voter_file,
 #' variable.
 #'
 #' @export zip_hyphen
-#'
-#' @import data.table
-#' @import stringr
-#'
 zip_hyphen <- function(voter_file,
                        voter_id = "registration_number",
                        zipcode = "zipcode") {
@@ -203,8 +198,12 @@ zip_hyphen <- function(voter_file,
 
     # Print message stating how many 9-digit zipcodes have been fixed
     # with a hyphen.
-    paste("There are", zip9_ids, "9-digit zipcodes in the dataset that have been 
-                        formatted.", sep = " ")
+    paste(
+      "There are",
+      zip9_ids,
+      "9-digit zipcodes in the dataset that have been formatted.",
+      sep = " "
+    )
 
     # Create a dataframe for 9-digit zipcodes that need a hyphen and
     # make zipcode a character variable
@@ -214,11 +213,15 @@ zip_hyphen <- function(voter_file,
     ))
 
     # Add a hyphen to the zipcode using the format XXXXX-XXXX
-    zip9_df$new_zipcode <- gsub("(\\d{5})(\\d{4})$", "\\1-\\2", zip9_df$zipcode)
+    zip9_df$new_zipcode <- gsub(
+      "(\\d{5})(\\d{4})$", "\\1-\\2", zip9_df$zipcode
+    )
 
     # Merge the hyphenated zipcodes with the exitsing zipcodes in
     # the original dataframe.
-    voter_file$zipcode[match(zip9_df$voter_id, voter_file[[voter_id]])] <- zip9_df$new_zipcode
+    voter_file$zipcode[
+      match(zip9_df$voter_id, voter_file[[voter_id]])
+    ] <- zip9_df$new_zipcode
   }
   return(voter_file)
 }

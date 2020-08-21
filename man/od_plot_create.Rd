@@ -13,7 +13,8 @@ od_plot_create(race, cand_pair, dens_data, out, plot_path = "", cand_colors)
 
 \item{dens_data}{Beta values long for each race and candidate pair}
 
-\item{out}{Summary table from overlay_density_plot for every race candidate pair}
+\item{out}{Summary table from overlay_density_plot for every race candidate
+pair}
 
 \item{plot_path}{Path to save plots}
 
