@@ -39,11 +39,12 @@ Imports:
 NeedsCompilation: no
 Suggests:
   knitr,
+  opencage,
   rmarkdown,
-  testthat,
   reshape2,
   RColorBrewer,
-  RJSONIO
+  RJSONIO,
+  testthat
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
