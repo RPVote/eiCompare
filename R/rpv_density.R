@@ -36,7 +36,7 @@ rpv_density <- function(agg_betas, plot_path) {
 
   # Plot as facet
   rpv_plot <- ggplot(data = agg_betas_diff) +
-    ggplot2::geom_density(alpha = 0.25, ggplot2::aes(x = value * 100, y = ..scaled..), adjust = 1) +
+    ggplot2::geom_density(alpha = 0.25, ggplot2::aes_string(x = "value * 100", y = "..scaled.."), adjust = 1) +
     ggplot2::facet_grid(cand ~ race) +
     ggplot2::theme_bw() +
     ggplot2::theme(

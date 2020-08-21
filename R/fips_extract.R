@@ -66,7 +66,7 @@ fips_extract <- function(df, fips_col = NULL, geo = NULL) {
   # Separate FIPS column into constituent units
   df <- tidyr::separate(
     data = df,
-    col = fips_col_temp,
+    col = "fips_col_temp",
     into = into,
     sep = sep
   )
