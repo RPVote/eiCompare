@@ -42,7 +42,6 @@ Load the R packages needed to perform BISG. If you have not already downloaded t
 # Load libraries
 suppressPackageStartupMessages({
   library(eiCompare)
-  library(tidyverse)
   library(stringr)
   library(sf)
   library(wru)
