@@ -271,11 +271,11 @@
 #' was matched in the US Census Geocoder}
 #' \item{cxy_quality}{The determinant of whether the addresses matched exctly}
 #' \item{cxy_matched_address}{The address used to compare with the voter
-#' address inputted
-#' into the Geocoder API to determine whether a match has occurred}
+#' address inputted into the Geocoder API to determine whether a match
+#' has occurred}
 #' \item{cxy_tiger_line_id}{unique identifier from the Tiger line database
-#' that captures
-#' geographic aras of interests like roads, railroads, rivers, etc.}
+#' that captures geographic aras of interests like roads, railroads,
+#' rivers, etc.}
 #' \item{cxy_tiger_side}{a directional identifier in the Tiger Line database}
 #' \item{STATEFP10}{the FIPS code for the state geograhic level}
 #' \item{COUNTYFP10}{the FIPS code for the county geographic level}
