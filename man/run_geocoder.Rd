@@ -27,12 +27,12 @@ run_geocoder(
 \item{voter_file}{A data frame contain the voter addresses, separated into
 columns for street, city, state, and zipcode}
 
-\item{geocoder}{The options for selecting geocoders are "censusxy" and "opencage".}
+\item{geocoder}{The options for selecting geocoders are "censusxy" and
+"opencage".}
 
-\item{parallel}{TRUE or FALSE. The option to run parallel processing on the data.
-Running parallel processing
-requires the user to have at least 4 CPU cores. Use detectCores() to determine the
-number of CPUs on your device.}
+\item{parallel}{TRUE or FALSE. The option to run parallel processing on the
+data. Running parallel processing requires the user to have at least 4 CPU
+cores. Use detectCores() to determine the number of CPUs on your device.}
 
 \item{voter_id}{the unique identifier}
 
@@ -48,22 +48,20 @@ Ex. 555 Main Street SW}
 \item{country}{the abbreviated a nation or territory}
 
 \item{census_return}{either "locations" or "geographies". "locations" returns
-the latitude and longitude coordinates.
-"geographies" returns the latitude, longitude, and FIPS codes for county, state,
-tract, and block.}
+the latitude and longitude coordinates. "geographies" returns the latitude,
+longitude, and FIPS codes for county, state, tract, and block.}
 
-\item{census_benchmark}{a dataset of the snapshot of the US Census data. Data is
-collected two times a year.
-Public_AR_Current is the time period when we created the snapshot of the data
-(usually done twice yearly).
-For example, Public_AR_Current is the most recent snapshot of our dataset.}
+\item{census_benchmark}{a dataset of the snapshot of the US Census data. Data
+is collected two times a year. Public_AR_Current is the time period when we
+created the snapshot of the data (usually done twice yearly). For example,
+Public_AR_Current is the most recent snapshot of our dataset.}
 
 \item{census_vintage}{a dataset that details the survey or census that the
 census_benchmark uses.}
 
-\item{census_output}{"single" or "full". "single" indicates that only latitude
-and longitude are returned. "full" indicates that latitude, longitude, and FIPS
-codes are returned.}
+\item{census_output}{"single" or "full". "single" indicates that only
+latitude and longitude are returned. "full" indicates that latitude,
+longitude, and FIPS codes are returned.}
 
 \item{census_class}{"sf" indicates returning a shape file in the R class, sf.
 Other file types like "json" and "csv" can also be used.}

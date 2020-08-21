@@ -4,11 +4,11 @@
 #'
 #' @param voter_file A data frame contain the voter addresses, separated into
 #' columns for street, city, state, and zipcode
-#' @param geocoder The options for selecting geocoders are "censusxy" and "opencage".
-#' @param parallel TRUE or FALSE. The option to run parallel processing on the data.
-#' Running parallel processing
-#' requires the user to have at least 4 CPU cores. Use detectCores() to determine the
-#' number of CPUs on your device.
+#' @param geocoder The options for selecting geocoders are "censusxy" and
+#'  "opencage".
+#' @param parallel TRUE or FALSE. The option to run parallel processing on the
+#'  data. Running parallel processing requires the user to have at least 4 CPU
+#'  cores. Use detectCores() to determine the number of CPUs on your device.
 #' @param voter_id the unique identifier
 #' @param street the street number, street name, and/or street suffix.
 #' Ex. 555 Main Street SW
@@ -17,19 +17,17 @@
 #' @param zipcode the 5 or 9 digit number in the format XXXXX or XXXXX-XXXX.
 #' @param country the abbreviated a nation or territory
 #' @param census_return either "locations" or "geographies". "locations" returns
-#' the latitude and longitude coordinates.
-#' "geographies" returns the latitude, longitude, and FIPS codes for county, state,
-#' tract, and block.
-#' @param census_benchmark a dataset of the snapshot of the US Census data. Data is
-#' collected two times a year.
-#' Public_AR_Current is the time period when we created the snapshot of the data
-#' (usually done twice yearly).
-#' For example, Public_AR_Current is the most recent snapshot of our dataset.
+#'  the latitude and longitude coordinates. "geographies" returns the latitude,
+#'  longitude, and FIPS codes for county, state, tract, and block.
+#' @param census_benchmark a dataset of the snapshot of the US Census data. Data
+#'  is collected two times a year. Public_AR_Current is the time period when we
+#'  created the snapshot of the data (usually done twice yearly). For example,
+#'  Public_AR_Current is the most recent snapshot of our dataset.
 #' @param census_vintage a dataset that details the survey or census that the
 #' census_benchmark uses.
-#' @param census_output "single" or "full". "single" indicates that only latitude
-#' and longitude are returned. "full" indicates that latitude, longitude, and FIPS
-#' codes are returned.
+#' @param census_output "single" or "full". "single" indicates that only
+#'  latitude and longitude are returned. "full" indicates that latitude,
+#'  longitude, and FIPS codes are returned.
 #' @param census_class "sf" indicates returning a shape file in the R class, sf.
 #' Other file types like "json" and "csv" can also be used.
 #' @param opencage_key the Opencage Geocoder API key needed to run the Opencage
@@ -42,10 +40,10 @@
 #'
 #' @export run_geocoder
 #'
-#' @import data.table
 #' @import foreach
 #' @import parallel
 #' @import doParallel
+#' @importFrom censusxy cxy_geocode
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Juandalyn Burke <jcburke@@uw.edu>
@@ -75,11 +73,14 @@ run_geocoder <- function(voter_file,
   if (geocoder == "census" & parallel == FALSE & num_obs <= 10000) {
 
     # Start-up message
-    message("Running US Census Geocoding API. This may take several minutes (i.e. up to 20 minutes) to complete.")
+    message(paste0(
+      "Running US Census Geocoding API. This may take several",
+      "minutes (i.e. up to 20 minutes) to complete."
+    ))
 
     packageStartupMessage("Initializing...", appendLF = FALSE)
 
-    census_voter_file <- cxy_geocode(
+    census_voter_file <- censusxy::cxy_geocode(
       .data = voter_file,
       id = voter_id,
       street = street,
@@ -97,17 +98,24 @@ run_geocoder <- function(voter_file,
     return(voter_file)
   }
 
-  #################################################################################################
-  # Runs ONLY if Census Geocoder API is selected and there are less than 10,000 in the voter file.#
-  #################################################################################################
+  #############################################################################
+  # Runs ONLY if Census Geocoder API is selected and there are less than 10,000
+  # in the voter file.
+  #############################################################################
   if (geocoder == "census" & parallel == TRUE & num_obs <= 10000) {
     # Detect the number of cores on user's machine
-    n_cores <- parallel::detectCores()
+    n_cores <- detectCores()
 
     # Send warning message if number of cores is less than 4 cores
     if (n_cores < 4) {
-      message("Your machine is has less than 4 cores and will not be able to perform parallel processing.")
-      packageStartupMessage("Aborting parallel processing option...", appendLF = FALSE)
+      message(paste0(
+        "Your machine is has less than 4 cores and will not be",
+        "able to perform parallel processing."
+      ))
+      packageStartupMessage(
+        "Aborting parallel processing option...",
+        appendLF = FALSE
+      )
       Sys.sleep(1)
       packageStartupMessage(" done")
     }
@@ -120,13 +128,17 @@ run_geocoder <- function(voter_file,
       packageStartupMessage("Initializing...", appendLF = FALSE)
 
       # Run Census Geocoder API
-      clust <- parallel::makeCluster(detectCores() - 2)
+      clust <- makeCluster(detectCores() - 2)
       registerDoParallel(clust)
 
       start_time_2 <- Sys.time()
 
-      census_voter_file <- foreach(i = 1:1, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        cxy_geocode(
+      census_voter_file <- foreach(
+        i = 1,
+        .combine = rbind,
+        .packages = c("censusxy", "sf")
+      ) %dopar% {
+        censusxy::cxy_geocode(
           .data = voter_file,
           id = voter_id,
           street = street,
@@ -156,20 +168,25 @@ run_geocoder <- function(voter_file,
   }
 
 
-
-  #################################################################################################
-  # Runs ONLY if Census Geocoder API is selected, the user is conducting parallel processing and  #
-  # there are more than 10,000 observations/voters.                                               #
-  #################################################################################################
+  #############################################################################
+  # Runs ONLY if Census Geocoder API is selected, the user is conducting
+  # parallel processing and there are more than 10,000 observations/voters.
+  #############################################################################
 
   if (geocoder == "census" & parallel == TRUE & num_obs > 10000) {
     # Detect the number of cores on user's machine
-    n_cores <- parallel::detectCores()
+    n_cores <- detectCores()
 
     # Send warning message if number of cores is less than 4 cores
     if (n_cores < 4) {
-      message("Your machine is has less than 4 cores and will not be able to perform parallel processing.")
-      packageStartupMessage("Aborting parallel processing option...", appendLF = FALSE)
+      message(paste0(
+        "Your machine is has less than 4 cores and will not be",
+        "able to perform parallel processing."
+      ))
+      packageStartupMessage(
+        "Aborting parallel processing option...",
+        appendLF = FALSE
+      )
       Sys.sleep(1)
       packageStartupMessage(" done")
     }
@@ -207,13 +224,17 @@ run_geocoder <- function(voter_file,
       }
 
       # Run Census Geocoder API
-      clust <- parallel::makeCluster(detectCores() - 2)
+      clust <- makeCluster(detectCores() - 2)
       registerDoParallel(clust)
 
       start_time_2 <- Sys.time()
 
-      census_voter_file <- foreach(i = 1:n_loops, .combine = rbind, .packages = c("censusxy", "sf")) %dopar% {
-        cxy_geocode(
+      census_voter_file <- foreach(
+        i = 1:n_loops,
+        .combine = rbind,
+        .packages = c("censusxy", "sf")
+      ) %dopar% {
+        censusxy::cxy_geocode(
           .data = dfList[[i]],
           id = voter_id,
           street = street,
@@ -254,21 +275,34 @@ run_geocoder <- function(voter_file,
         voter_file[[zipcode]],
         sep = ","
       )
-      # Geocode using new address format for opencage and create columns for geographies
+      # Geocode using new address format for opencage and create columns for
+      # geographies
       for (m in 1:seq_len(num_obs)) {
         tryCatch(
           {
-            opencage_latlon <- opencage_forward(
-              placename = voter_file$opencage_address[m],
-              country = NULL,
-              key = opencage_key
-            )
-            voter_file$lon[m] <- opencage_latlon$results$geometry.lng[1] # longtiude
-            voter_file$lat[m] <- opencage_latlon$results$geometry.lat[1] # latitude
-            voter_file$confidence[m] <- opencage_latlon$results$confidence[1] # confidence score
-            voter_file$address[m] <- opencage_latlon$results$formatted[1] # opencage address
-            voter_file$county[m] <- opencage_latlon$results$components.county[1] # county name
-            voter_file$county_fips[m] <- opencage_latlon$results$annotations.FIPS.county[1] # FIPS county code
+            if (requireNamespace("opencage", quietly = TRUE)) {
+              opencage_latlon <- opencage::opencage_forward(
+                placename = voter_file$opencage_address[m],
+                country = NULL,
+                key = opencage_key
+              )
+            } else {
+              message(
+                "This function requires opencage. Please install and re-run."
+              )
+            }
+            # longtiude
+            voter_file$lon[m] <- opencage_latlon$results$geometry.lng[1]
+            # latitude
+            voter_file$lat[m] <- opencage_latlon$results$geometry.lat[1]
+            # confidence score
+            voter_file$confidence[m] <- opencage_latlon$results$confidence[1]
+            # opencage address
+            voter_file$address[m] <- opencage_latlon$results$formatted[1]
+            # county name
+            voter_file$county[m] <- opencage_latlon$results$components.county[1]
+            # FIPS county code
+            voter_file$county_fips[m] <- opencage_latlon$results$annotations.FIPS.county[1]
           },
           error = function(e) {
             print(e)

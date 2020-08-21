@@ -43,8 +43,8 @@ goodman_generalize <-
     list_extract <- function(x) x[, 1:2] # sends to lapply to extract indiv column estimates
 
     # Table/Output Row Labeling
-    seq_split <- 2:length(cand_vector)
-    rn <- c(insert(cand_vector, ats = seq_split, values = rep("se", length(cand_vector) - 1)), "se")
+    se_cols <- rep("se", length(cand_vector))
+    rn <- c(rbind(cand_vector, se_cols))
 
     # Remove any missing datas
     data <- na.omit(data)
