@@ -43,7 +43,7 @@ remotes::install_github('RPVote/eiCompare')
 
 ## Usage
 
-The name of this package `eiCompare`, highlights its utility for comparing different ecological inference estimates. For instance, the following code compares iterative and RxC estimates of racial voting preferences in a stylized version of the 2018 Georgia gubernatorial election:
+The name `eiCompare` highlights the utility of this package for comparing different ecological inference estimates. For instance, the following code compares iterative and RxC estimates of racial voting preferences in a stylized version of the 2018 Georgia gubernatorial election:
 
 ``` r
 library(eiCompare)
