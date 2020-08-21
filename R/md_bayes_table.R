@@ -55,8 +55,8 @@ md_bayes_table <- function(md_results) {
     rn <- c(rnames, "se", "Total")
   } else {
     # more than one candidate
-    se_cols <- rep("se", length(cand_vector))
-    rn <- c(rbind(cand_vector, se_cols))
+    se_cols <- rep("se", length(rnames))
+    rn <- c(rbind(rnames, se_cols))
   }
 
   # result NA matrix holder
