@@ -27,7 +27,11 @@ Authors@R:
       person(given = "Scott",
              family = "Henderson",
              role = "ctb",
-             comment = c(ORCID = "0000-0003-0624-4965"))
+             comment = c(ORCID = "0000-0003-0624-4965")),
+      person(given = "Spencer",
+             family = "Wood",
+             role = "ctb",
+             comment = c(ORCID = "0000-0002-5794-2619")),
       person(given = "Matt",
              family = "Barreto",
              role = "ctb",
