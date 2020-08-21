@@ -35,10 +35,10 @@ CRAN submission is currently underway. Check back soon for instructions on insta
 
 ### From Github (development version)
 
-Install latest developement version with:
+Install latest development version with:
 
 ```
-devtools::install_github('RPVote/eiCompare')
+remotes::install_github('RPVote/eiCompare')
 ```
 
 ## Usage
@@ -72,7 +72,7 @@ plot(iter, rxc)
 
 The top panel shows that the majority of white voters voted for Brian Kemp, who won this election. The middle panel shows the estiamted preferences of black voters. The estimates indicate that black voters strongly preferred Stacey Abrams over Brian Kemp.
 
-Please refer to the package vignettes for detailed walkthroughs of how this package facilitates ecological inference.
+Please refer to the package vignettes for detailed walkthroughs of how this package facilitates ecological inference. To view these in Rstudio, enter `browseVignettes("eiCompare")` in the console after installing the package.
 
 
 ## Learn More
