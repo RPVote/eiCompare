@@ -33,8 +33,7 @@ Imports:
   sf,
   stringr,
   tidyr,
-  tidyselect,
-  tigris
+  tidyselect
 NeedsCompilation: no
 Suggests:
   knitr,
@@ -44,7 +43,8 @@ Suggests:
   reshape2,
   RColorBrewer,
   RJSONIO,
-  testthat
+  testthat,
+  tigris
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
