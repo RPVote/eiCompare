@@ -5,7 +5,8 @@
 #' @param race Racial demographic of interest
 #' @param cand_pair All possible candidate pairing combinations
 #' @param dens_data Beta values long for each race and candidate pair
-#' @param out Summary table from overlay_density_plot for every race candidate pair
+#' @param out Summary table from overlay_density_plot for every race candidate
+#'  pair
 #' @param plot_path Path to save plots
 #' @param cand_colors Colors for every candidate
 #' @return Comparison density plots
@@ -15,23 +16,34 @@
 #' @return overlay density plot comparing candidates for votes by race
 #'
 #' @importFrom overlapping overlap
+#' @importFrom stats setNames
 #' @import ggplot2
 #'
 #' @export
 
 
-od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand_colors) {
+od_plot_create <- function(race,
+                           cand_pair,
+                           dens_data,
+                           out,
+                           plot_path = "",
+                           cand_colors) {
   # Set new variables to NULL
   value <- Candidate <- sd_minus <- sd_plus <- NULL
 
-
   # Omit NAs and subset both density data and summmary table
-  dens_data_sub <- na.omit(dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_pair), ])
+  dens_data_sub <- na.omit(
+    dens_data[dens_data$Candidate %in% gsub("pct_", "", cand_pair), ]
+  )
   out_sub <- out[out$Candidate %in% gsub("pct_", "", cand_pair), ]
   # Calculate overlap
   overlap_list <- list(
-    X1 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_pair[1]), "value"],
-    X2 = dens_data_sub[dens_data_sub$Candidate == gsub("pct_", "", cand_pair[2]), "value"]
+    X1 = dens_data_sub[
+      dens_data_sub$Candidate == gsub("pct_", "", cand_pair[1]), "value"
+    ],
+    X2 = dens_data_sub[
+      dens_data_sub$Candidate == gsub("pct_", "", cand_pair[2]), "value"
+    ]
   )
   overlap_out <- overlapping::overlap(overlap_list, plot = FALSE)
   # Extract overlap percentage
@@ -40,7 +52,7 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   overlap_point <- overlap_out$xpoints$`X1-X2`[[1]]
 
   # colors
-  cols <- setNames(
+  cols <- stats::setNames(
     c(
       cand_colors[gsub("pct_", "", cand_pair[1])][[1]],
       cand_colors[gsub("pct_", "", cand_pair[2])][[1]]
@@ -55,7 +67,10 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
   )
 
 
-  densplot <- ggplot2::ggplot(dens_data_sub, ggplot2::aes(x = value, fill = Candidate)) +
+  densplot <- ggplot2::ggplot(
+    dens_data_sub,
+    ggplot2::aes(x = value, fill = Candidate)
+  ) +
     # Set colors according to candidate
     scale_fill_manual(values = cols, aesthetics = c("color", "fill")) +
     # Add titles
@@ -68,7 +83,12 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     ggplot2::xlab("Percent of vote") +
     ggplot2::ylab("Density") +
     ggplot2::geom_density(
-      alpha = 0.5, ggplot2::aes_string(x = "value * 100", y = "..scaled..", colour = "Candidate"),
+      alpha = 0.5,
+      ggplot2::aes_string(
+        x = "value * 100",
+        y = "..scaled..",
+        colour = "Candidate"
+      ),
       adjust = 2
     ) +
     # Add vertical line for halfway
@@ -104,8 +124,20 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     linetype = "dashed", data = out_sub
     ) +
     # Add sigma label
-    ggplot2::geom_text(x = max(out_sub$sd_plus[1], out_sub$sd_minus[1]), y = .12, label = "sigma", size = 3, parse = TRUE) +
-    ggplot2::geom_text(x = min(out_sub$sd_minus[2], out_sub$sd_plus[2]), y = .08, label = "sigma", size = 3, parse = TRUE) +
+    ggplot2::geom_text(
+      x = max(out_sub$sd_plus[1], out_sub$sd_minus[1]),
+      y = .12,
+      label = "sigma",
+      size = 3,
+      parse = TRUE
+    ) +
+    ggplot2::geom_text(
+      x = min(out_sub$sd_minus[2], out_sub$sd_plus[2]),
+      y = .08,
+      label = "sigma",
+      size = 3,
+      parse = TRUE
+    ) +
     # Add text label for means
     ggplot2::geom_label(
       x = out_sub$mean_size[1],
@@ -119,7 +151,10 @@ od_plot_create <- function(race, cand_pair, dens_data, out, plot_path = "", cand
     ) +
     # Set limits for plot
     ggplot2::xlim(0, 100) +
-    ggplot2::scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1.0), limits = c(0, 1.1)) +
+    ggplot2::scale_y_continuous(
+      breaks = c(0, 0.25, 0.5, 0.75, 1.0),
+      limits = c(0, 1.1)
+    ) +
     # Formatting
     ggplot2::theme_bw() +
     ggplot2::theme(
