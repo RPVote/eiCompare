@@ -9,6 +9,8 @@
 #' @return A ggplot comparing eiCompare objects.
 #'
 #' @import ggplot2
+#' @importFrom rlang .data
+#'
 #' @export
 plot.eiCompare <- function(x, ...) {
   # Consolidate eiCompare objects
@@ -38,10 +40,13 @@ plot.eiCompare <- function(x, ...) {
   # Construct error bar plot
   ggplot2::ggplot(
     data = data,
-    ggplot2::aes(x = mean, y = cand, fill = name)
+    ggplot2::aes(x = .data$mean, y = .data$cand, fill = .data$name)
   ) +
     ggplot2::geom_errorbarh(
-      ggplot2::aes(xmin = (mean - sd), xmax = (mean + sd)),
+      ggplot2::aes(
+        xmin = (.data$mean - .data$sd),
+        xmax = (.data$mean + .data$sd)
+      ),
       height = 0.25,
       position = ggplot2::position_dodge(width = n_objects * 0.25)
     ) +
@@ -55,7 +60,7 @@ plot.eiCompare <- function(x, ...) {
       linetype = "dashed",
       color = "red"
     ) +
-    ggplot2::facet_grid(race ~ .) +
+    ggplot2::facet_grid(.data$race ~ .) +
     ggplot2::scale_fill_brewer(type = "qual") +
     ggplot2::scale_x_continuous(
       name = "Proportion of vote",
