@@ -14,7 +14,7 @@ We recommend a ["Forking Workflow"](https://www.atlassian.com/git/tutorials/comp
 https://docs.github.com/en/github/getting-started-with-github/fork-a-repo 
 
 ```
-git clone https://github.com/scottyhq/eiCompare.git
+git clone https://github.com/YOURGITHUBUSER/eiCompare.git
 cd eiCompare
 ```
 
