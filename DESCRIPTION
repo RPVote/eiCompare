@@ -16,7 +16,6 @@ Imports:
   censusxy,
   bayestestR,
   coda,
-  cubature,
   data.table,
   doParallel,
   doSNOW,
@@ -31,13 +30,11 @@ Imports:
   msm,
   overlapping,
   purrr,
-  RJSONIO,
   rlang,
   sf,
   stringr,
   tidyr,
   tidyselect,
-  tidyverse,
   tigris
 NeedsCompilation: no
 Suggests:
@@ -45,7 +42,8 @@ Suggests:
   rmarkdown,
   testthat,
   reshape2,
-  RColorBrewer
+  RColorBrewer,
+  RJSONIO
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
