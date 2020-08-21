@@ -2,7 +2,7 @@
 title: "eiCompare: Ecological Inference"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ei}
+  %\VignetteIndexEntry{eiCompare: Ecological Inference}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
