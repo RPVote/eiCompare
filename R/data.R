@@ -213,8 +213,8 @@
 #'
 #' @format A data frame with 157 rows and 5 columns
 #' \describe{
-#' \item{kemp}{Proportion of votes cast for Republican candidate Brian Kemp}
-#' \item{abrams}{Proportion of votes cast for Democratic candidate Stacey Abrams}
+#' \item{kemp}{Proportion of votes cast for candidate Brian Kemp}
+#' \item{abrams}{Proportion of votes cast for candidate Stacey Abrams}
 #' \item{white}{Proportion of voters self-reporting as white}
 #' \item{nonwhite}{Proportion of voters self-reporting as non-white}
 #' \item{turnout}{Count of voter turnout}
