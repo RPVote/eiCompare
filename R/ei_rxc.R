@@ -292,8 +292,8 @@ ei_rxc <- function(
     upper <- upper_est + upper_se
 
     # Get race and cand cols for the final table
-    cand_col <- rep(cand_cols, each = 3)
-    race_col <- rep(race_cols, times = 3)
+    cand_col <- rep(cand_cols, each = length(race_cols))
+    race_col <- rep(race_cols, times = length(cand_cols))
 
     # Put names on chains_pr
     names <- paste(cand_col, race_col, sep = "_")
