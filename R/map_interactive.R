@@ -1,7 +1,7 @@
-#' This script allows the user to plot an interactive map of the voter
+#' This function allows the user to plot an interactive map of the voter
 #' longitude and latitude points.
 #'
-#' @param voter_file an dataframe with a geometry column for latitude and
+#' @param voter_file a dataframe with a geometry column for latitude and
 #' longitudes created after original voter file was processed with a select
 #' geocoder.
 #' @param voter_id a unique identifier on the voter registration file.
@@ -26,7 +26,7 @@ map_interactive <- function(voter_file,
                             f_name = "firstname",
                             l_name = "lastname",
                             fips_code = "countycode") {
-  if (class(voter_file) == "data.frame" & any(colnames == "geometry")) {
+  if (class(voter_file) == "data.frame" & any(colnames(voter_file) == "geometry")) {
     latlon_df <- tidyr::extract(voter_file,
       geometry,
       into = c("lat", "lon"), "\\((.*),(.*)\\)",
