@@ -6,12 +6,14 @@
 \title{Stylized dataset of election results and turnout by race in Gwinnett county,
 2018 Georgia gubernatorial election.}
 \format{
-A data frame with 157 rows and 5 columns
+A data frame with 157 rows and 7 columns
 \describe{
-\item{kemp}{Proportion of votes cast for Republican candidate Brian Kemp}
-\item{abrams}{Proportion of votes cast for Democratic candidate Stacey Abrams}
+\item{kemp}{Proportion of votes cast for candidate Brian Kemp}
+\item{abrams}{Proportion of votes cast for candidate Stacey Abrams}
+\item{metz}{Proportion of votes cast for candidate Jim Metz}
 \item{white}{Proportion of voters self-reporting as white}
-\item{nonwhite}{Proportion of voters self-reporting as non-white}
+\item{black}{Proportion of voters self-reporting as black}
+\item{other}{Proportion of other voters}
 \item{turnout}{Count of voter turnout}
 }
 }
