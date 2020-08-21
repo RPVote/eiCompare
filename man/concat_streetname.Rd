@@ -20,7 +20,8 @@ concat_streetname(
 \item{street_name}{The name of the place in which a voter lives.
 Ex. Market Street}
 
-\item{street_suffix}{A directional abbreviation such as NE for northeast or SW for southwest.}
+\item{street_suffix}{A directional abbreviation such as NE for northeast or
+SW for southwest.}
 }
 \value{
 The voter file with pre-processed format for each address variable.
