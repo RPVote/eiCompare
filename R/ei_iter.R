@@ -174,6 +174,7 @@ ei_iter <- function(
       erhos <- erho
     } else {
       erhos <- c(erho, 0.5, 20)
+      n_erhos <- 3
     }
     ii <- 1
     while (ii < (n_erhos + 1)) {
@@ -200,19 +201,20 @@ ei_iter <- function(
           # })
         },
         error = function(cond) {
-          if (ii == 3) {
+          if (ii == n_erhos) {
             stop(
               message(
                 paste(
+                  "\n",
                   format(formula),
-                  "iteration failed three times. Error on third failure:\n",
-                  cond,
-                  "Type ?ei_iter for guidance on how to proceed."
+                  "iteration failed three times.\n",
+                  "Type ?ei_iter for guidance on how to proceed.\n",
+                  "Error on third failure:\n",
+                  cond
                 )
               )
             )
           } else {
-            ii <- ii + 1
             message(
               paste(
                 "\n",
@@ -225,6 +227,8 @@ ei_iter <- function(
           }
         }
       )
+      # Advance iteration
+      ii <- ii + 1
     }
 
     # Plots to be added here
