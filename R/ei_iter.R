@@ -8,6 +8,15 @@
 #' pair, votes by other races and for other candidates are binned and 2x2
 #' ecological inference is run.
 #'
+#' This function wraps around the ei function from the ei R package. This
+#' function is unstable and can break in arbitrary ways. Errors
+#' often emerge with particular values of the erho parameter. If the function
+#' breaks, it will automatically try adjusting the erho parameter, first to 20,
+#' then to 0.5.
+#'
+#' If problems persist, please submit an issue on the eiCompare github
+#' repository and include the error message you receive.
+#'
 #' @param data A data.frame() object containing precinct-level turnout data by
 #' race and candidate
 #' @param cand_cols A character vector listing the column names for turnout for
@@ -16,12 +25,11 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-#' @param erho A number passed directly to ei::ei(). Defaulted to 10
-#' @param seed A numeric seed value for replicating estimate results across
+#' @param name A unique identifier for the outputted eiCompare object.
+#' @param erho A number passed directly to ei::ei(). Defaulted to 10. Can also
+#' pass in a vector of erho values
+#' @param seed An integer seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
-#' @param samples The number of samples to draw from simulations on each
-#' iteration. Defaulated to 99. Note that increasing the number of samples drawn
-#' may increase the execution time of this function substantially.
 #' @param plots A boolean indicating whether or not to include density and
 #' tomography plots
 #' @param eiCompare_class default = TRUE
@@ -30,42 +38,43 @@
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @param plot_path A string to specify plot save location. Defaulted to working
 #'  directory.
-#' @param name A unique identifier for the outputted eiCompare object.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
-#' @return dataframe of results from iterative ei
+#' @return If eiCompare_class = TRUE, an object of class eiCompare is returned.
+#' Otherwise, a dataframe is returned that matches the formatting of ei_est_gen
+#' output.
 #'
 #' @importFrom doSNOW registerDoSNOW
-#' @importFrom foreach getDoParWorkers
+#' @importFrom foreach getDoParWorkers %dopar% %do%
+#' @importFrom parallel makeCluster stopCluster
 #' @importFrom bayestestR ci
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
+#' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #'
 #' @references eiPack. Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press.
 #'
 #' @export
 
-# utils::globalVariables(c("%dopar%", "%do%", "i"))
 
 ei_iter <- function(
                     data,
                     cand_cols,
                     race_cols,
                     totals_col,
+                    name = "",
                     erho = 10,
                     seed = NULL,
-                    samples = 99,
                     plots = FALSE,
                     eiCompare_class = TRUE,
                     betas = FALSE,
                     par_compute = FALSE,
                     verbose = FALSE,
                     plot_path = "",
-                    name = "",
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -126,6 +135,10 @@ ei_iter <- function(
     }
   }
 
+  if (verbose) {
+    message(paste("Beginning", n_iters, "2x2 estimations..."))
+  }
+
   # Init progressbar
   pb <- utils::txtProgressBar(
     min = 0,
@@ -137,9 +150,10 @@ ei_iter <- function(
 
   # Loop through each 2x2 ei
   ei_results <- foreach::foreach(
-    i = 1:n_iters,
+    i = seq_len(n_iters),
     .inorder = FALSE,
-    .packages = c("ei", "stats", "utils"),
+    .packages = c("ei", "stats", "utils", "mvtnorm"),
+    .export = c("ei_sim", ".samp", "like", ".createR"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
@@ -152,24 +166,66 @@ ei_iter <- function(
     set.seed(seed)
 
     # Run 2x2 ei
-    # ADD TRY CATCH SO THAT IF PARALLELIZATION=TRUE THEN KILL CLUSTERS
-    utils::capture.output({
-      ei_out <-
-        suppressMessages(
-          purrr::lift(ei::ei)(
-            data = data,
-            formula = formula,
-            total = totals_col,
-            erho = erho,
-            simulate = FALSE,
-            # args_pass
-          )
-        )
-    })
-
-    utils::capture.output({
-      ei_out <- suppressMessages(ei_sim(ei_out, samples))
-    })
+    # This loop tries three different erho values before returning an error.
+    # It first tries the default erho value, then the default for ei (0.5),
+    # then 20.
+    n_erhos <- length(erho)
+    if (n_erhos > 1) {
+      erhos <- erho
+    } else {
+      erhos <- c(erho, 0.5, 20)
+    }
+    ii <- 1
+    while (ii < (n_erhos + 1)) {
+      tryCatch(
+        {
+          utils::capture.output({
+            ei_out <-
+              suppressMessages(
+                purrr::lift(ei::ei)(
+                  data = data,
+                  formula = formula,
+                  total = totals_col,
+                  erho = erhos[ii],
+                  simulate = TRUE,
+                  args_pass
+                )
+              )
+          })
+          break
+          # This was meant to enable parameterization of the ei importance sample
+          # size, but its inclusion changes results dramatically.
+          # utils::capture.output({
+          #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
+          # })
+        },
+        error = function(cond) {
+          if (ii == 3) {
+            stop(
+              message(
+                paste(
+                  format(formula),
+                  "iteration failed three times. Error on third failure:\n",
+                  cond,
+                  "Type ?ei_iter for guidance on how to proceed."
+                )
+              )
+            )
+          } else {
+            ii <- ii + 1
+            message(
+              paste(
+                "\n",
+                format(formula),
+                "iteration failed. Retrying with erho =",
+                as.character(erhos[ii]),
+                "..."
+              )
+            )
+          }
+        }
+      )
+    }
 
     # Plots to be added here
     if (plots) {
@@ -207,15 +263,15 @@ ei_iter <- function(
     )
 
     # get aggregate means
-    betab_district_mean <- mean(res$aggs[1], na.rm = TRUE)
-    betaw_district_mean <- mean(res$aggs[2], na.rm = TRUE)
+    betab_district_mean <- mean(res$aggs[, 1], na.rm = TRUE)
+    betaw_district_mean <- mean(res$aggs[, 2], na.rm = TRUE)
 
     # Get aggregate ses
     # This works according to the aggregate formula in King, 1997, section 8.3
     aggs <- res$aggs
     ses <- c()
-    for (i in 1:ncol(aggs)) {
-      aggs_col <- aggs[, i]
+    for (k in 1:ncol(aggs)) {
+      aggs_col <- aggs[, k]
       m <- mean(aggs_col)
       nsims <- length(aggs_col)
       devs <- m - aggs_col
@@ -245,31 +301,23 @@ ei_iter <- function(
     list(district_res, precinct_res, aggs_b, list(race, cand, ei_out))
   }
 
-  # if (par_compute == TRUE) {
-  #  # Stop clusters (always done between uses)
-  #  parallel::stopCluster(clust)
-  #  # Garbage collection (in case of leakage)
-  #  gc()
-  #  #setTxtProgressBar(pb, i)
-  #
-  #  return(ei_out)
-  # }
-
-  # close progress bar
-  close(pb)
-
-  # Separate out district level summary and precinct level results
-  district_results <- sapply(ei_results, function(x) x[1])
-  precinct_results <- sapply(ei_results, function(x) x[2])
-  agg_results <- sapply(ei_results, function(x) x[3])
-  ei_objects <- sapply(ei_results, function(x) x[4])
-
+  # Stop clusters as soon as done parallel processing
   if (par_compute) {
     # Stop clusters (always done between uses)
     parallel::stopCluster(clust)
     # Garbage collection (in case of leakage)
     gc()
   }
+
+  # close progress bar
+  close(pb)
+
+  # Extract results objects
+  district_results <- sapply(ei_results, function(x) x[1])
+  precinct_results <- sapply(ei_results, function(x) x[2])
+  agg_results <- sapply(ei_results, function(x) x[3])
+  ei_objects <- sapply(ei_results, function(x) x[4])
+
 
   # Put results in dataframe
   results_table <- get_results_table(
@@ -299,7 +347,14 @@ ei_iter <- function(
     colnames(agg_betas) <- new_colnames
 
     # Create density plots
-    density_plots <- overlay_density_plot(agg_betas, results_table, race_cols, cand_cols, plot_path, ei_type = "ei")
+    density_plots <- overlay_density_plot(
+      agg_betas,
+      results_table,
+      race_cols,
+      cand_cols,
+      plot_path,
+      ei_type = "ei"
+    )
 
     # Create degree of racially polarized voting
     rpv_distribution <- rpv_density(agg_betas, plot_path)
@@ -312,10 +367,11 @@ ei_iter <- function(
     cands <- c()
     means <- c()
     ses <- c()
+    sds <- c()
     ci_lowers <- c()
     ci_uppers <- c()
 
-    district_samples <- as.data.frame(matrix(ncol = 0, nrow = samples))
+    district_samples <- as.data.frame(matrix(ncol = 0, nrow = 99))
     precinct_samples <- list()
 
     for (i in 1:length(ei_objects)) {
@@ -330,7 +386,9 @@ ei_iter <- function(
 
       # Both CIs
       suppressMessages({
-        cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+        suppressWarnings({
+          cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+        })
       })
       ci_lowers <- append(ci_lowers, cis$CI_low)
       ci_uppers <- append(ci_uppers, cis$CI_high)
@@ -339,13 +397,9 @@ ei_iter <- function(
       mean <- mean(aggs, na.rm = TRUE)
       means <- append(means, mean)
 
-      # Standard error
-      nsims <- length(aggs)
-      devs <- mean - aggs
-      sq_devs <- devs^2
-      sum_sq_devs <- sum(sq_devs)
-      se <- sqrt(sum_sq_devs / nsims)
-      ses <- append(ses, se)
+      # Standard deviation
+      sd <- sd(aggs, na.rm = TRUE)
+      sds <- append(sds, sd)
 
       # Add district chains to dataframe
       district_name <- paste(cand, race, sep = "_")
@@ -373,10 +427,10 @@ ei_iter <- function(
     }
 
     # Make estimates table
-    estimates <- data.frame(cbind(means, ses, ci_lowers, ci_uppers))
+    estimates <- data.frame(cbind(means, sds, ci_lowers, ci_uppers))
     estimates <- cbind(cands, races, estimates)
     colnames(estimates) <- c(
-      "cand", "race", "mean", "se", "ci_95_lower", "ci_95_upper"
+      "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
     )
 
     output <- list(
@@ -390,6 +444,12 @@ ei_iter <- function(
     class(output) <- "eiCompare"
     return(output)
   } else {
+    message(
+      paste(
+        "This results output is deprecated by the eiCompare class",
+        "object. It will be removed in the near future."
+      )
+    )
     # If betas == TRUE, return a list with results plus df of betas
     if (betas) {
       df_betas <- betas_for_return(precinct_results, race_cand_pairs)

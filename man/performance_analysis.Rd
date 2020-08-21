@@ -20,7 +20,7 @@ performance_analysis(
   census_county_col = "COUNTYFP10",
   census_tract_col = "TRACTCE10",
   census_block_col = "BLOCKCE10",
-  crs = "+proj=longlat +ellps=GRS80",
+  crs = NULL,
   coords = c("lon", "lat"),
   census_geo = "block",
   use_surname = TRUE,
