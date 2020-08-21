@@ -2,6 +2,7 @@
 ^\.pre-commit-config\.yaml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^inst/readme_plot\.png$
 ^R/plot\.ei_compare\.R$
 ^R/summary\.ei\.R$
 ^R/plot\.ei\.R$
