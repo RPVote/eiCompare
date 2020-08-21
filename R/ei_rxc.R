@@ -109,8 +109,8 @@ ei_rxc <- function(
       total = totals_col,
       formula = formula,
       ntunes = ntunes,
-      totaldraws = totaldraws # ,
-      # ...
+      totaldraws = totaldraws,
+      ...
     )
   )
 
@@ -234,8 +234,8 @@ ei_rxc <- function(
         thin = thin,
         burnin = burnin,
         ret.mcmc = TRUE,
-        tune.list = tune_nocov # ,
-        # ...
+        tune.list = tune_nocov,
+        ...
       )
     )
 
