@@ -9,11 +9,11 @@ md_bayes_draw(
   race_vote_split,
   form,
   ntunes = 10,
-  totaldraws = 1e+05,
+  totaldraws = 100000,
   seed = 12345,
-  sample = 1e+05,
+  sample = 100000,
   thin = 100,
-  burnin = 1e+05,
+  burnin = 100000,
   ret.mcmc = TRUE
 )
 }
