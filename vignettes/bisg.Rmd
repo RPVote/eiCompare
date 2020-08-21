@@ -45,7 +45,6 @@ suppressPackageStartupMessages({
   library(stringr)
   library(sf)
   library(wru)
-  library(readr)
   library(tidyr)
   library(ggplot2)
 })
