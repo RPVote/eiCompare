@@ -23,7 +23,6 @@ Imports:
   foreach,
   ggplot2,
   graphics,
-  leaflet,
   magrittr,
   mcmcse,
   methods,
@@ -39,6 +38,7 @@ Imports:
 NeedsCompilation: no
 Suggests:
   knitr,
+  leaflet,
   opencage,
   rmarkdown,
   reshape2,
