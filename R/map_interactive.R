@@ -25,8 +25,8 @@
 #' "c(latitude, longitude)" structure as in the output from the
 #' geocoder censusxy
 #'
-#' @import tidyr
-#' @import leaflet
+#' @importFrom tidyr extract
+#' @importFrom leaflet addTiles addMarkers
 #' @export map_interactive
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
