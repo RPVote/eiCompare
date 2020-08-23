@@ -65,11 +65,11 @@ Imports:
   sf,
   stringr,
   tidyr,
+  leaflet,
   tidyselect
 NeedsCompilation: no
 Suggests:
   knitr,
-  leaflet,
   opencage,
   rmarkdown,
   reshape2,

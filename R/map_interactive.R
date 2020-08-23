@@ -6,15 +6,8 @@
 #' was processed with a select geocoder.
 #' @param voter_id a unique identifier on the voter registration
 #' file.
-#' @param geometry a column with latitude and longitude points only.
-#' For example, the output for latitude and longitude using censusxy
-#' is a column called geometry with the value structure, c(latitude,
-#' longitude). This is not a column with multipolygon geometries like
-#' in a shapefile.
-#' @param lat the column (or vector) with latitude points.
-#' @param lon the column (or vector) with longitude points.
-#' @param first_name the column with first names of voters.
-#' @param last_name the column with last names of voters.
+#' @param f_name the column with first names of voters.
+#' @param l_name the column with last names of voters.
 #' @param fips_code the column with the fips code for the designated
 #' geograhic.
 #' unit of interest (i.e. state, county, block, tract).
@@ -25,7 +18,15 @@
 #' "c(latitude, longitude)" structure as in the output from the
 #' geocoder censusxy
 #'
+#' @param longitude the column of the of the voter_file that
+#' corresponds to #' longitude coordinates. This is optional
+#' and a parameter only used if the dataframe used does not
+#' have a concatenated geometry column with a
+#' "c(latitude, longitude)" structure as in the output from the
+#' geocoder censusxy
+#'
 #' @importFrom tidyr extract
+#' @importFrom rlang .data
 #' @importFrom leaflet addTiles addMarkers
 #' @export map_interactive
 #'
@@ -41,7 +42,7 @@ map_interactive <- function(voter_file,
                             longitude = "lon") {
   if (class(voter_file) == "data.frame" & any(colnames(voter_file) == "geometry")) {
     latlon_df <- tidyr::extract(voter_file,
-      geometry,
+      .data$geometry,
       into = c("lat", "lon"), "\\((.*),(.*)\\)",
       conv = T
     )
@@ -52,13 +53,13 @@ map_interactive <- function(voter_file,
     latlon_df <- voter_file
   }
 
-  leaflet(data = latlon_df) %>%
+  leaflet::leaflet(data = latlon_df) %>%
     addTiles() %>%
     addMarkers(~ latlon_df[[latitude]], ~ latlon_df[[longitude]],
       popup = paste(
         "Voter ID:", latlon_df[[voter_id]], "<br>",
-        "First Name:", latlon_df[[first_name]], "<br>",
-        "Last Name:", latlon_df[[last_name]], "<br>",
+        "First Name:", latlon_df[[f_name]], "<br>",
+        "Last Name:", latlon_df[[l_name]], "<br>",
         "FIPS code:", latlon_df[[fips_code]], "<br>",
         "Latitude:", latlon_df[[latitude]], "<br>",
         "Longitude:", latlon_df[[longitude]], "<br>"
