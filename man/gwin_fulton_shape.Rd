@@ -11,8 +11,8 @@ A data frame with 68 rows and 17 columns
 \item{COUNTYFP10}{the 2010 FIPS code for the county geographic level}
 \item{TRACTCE10}{the 2010 FIPS code for the tract geographic level}
 \item{BLOCKCE10}{the 2010 FIPS code for the block geographic level}
-\item{GEOID}{the 2010 FIPS code for Census block identifier;
-a concatenation of 2010 #' Census state FIPS code, 2010 Census
+\item{GEOID10}{the 2010 FIPS code for Census block identifier.
+a concatenation of 2010 Census state FIPS code, 2010 Census
 county FIPS code, 2010 Census tract code, and 2010 Census block number}
 \item{NAME10}{Census block identifier; a concatenation of 2010
 Census state FIPS code, 2010 Census county FIPS
