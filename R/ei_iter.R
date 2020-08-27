@@ -153,7 +153,6 @@ ei_iter <- function(
     i = seq_len(n_iters),
     .inorder = FALSE,
     .packages = c("ei", "stats", "utils", "mvtnorm"),
-    .export = c("ei_sim", ".samp", "like", ".createR"),
     .options.snow = opts
   ) %myinfix% {
     cand <- race_cand_pairs[i, "cand"]
