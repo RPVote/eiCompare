@@ -411,7 +411,7 @@ stdize_votes_all <- function(data,
     race_totals_col <- "cand_totals"
   } else if (is.null(totals_col) & totals_from == "race") {
     if (verbose) {
-      message("Computer totals from race columns...")
+      message("Computing totals from race columns...")
     }
     data$race_totals <- rowSums(data[, race_cols])
     cand_totals_col <- "race_totals"
@@ -437,12 +437,13 @@ stdize_votes_all <- function(data,
     max_dev_cand <- Inf
     avg_dev_race <- Inf
     avg_dev_cand <- Inf
+    verbose = FALSE
   }
 
   if (verbose) {
     message("Standardizing candidate columns...")
   }
-  # Get candidate standardized proportions
+# Get candidate standardized proportions
   cand_prps <- stdize_votes(
     data = data,
     cols = cand_cols,
