@@ -37,7 +37,6 @@ options(scipen = 999, digits = 4)
 suppressPackageStartupMessages({
   library(eiCompare)
   library(dplyr)
-  library(doParallel)
 })
 
 data("gwinnett")

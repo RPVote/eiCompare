@@ -37,6 +37,12 @@ plot.eiCompare <- function(x, ...) {
   data$race <- factor(data$race, levels = races)
   data$cand <- factor(data$cand, levels = rev(cands))
 
+  # Get errorbars
+  data$lower <- data$mean - data$sd
+  data$upper <- data$mean + data$sd
+  data$lower[data$lower < 0] <- 0
+  data$upper[data$upper > 1] <- 1
+  
   # Construct error bar plot
   ggplot2::ggplot(
     data = data,
@@ -44,8 +50,8 @@ plot.eiCompare <- function(x, ...) {
   ) +
     ggplot2::geom_errorbarh(
       ggplot2::aes(
-        xmin = (.data$mean - .data$sd),
-        xmax = (.data$mean + .data$sd)
+        xmin = .data$lower,
+        xmax = .data$upper
       ),
       height = 0.25,
       position = ggplot2::position_dodge(width = n_objects * 0.25)
