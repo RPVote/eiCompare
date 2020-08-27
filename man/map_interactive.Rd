@@ -19,34 +19,25 @@ map_interactive(
 \item{voter_file}{a dataframe with a geometry column for
 latitude and longitudes created after original voter file
 was processed with a select geocoder.}
-
 \item{voter_id}{a unique identifier on the voter registration
 file.}
-
+\item{f_name}{the column with first names of voters.}
+\item{l_name}{the column with last names of voters.}
 \item{fips_code}{the column with the fips code for the designated
 geograhic.
 unit of interest (i.e. state, county, block, tract).}
-
 \item{latitude}{the column of the of the voter_file that
-corresponds to #' latitude coordinates. This is optional
+corresponds to latitude coordinates. This is optional
 and a parameter only used if the dataframe used does not
 have a concatenated geometry column with a
 "c(latitude, longitude)" structure as in the output from the
 geocoder censusxy}
-
-\item{geometry}{a column with latitude and longitude points only.
-For example, the output for latitude and longitude using censusxy
-is a column called geometry with the value structure, c(latitude,
-longitude). This is not a column with multipolygon geometries like
-in a shapefile.}
-
-\item{lat}{the column (or vector) with latitude points.}
-
-\item{lon}{the column (or vector) with longitude points.}
-
-\item{first_name}{the column with first names of voters.}
-
-\item{last_name}{the column with last names of voters.}
+\item{longitude}{the column of the of the voter_file that
+corresponds to longitude coordinates. This is optional
+and a parameter only used if the dataframe used does not
+have a concatenated geometry column with a
+"c(latitude, longitude)" structure as in the output from the
+geocoder censusxy}
 }
 \description{
 This function allows the user to plot an interactive map

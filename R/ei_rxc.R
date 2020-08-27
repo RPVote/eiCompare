@@ -291,12 +291,9 @@ ei_rxc <- function(
     upper_se <- upper[, 2]
     upper <- upper_est + upper_se
 
-    # This gets uses base R to get the correct candidate and race names from the
-    # output of the chains
-    cand_race_col <- gsub("^.*?\\.", "", colnames(chains_raw))
-    cand_race_col <- unlist(strsplit(cand_race_col, "[.]", ))
-    cand_col <- cand_race_col[seq(2, length(cand_race_col), 2)]
-    race_col <- cand_race_col[seq(1, length(cand_race_col), 2)]
+    # Get race and cand cols for the final table
+    cand_col <- rep(cand_cols, each = length(race_cols))
+    race_col <- rep(race_cols, times = length(cand_cols))
 
     # Put names on chains_pr
     names <- paste(cand_col, race_col, sep = "_")

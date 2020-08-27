@@ -9,11 +9,11 @@ md_bayes_draw_lambda(
   race_vote_split,
   form,
   ntunes = 10,
-  totaldraws = 100000,
+  totaldraws = 1e+05,
   seed = 12345,
-  sample = 100000,
+  sample = 1e+05,
   thin = 100,
-  burnin = 100000,
+  burnin = 1e+05,
   ret.mcmc = TRUE
 )
 }

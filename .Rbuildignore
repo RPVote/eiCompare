@@ -7,3 +7,5 @@
 ^R/summary\.ei\.R$
 ^R/plot\.ei\.R$
 ^R/ei_sim\.R$
+^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
