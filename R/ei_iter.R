@@ -167,13 +167,16 @@ ei_iter <- function(
 
     # Run 2x2 ei
     # This loop tries three different erho values before returning an error.
-    # It first tries the default erho value, then the default for ei (0.5),
+    # It first tries the provided erho value, then the default for ei (0.5),
     # then 20.
+    # If a vector of erhos was entered, it will go through all of these before
+    # failing
     n_erhos <- length(erho)
     if (n_erhos > 1) {
       erhos <- erho
     } else {
       erhos <- c(erho, 0.5, 20)
+      n_erhos <- 3
     }
     ii <- 1
     while (ii < (n_erhos + 1)) {
@@ -200,19 +203,17 @@ ei_iter <- function(
           # })
         },
         error = function(cond) {
-          if (ii == 3) {
+          if (ii == n_erhos) {
             stop(
               message(
                 paste(
-                  format(formula),
-                  "iteration failed three times. Error on third failure:\n",
-                  cond,
-                  "Type ?ei_iter for guidance on how to proceed."
+                  "\n", format(formula), "iteration failed", n_erhos,
+                  "times.\nType ?ei_iter for guidance on how to proceed.\n",
+                  "Error on final failure:\n", cond
                 )
               )
             )
           } else {
-            ii <- ii + 1
             message(
               paste(
                 "\n",
@@ -225,9 +226,10 @@ ei_iter <- function(
           }
         }
       )
+      # Advance iteration
+      ii <- ii + 1
     }
 
-    # Plots to be added here
     if (plots) {
       # Create tomography plots
       grDevices::png(paste0(plot_path, "tomography_", cand, "_", race, ".png"),

@@ -1,46 +1,81 @@
-# eiCompare
-[![R build status](https://github.com/DSSG-eiCompare/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=R-CMD-check)
-[![Style status](https://github.com/DSSG-eiCompare/eiCompare/workflows/Styler/badge.svg)](https://github.com/DSSG-eiCompare/eiCompare/actions?workflow=Styler)
+# eiCompare <img src="inst/logo.png" align="right" width = 100px/>
+[![R build status](https://github.com/RPVote/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=R-CMD-check)
+[![Style status](https://github.com/RPVote/eiCompare/workflows/Styler/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=Styler)
 
-eiCompare development version
+`eiCompare` is an R package built to help practitioners and academics quantify racially polarized voting (RPV) with ease and confidence. It builds on top of several existing packages, augmenting their utility for measuring racially polarized voting in elections. Underlying packages include `ei`, `eiPack`, `wru`, and `censusxy`. 
 
-This package helps analysts with Ecological Inference and RxC analysis, to produce plots and tables. 
-The goal is to assist people doing voter redistricting work.
+`eiCompare` was built with several types of users in mind:
 
-## Development
+- Expert witnesses in voting rights litigation who need to accurately quantify vote dilution in an area and present the results convincingly to a judge or jury.
+- National voting rights advocacy organizations trying to identify elections across the country where vote dilution might be at play.
+- Grassroots organizations looking for data-driven tools to fuel their fight against vote dilution at the local level.
+- Academics who study the causes and consequences of vote dilution and racially polarized voting.
 
-Use branches for new modifications or functionality (change 'newfeature' to something descriptive):
+## News
+
+### 3.0 Update:
+
+The Voting Rights Team of the 2020 University of Washington Data Science for Social Good Fellowship program worked throughout the summer to develop the latest iteration of the package. Highlights from the update include:
+
+- Functions for geocoding addresses on voter files.
+- Improved accuracy of BISG estimation through surname preprocessing.
+- Refactored code for ecological inference functions.
+- Parallel processing to speed up ecological inference and geocoding.
+- New built-in visualizations of EI results and estimation diagnostics.
+- Performance analysis tools for comparing different election maps.
+- Functions for preprocessing address data, surname data, data for ecological inference.
+
+See [here](news.md) for a full list of new features. 
+
+## Installation
+
+### From CRAN
+
+CRAN submission is currently underway. Check back soon for instructions on installation from CRAN.
+
+### From Github (development version)
+
+Install latest development version with:
+
 ```
-git clone https://github.com/DSSG-eiCompare/eiCompare.git
-cd eiCompare
-# `git pull` to pull new changes from master branch
-git checkout -b newfeature
+remotes::install_github('RPVote/eiCompare')
 ```
 
-eiCompare uses [styler](https://github.com/r-lib/styler) for code style conventions. Using git pre-commit hooks ensures style conventions are followed before committing to GitHub. In your R console just run `precommit::use_precommit() ` to enable, then write R code without worrying about style. When you commit code with git it will be automatically formatted:
-```
-$ git commit -a -m "new function code"
-style-files..............................................................Failed
-- hook id: style-files
-- files were modified by this hook
+## Usage
+
+The name `eiCompare` highlights the utility of this package for comparing different ecological inference estimates. For instance, the following code compares iterative and RxC estimates of racial voting preferences in a stylized version of the 2018 Georgia gubernatorial election:
+
+``` r
+library(eiCompare)
+data("gwinnett_ei")
+
+iter <- ei_iter(
+  data = gwinnett_ei,
+  cand_cols = c("kemp", "abrams", "metz"),
+  race_cols = c("white", "black", "other"),
+  totals_col = "turnout",
+  name = "Iterative EI",
+)
+
+rxc <- ei_rxc(
+  data = gwinnett_ei,
+  cand_cols = c("kemp", "abrams", "metz"),
+  race_cols = c("white", "black", "other"),
+  totals_col = "turnout",
+  name = "RxC EI",
+)
+
+plot(iter, rxc)
 ```
 
-After autoformatting files, you must commit a second time:
-```
-$ git commit -a -m "new function code"
-style-files..............................................................Passed
-Check for added large files..............................................Passed
-Fix End of Files.........................................................Passed
-Don't commit common R artifacts......................(no files to check)Skipped
-[styler 1c3e95a] new function code
- 2 files changed, 14 insertions(+)
- create mode 100644 R/newfunction.R
-```
+<div style="text-align:center"><img src="inst/readme_plot.png" /></div>
 
-Now push your changes to github and create a PR from https://github.com/DSSG-eiCompare/eiCompare: 
-```
-git push --set-upstream origin newfeature 
-```
+The top panel shows that the majority of white voters voted for Brian Kemp, who won this election. The middle panel shows the estiamted preferences of black voters. The estimates indicate that black voters strongly preferred Stacey Abrams over Brian Kemp.
 
-## Continuous integration
-This project uses [GitHub Actions](https://docs.github.com/en/actions) for continuous integration. Workflows are run for every commit unless the commit message starts with '[skip-ci]'. For example `git commit -a -m "[skip-ci] added section to readme"`.
+Please refer to the package vignettes for detailed walkthroughs of how this package facilitates ecological inference. To view these in Rstudio, enter `browseVignettes("eiCompare")` in the console after installing the package.
+
+
+## Learn More
+
+- To learn about R programming, see [Hands-On Programming with R](https://rstudio-education.github.io/hopr/) and [R for data science](https://r4ds.had.co.nz/)
+- To learn more about the role of ecological inference in voting rights, visit the [eiCompare website](https://rpvote.github.io/voting-rights/)
