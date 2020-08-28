@@ -43,6 +43,7 @@
 #' @import foreach
 #' @import parallel
 #' @import doParallel
+#' @import curl
 #' @importFrom censusxy cxy_geocode
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -80,7 +81,7 @@ run_geocoder <- function(voter_file,
 
     packageStartupMessage("Initializing...", appendLF = FALSE)
 
-    census_voter_file <- censusxy::cxy_geocode(
+    census_voter_file <- RCurl::getURL(censusxy::cxy_geocode(
       .data = voter_file,
       id = voter_id,
       street = street,
@@ -91,7 +92,7 @@ run_geocoder <- function(voter_file,
       benchmark = census_benchmark,
       output = census_output,
       class = census_class
-    )
+    ))
 
     voter_file <- census_voter_file
     packageStartupMessage(" Geocoding complete.")
