@@ -51,7 +51,7 @@ map_interactive <- function(voter_file,
   }
 
 
-  map_inter <- leaflet(data = voter_file) %>%
+  map_inter <- leaflet::leaflet(data = voter_file) %>%
     addTiles() %>%
     addMarkers(~lat, ~lon,
       popup = paste(

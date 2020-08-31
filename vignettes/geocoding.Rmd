@@ -28,7 +28,6 @@ Each library/package loaded allows you to use certain functions needed to prep y
 ```{r setup, results='hide', message=FALSE}
 library(eiCompare)
 library(stringr)
-library(plyr)
 library(dplyr)
 library(tidyr)
 library(foreach)
