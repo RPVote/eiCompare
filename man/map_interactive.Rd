@@ -7,10 +7,10 @@ of the voter longitude and latitude points.}
 \usage{
 map_interactive(
   voter_file,
-  voter_id = "id",
-  f_name = "firstname",
-  l_name = "lastname",
-  fips_code = "countycode",
+  voter_id = "registration_number",
+  f_name = "first_name",
+  l_name = "last_name",
+  fips_code = "county_code",
   latitude = "lat",
   longitude = "lon"
 )

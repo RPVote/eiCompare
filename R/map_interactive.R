@@ -34,35 +34,35 @@
 #' @author Juandalyn Burke <jcburke@@uw.edu>
 
 map_interactive <- function(voter_file,
-                            voter_id = "id",
-                            f_name = "firstname",
-                            l_name = "lastname",
-                            fips_code = "countycode",
+                            voter_id = "registration_number",
+                            f_name = "first_name",
+                            l_name = "last_name",
+                            fips_code = "county_code",
                             latitude = "lat",
                             longitude = "lon") {
   if (class(voter_file) == "data.frame" & any(colnames(voter_file) == "geometry")) {
-    latlon_df <- tidyr::extract(voter_file,
+    voter_file <- tidyr::extract(voter_file,
       .data$geometry,
       into = c("lat", "lon"), "\\((.*),(.*)\\)",
       conv = T
     )
-    latitude <- latlon_df$lat
-    longitude <- latlon_df$lon
-  }
-  if (class(voter_file) == "data.frame" & !is.null(latitude) & !is.null(longitude)) {
-    latlon_df <- voter_file
+    latitude <- voter_file$lat
+    longitude <- voter_file$lon
   }
 
-  leaflet::leaflet(data = latlon_df) %>%
+
+  map_inter <- leaflet(data = voter_file) %>%
     addTiles() %>%
-    addMarkers(~ latlon_df[[latitude]], ~ latlon_df[[longitude]],
+    addMarkers(~lat, ~lon,
       popup = paste(
-        "Voter ID:", latlon_df[[voter_id]], "<br>",
-        "First Name:", latlon_df[[f_name]], "<br>",
-        "Last Name:", latlon_df[[l_name]], "<br>",
-        "FIPS code:", latlon_df[[fips_code]], "<br>",
-        "Latitude:", latlon_df[[latitude]], "<br>",
-        "Longitude:", latlon_df[[longitude]], "<br>"
+        "Voter ID:", voter_file[[voter_id]], "<br>",
+        "First Name:", voter_file[[f_name]], "<br>",
+        "Last Name:", voter_file[[l_name]], "<br>",
+        "FIPS code:", voter_file[[fips_code]], "<br>",
+        "Latitude:", voter_file[[latitude]], "<br>",
+        "Longitude:", voter_file[[longitude]], "<br>"
       )
     )
+
+  return(map_inter)
 }
