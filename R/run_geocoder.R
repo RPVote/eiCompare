@@ -43,7 +43,6 @@
 #' @import foreach
 #' @import parallel
 #' @import doParallel
-#' @import curl
 #' @importFrom censusxy cxy_geocode
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -76,7 +75,7 @@ run_geocoder <- function(voter_file,
     # Start-up message
     message(paste0(
       "Running US Census Geocoding API. This may take several",
-      "minutes (i.e. up to 20 minutes) to complete."
+      " minutes (i.e. up to 20 minutes) to complete."
     ))
 
     packageStartupMessage("Initializing...", appendLF = FALSE)
@@ -124,7 +123,10 @@ run_geocoder <- function(voter_file,
     if (n_cores >= 4) {
 
       # Start-up messages
-      message("Running US Census Geocoding API.")
+      message(paste0(
+        "Running US Census Geocoding API. This may take several",
+        " minutes (i.e. up to 20 minutes) to complete."
+      ))
 
       packageStartupMessage("Initializing...", appendLF = FALSE)
 
@@ -162,7 +164,7 @@ run_geocoder <- function(voter_file,
       voter_file <- census_voter_file
 
       Sys.sleep(1)
-      packageStartupMessage(" done")
+      packageStartupMessage(" Geocoding complete.")
 
       return(voter_file)
     }
@@ -195,7 +197,10 @@ run_geocoder <- function(voter_file,
     if (n_cores >= 4) {
 
       # Start-up messages
-      message("Running US Census Geocoding API.")
+      message(paste0(
+        "Running US Census Geocoding API. This may take several",
+        " minutes (i.e. up to 20 minutes) to complete."
+      ))
 
       packageStartupMessage("Initializing...", appendLF = FALSE)
 
@@ -258,7 +263,7 @@ run_geocoder <- function(voter_file,
       voter_file <- census_voter_file
 
       Sys.sleep(1)
-      packageStartupMessage(" done")
+      packageStartupMessage("Geocoding Complete")
 
       return(voter_file)
     }
