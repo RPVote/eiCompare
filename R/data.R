@@ -65,45 +65,6 @@
 #' @source East Ramapo School District
 "ersd_maps"
 
-
-#' Los Angeles County 2010 Election Results
-#'
-#' This dataset contains precinct vote data and racial demographics from a 2010
-#' election in Los Angeles County.
-#'
-#' @name lac_10
-#' @format A data frame with 4980 observations on the following 10 variables:
-#' \describe{
-#'  \item{precinct}{Precinct ID number.}
-#'  \item{tot_reg}{The total number of registered voters.}
-#'  \item{i_jones}{Number of votes for Jones.}
-#'  \item{i_delatore}{Number of votes for Delatorre.}
-#'  \item{votescast}{The total number of votes cast.}
-#'  \item{lat_voters}{Number of Latino voters.}
-#'  \item{pct_latino}{Percent of voters identifying as Latino.}
-#'  \item{pct_delatorre}{Percent of vote for Delatorre.}
-#'  \item{pct_jones}{Percent of vote for Jones.}
-#'  \item{pct_other}{Percent of vote for other candidates.}
-#' }
-#' @usage data(lac_10)
-#' @source Los Angeles County
-"lac_10"
-
-
-#' New York State FIPS codes
-#'
-#' New York State FIPS codes for 500 voters.
-#'
-#' @name ny_fips
-#' @format A data frame with 500 observations on the following 2 variables:
-#' \describe{
-#'  \item{row_id}{Unique identifier.}
-#'  \item{FIP}{The 15-digit FIPS code.}
-#' }
-#' @usage data(ny_fips)
-"ny_fips"
-
-
 #' New York Voter File Sample
 #'
 #' This dataset contains a sample of 500 voters in East Ramapo School District,
