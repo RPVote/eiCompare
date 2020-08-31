@@ -9,3 +9,4 @@
 ^R/ei_sim\.R$
 ^CODE_OF_CONDUCT\.md$
 ^CONTRIBUTING\.md$
+^cran-comments\.md$

@@ -144,10 +144,6 @@ voter_data <- concat_final_address(
 voter_data <- as_tibble(voter_data)
 ```
 
-```{r, echo=FALSE}
-knitr::include_graphics("voter_data_df.PNG")
-```
-
 ### <u>Step 3: run_geocoder() Function</u>
 
 #### <b>Select a geocoder and run the geocoder on the addresses in your file.</b>
@@ -361,7 +357,7 @@ We now will look at the block level of Fulton and Gwinnett county.
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_points_voters.PNG")
+knitr::include_graphics("geo_combined_map_points_voters_compressed.png")
 ```
 
 ```{r}
@@ -377,5 +373,5 @@ knitr::include_graphics("geo_combined_map_points_voters.PNG")
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_interactive_small.PNG")
+knitr::include_graphics("geo_combined_map_interactive_small_compressed.png")
 ```
