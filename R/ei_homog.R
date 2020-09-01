@@ -2,7 +2,7 @@
 #'
 #' Creates matrix table of homogeneous precinct analysis results by racial/ethnic group. The idea, 
 #' for example, is to get a basic sense of voting behavior by racial group, examine candidate 
-#' preference in districts that are above 80\% white, 80\% black, etc.
+#' preference in districts that are above 80% white, 80% black, etc.
 #' 
 #' ei_homog
 #'
@@ -11,17 +11,14 @@
 #' @param race_cols A character vector listing the column names for turnout by race
 #' @param totals_col The name of the column containing total votes cast in each precinct
 #' @param cp numeric; homogeneous precinct cut-point, e.g., 0.80; default = 0.80
-#' @param warn_row numeric; threshold number of precincts racial group must be above to 
+#' @warn_row = numeric; threshold number of precincts racial group must be above to 
 #' conduct analysis; default = 5. For example, with three groups, whites, blacks, Hispanics, 
-#' each group must have at least 5 precincts with at least 80\% share of the population for 
+#' each group must have at least 5 precincts with at least 80% share of the population for 
 #' that group. All racial groups need to have at least n number of precincts at or above 
 #' warn_row level or error will be thrown.
-#' @param verbose A boolean indicating whether to print out status messages.
-#' 
 #' @return matrix with homogeneous precinct results, columns = race groups, rows = candidates
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>; <loren.collingwood@@gmail.com>
 #' @author Stephen Popick
-#' 
 #' @examples
 #' # Toy data example
 #' cand_a <- c( rep(.8, 10), rep(.2, 10))
@@ -60,42 +57,31 @@
 #'         warn_row = 3,
 #'         verbose = TRUE)
 #'
-#' @importFrom stats weighted.mean
 #' @export ei_homog
 
 
-ei_homog <- function(data, cand_cols, race_cols, totals_col, cp = 0.80, warn_row = 5,
-                     verbose=FALSE) {
-    
-    # Set up Return Matrix #
-    mat_hold <- matrix(NA, nrow = length(race_cols), 
-                       ncol = length(cand_cols))
-    
-    # Loop over columns (race) #
+ei_homog <- function (data, cand_cols, race_cols, totals_col, cp = 0.8, warn_row = 5, 
+                      verbose = FALSE) 
+{
+    mat_hold <- matrix(NA, nrow = length(race_cols), ncol = length(cand_cols))
     for (j in seq_len(length(race_cols))) {
-        
-        homog <- data[data[,race_cols[j]] >= cp, ]
-        
+        # j <- 1
+        homog <- data[data[, race_cols[j]] >= cp, ]
         if (verbose) {
-            message(paste("Number of observations for racial group: ", race_cols[j], sep=""))
+            message(paste("Number of observations for racial group: ", 
+                          race_cols[j], sep = ""))
             print(nrow(homog))
         }
-    
-        stopifnot("Number of rows for racial group lower than threshold. Change warn_row threshold and/or check data to see if homogeneous precinct analysis even possible for all race groups." = nrow(homog) >= warn_row)
-        
-        # Loop over rows (candidates) #
+        stopifnot(`Number of rows for racial group lower than threshold. Change warn_row threshold and/or check data to see if homogeneous precinct analysis even possible for all race groups.` = nrow(homog) >= 
+                      warn_row)
         for (i in seq_len(length(cand_cols))) {
-            
-            mat_hold[i,j] <- stats::weighted.mean(x = homog[, cand_cols[i]], 
-                                                  w = homog[, totals_col])
+            mat_hold[j, i] <- stats::weighted.mean(x = homog[, cand_cols[i]], w = homog[, totals_col])
         }
     }
+    rownames(mat_hold) <- race_cols
+    colnames(mat_hold) <- cand_cols
+    mat_hold <- t(mat_hold)
     
-    # Label Rows and Columns #
-    rownames(mat_hold) <- cand_cols
-    colnames(mat_hold) <- race_cols
-    
-    # Return Matrix #
     return(mat_hold)
     
 }
