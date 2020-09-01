@@ -60,7 +60,7 @@
 #' @export ei_homog
 
 
-ei_homog <- function (data, cand_cols, race_cols, totals_col, cp = 0.8, warn_row = 3, 
+ei_homog <- function (data, cand_cols, race_cols, totals_col, cp = 0.8, warn_row = 5, 
                       verbose = FALSE) 
 {
     mat_hold <- matrix(NA, nrow = length(race_cols), ncol = length(cand_cols))
