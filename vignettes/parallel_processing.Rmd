@@ -119,7 +119,7 @@ Depending on your dataset, the number of races and candidates you're analyzung, 
 
 ```{r echo=FALSE, out.width='100%'}
 
-knitr::include_graphics("para_benchmark_box_nsamples.png")
+# knitr::include_graphics("para_benchmark_box_nsamples.png")
 ```
 
 ## Summary

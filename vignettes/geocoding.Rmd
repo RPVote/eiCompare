@@ -28,7 +28,6 @@ Each library/package loaded allows you to use certain functions needed to prep y
 ```{r setup, results='hide', message=FALSE}
 library(eiCompare)
 library(stringr)
-library(plyr)
 library(dplyr)
 library(tidyr)
 library(foreach)
@@ -143,10 +142,6 @@ voter_data <- concat_final_address(
 ```{r}
 # convert dataframe into a tibble
 voter_data <- as_tibble(voter_data)
-```
-
-```{r, echo=FALSE}
-knitr::include_graphics("voter_data_df.PNG")
 ```
 
 ### <u>Step 3: run_geocoder() Function</u>
@@ -335,7 +330,7 @@ We will map the area or ecological unit we are interested in using the tigris pa
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("fulton_gwinnett_shape_maps.PNG")
+# knitr::include_graphics("fulton_gwinnett_shape_maps.PNG")
 ```
 
 We now will look at the block level of Fulton and Gwinnett county.
@@ -362,7 +357,7 @@ We now will look at the block level of Fulton and Gwinnett county.
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_points_voters.PNG")
+# knitr::include_graphics("geo_combined_map_points_voters_compressed.png")
 ```
 
 ```{r}
@@ -378,5 +373,5 @@ knitr::include_graphics("geo_combined_map_points_voters.PNG")
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_interactive_small.PNG")
+# knitr::include_graphics("geo_combined_map_interactive_small_compressed.png")
 ```
