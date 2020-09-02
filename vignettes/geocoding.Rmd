@@ -330,7 +330,7 @@ We will map the area or ecological unit we are interested in using the tigris pa
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("fulton_gwinnett_shape_maps.PNG")
+# knitr::include_graphics("fulton_gwinnett_shape_maps.PNG")
 ```
 
 We now will look at the block level of Fulton and Gwinnett county.
@@ -357,7 +357,7 @@ We now will look at the block level of Fulton and Gwinnett county.
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_points_voters_compressed.png")
+# knitr::include_graphics("geo_combined_map_points_voters_compressed.png")
 ```
 
 ```{r}
@@ -373,5 +373,5 @@ knitr::include_graphics("geo_combined_map_points_voters_compressed.png")
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("geo_combined_map_interactive_small_compressed.png")
+# knitr::include_graphics("geo_combined_map_interactive_small_compressed.png")
 ```

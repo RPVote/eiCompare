@@ -113,7 +113,7 @@ Let's look at the tomography plot for the Candidate for the Hispanic demographic
 
 ```{r echo=FALSE, out.width='100%'}
 
-knitr::include_graphics("tomography_pct_montanez_pct_hisp.png")
+# knitr::include_graphics("tomography_pct_montanez_pct_hisp.png")
 ```
 
 
@@ -123,7 +123,7 @@ These plots can be used to confirm this point estimate distributions for $\beta^
 
 ```{r echo=FALSE, out.width='100%'}
 
-knitr::include_graphics("density_pct_montanez_pct_hisp.png")
+# knitr::include_graphics("density_pct_montanez_pct_hisp.png")
 ```
 
 ### Density voter choice comparison plots for each race
@@ -132,7 +132,7 @@ This overlaid density plot answers the question "How do voters from a certain ra
 
 ```{r echo=FALSE, out.width='100%'}
 
-knitr::include_graphics("pct_husted_pct_button_asian.png")
+# knitr::include_graphics("pct_husted_pct_button_asian.png")
 ```
 
 
@@ -143,7 +143,7 @@ Racially polarized voting by taking the difference of the posterior distribution
 
 ```{r echo=FALSE, out.width='100%'}
 
-knitr::include_graphics("rpv_density.png")
+# knitr::include_graphics("rpv_density.png")
 ```
 
 
@@ -168,7 +168,7 @@ The `coda` package enables creating trace and density plots, side-by-side for ea
 
 
 ```{r echo=FALSE,  out.width='0.75\\linewidth'}
-knitr::include_graphics("trace_density.png")
+# knitr::include_graphics("trace_density.png")
 ```
 
 
@@ -176,7 +176,7 @@ knitr::include_graphics("trace_density.png")
 The Gelman-Rubin diagnostic is one method to test for convergence to see if the sample is close to the posterior distribution. You'll get one plot for each parameter and produces the scale reduction factor. In these plots you'll be looking to for values below a factor of ~1.1 so these plots will give you a good sense of any changes you'll need for burn-in.
 
 ```{r echo=FALSE,  out.width='0.75\\linewidth'}
-knitr::include_graphics("gelman.png")
+# knitr::include_graphics("gelman.png")
 ```
 
 
