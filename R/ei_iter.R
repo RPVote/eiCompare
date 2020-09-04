@@ -89,7 +89,7 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    clust <- parallel::makeCluster(parallel::detectCores() - 1, setup_timeout = 0.5)
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)

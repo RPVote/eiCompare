@@ -70,6 +70,7 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
 
     # Column titles
     colnames(race_comb) <- gsub(paste(race[k], "_", sep = ""), "", colnames(race_comb))
+    colnames(race_comb) <- gsub(paste("_", race[k], sep = ""), "", colnames(race_comb))
 
     # Set up data to create graphs
     dens_data <- reshape2::melt(race_comb, id.vars = NULL)
@@ -96,9 +97,10 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
     } else if (ei_type == "rxc") {
       dens_data <- as.data.frame(dens_data[, c("Candidate", "value")])
 
-      rt_sub <- as.data.frame(results_table[race[k]][[1]])
-      rt_sub$Candidate <- rownames(rt_sub)
+      rt_sub <- as.data.frame(results_table[results_table$race == race[k], ])
       rt_sub <- dplyr::rename(rt_sub, mean_size = mean)
+      rt_sub$mean_size <- rt_sub$mean_size * 100
+      rt_sub <- dplyr::rename(rt_sub, Candidate = cand)
       rt_sub <- rt_sub[, c("Candidate", "mean_size")]
     }
 

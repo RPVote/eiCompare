@@ -136,7 +136,7 @@ ei_rxc <- function(
       if (verbose) message("Running in paralllel")
 
       # Standard to use 1 less core for clusters
-      clust <- parallel::makeCluster(parallel::detectCores() - 1)
+      clust <- parallel::makeCluster(parallel::detectCores() - 1, setup_timeout = 0.5)
 
       # Register parallel processing cluster
       doSNOW::registerDoSNOW(clust)
@@ -319,8 +319,6 @@ ei_rxc <- function(
     }
 
     if (plots) {
-      # colnames(chains_pr) <- gsub("ccount.", "betas.", colnames(md_out$draws$Cell.counts))
-      colnames(chains_pr) <- paste0("betas.", colnames(chains_pr))
       # Create density plots
       density_plots <- overlay_density_plot(chains_pr, results_table,
         race_cols, cand_cols,
