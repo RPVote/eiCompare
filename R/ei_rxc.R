@@ -28,12 +28,11 @@
 #' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC
 #' parameters (will return all chain results)
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
-#' @param plots A boolean indicating whether or not to include voter density plots
 #' @param plot_path A string to specify plot save location. Defaulted to working directory
 #' @param par_compute Boolean. If true, diagnostic test will be run in parallel.
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <loren.collingwood@@ucr.edu>, <loren.collingwood@@gmail.com>
 #' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
@@ -72,7 +71,6 @@ ei_rxc <- function(
                    verbose = FALSE,
                    diagnostic = FALSE,
                    n_chains = 3,
-                   plots = FALSE,
                    plot_path = "",
                    par_compute = FALSE,
                    ...) {
@@ -315,17 +313,6 @@ ei_rxc <- function(
     } else {
       colnames(results_table) <- c(
         "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
-      )
-    }
-
-    if (plots) {
-      # colnames(chains_pr) <- gsub("ccount.", "betas.", colnames(md_out$draws$Cell.counts))
-      colnames(chains_pr) <- paste0("betas.", colnames(chains_pr))
-      # Create density plots
-      density_plots <- overlay_density_plot(chains_pr, results_table,
-        race_cols, cand_cols,
-        plot_path,
-        ei_type = "rxc"
       )
     }
 
