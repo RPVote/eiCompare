@@ -22,7 +22,6 @@ ei_rxc(
   verbose = FALSE,
   diagnostic = FALSE,
   n_chains = 3,
-  plots = FALSE,
   plot_path = "",
   par_compute = FALSE,
   ...
@@ -74,8 +73,6 @@ parameters (will return all chain results)}
 
 \item{n_chains}{Number of chains for diagnostic test. Default is set to 3.}
 
-\item{plots}{A boolean indicating whether or not to include voter density plots}
-
 \item{plot_path}{A string to specify plot save location. Defaulted to working directory}
 
 \item{par_compute}{Boolean. If true, diagnostic test will be run in parallel.}
@@ -96,7 +93,7 @@ EI Bayesian simultaneous estimation for multiple races and candidates
 eiPack, King et al., (http://gking.harvard.edu/eiR)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <loren.collingwood@ucr.edu>, <loren.collingwood@gmail.com>
 
 Hikari Murayama <hikari_murayama@berkeley.edu>
 
