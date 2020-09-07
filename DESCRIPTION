@@ -58,7 +58,6 @@ Imports:
   magrittr,
   mcmcse,
   methods,
-  msm,
   overlapping,
   purrr,
   rlang,
@@ -71,6 +70,7 @@ NeedsCompilation: no
 Suggests:
   knitr,
   opencage,
+  plyr,
   rmarkdown,
   reshape2,
   RColorBrewer,
