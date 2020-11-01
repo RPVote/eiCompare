@@ -1,3 +1,17 @@
+swap_census_geography <- function(census_geo) {
+  if (census_geo == "block") {
+    new_geo <- "block group"
+  } else if (census_geo == "block group") {
+    new_geo <- "tract"
+  } else if (census_geo == "tract") {
+    new_geo <- "county"
+  } else if (census_geo == "county") {
+    new_geo <- "state"
+  }
+  return(new_geo)
+}
+
+
 #' Gets Census race counts necessary for BISG.
 #'
 #' This function gets the columns necessary to run BISG in compliance with
@@ -181,13 +195,13 @@ compute_p_g_cond_r <- function(counts,
 #'
 #' @export compute_p_r_cond_s
 compute_p_r_cond_s <- function(voter_file, surname_col) {
-  p_r_s <- wru::merge_surnames(
+  p_r_s <- suppressWarnings(suppressMessages(wru::merge_surnames(
     voter.file = dplyr::rename(voter_file,
                                surname = dplyr::all_of(surname_col)),
     surname.year = 2010,
     clean.surname = TRUE,
     impute.missing = TRUE
-  ) %>%
+  ))) %>%
     dplyr::rename(
       !!surname_col := surname,
       whi = p_whi,
@@ -226,11 +240,15 @@ compute_p_r_cond_s <- function(voter_file, surname_col) {
 #'
 #' @export compute_p_r_cond_s_g
 compute_p_r_cond_s_g <- function(
-  voter_file, counts, surname_col, geo_col, race_cols, geo_col_counts = "fips"
+  voter_file, counts, surname_col, geo_col,
+  race_cols = c("whi", "bla", "his", "asi", "oth"), geo_col_counts = "fips",
+  p_r_s = NULL
 ) {
-  # Compute probability of race conditioned on surname
-  p_r_s <- compute_p_r_cond_s(voter_file = voter_file,
-                              surname_col = surname_col)
+  if (is.null(p_r_s)) {
+    # Compute probability of race conditioned on surname
+    p_r_s <- compute_p_r_cond_s(voter_file = voter_file,
+                                surname_col = surname_col)
+  }
   # Compute probability of geography conditioned on race, for all geographies
   p_g_r_all <- compute_p_g_cond_r(counts = counts, cols = race_cols)
   # Merge p(G|R) into the voter file by FIPS code
@@ -246,6 +264,7 @@ compute_p_r_cond_s_g <- function(
     dplyr::ungroup() %>%
     dplyr::mutate(dplyr::across(.cols = race_cols, .fns = ~ . / total)) %>%
     dplyr::select(dplyr::all_of(race_cols))
+  return(p_r_s_g)
 }
 
 
@@ -281,7 +300,8 @@ compute_p_r_cond_s_g <- function(
 bisg <- function(
   voter_file, surname_col, geo_col, census_counts = NULL, geography = NULL,
   state = NULL, county = NULL, year = NULL, geo_col_counts = "fips",
-  race_cols = c("whi", "bla", "his", "asi", "oth"), verbose = FALSE
+  race_cols = c("whi", "bla", "his", "asi", "oth"), impute_missing = TRUE,
+  verbose = FALSE
 ) {
   # If counts aren't provided, obtain then via tidycensus
   if (is.null(census_counts)) {
@@ -295,22 +315,75 @@ bisg <- function(
       year = year
     )
   }
+  # Merge voter file with WRU surname database
+  if (verbose) {
+    message("Merging surnames.")
+  }
+  p_r_s <- compute_p_r_cond_s(
+    voter_file = voter_file,
+    surname_col = surname_col
+  )
+  # Compute the probability of race conditioned on geography and surname
   if (verbose) {
     message("Calculating BISG probabilities.")
   }
-  # Compute the probability of race conditioned on geography and surname
   p_r_s_g <- compute_p_r_cond_s_g(
     voter_file = voter_file,
     counts = census_counts,
     surname_col = surname_col,
     geo_col = geo_col,
     race_cols = race_cols,
-    geo_col_counts = geo_col_counts
+    geo_col_counts = geo_col_counts,
+    p_r_s = p_r_s
   )
+  # If necessary, impute the records located in blocks recorded as having no
+  # population
+  if (impute_missing) {
+    no_geocode_match <- is.na(p_r_s_g$whi)
+    # Imputing is only necessary if an entry didn't match
+    while (any(no_geocode_match)) {
+      if (verbose) {
+        message("Some voters didn't match to a geography.")
+      }
+      # Case 1: user did not provide a geography
+      if (is.null(geography)) {
+        if (verbose) {
+          message(paste("Geography not provided.",
+                        "Imputing with surname probabilities."))
+        }
+        p_r_s_g[no_geocode_match, race_cols] <- p_r_s[no_geocode_match,
+                                                      race_cols]
+      } else {
+        # Case 2: user provides geography; extract new counts
+        geography <- swap_census_geography(geography)
+        if (verbose) {
+          message(paste("Re-performing BISG at the", geography, "level."))
+        }
+        census_counts <- get_census_race_counts(
+          geography = geography,
+          state = state,
+          county = county,
+          year = year
+        )
+        # Re-perform BISG
+        new_p_r_s_g <- compute_p_r_cond_s_g(
+          voter_file = voter_file[no_geocode_match, ],
+          counts = census_counts,
+          surname_col = surname_col,
+          geo_col = geo_col,
+          race_cols = race_cols,
+          geo_col_counts = geo_col_counts,
+          p_r_s = p_r_s[no_geocode_match, ]
+        )
+        p_r_s_g[no_geocode_match, ] <- new_p_r_s_g
+      }
+      no_geocode_match <- is.na(p_r_s_g$whi)
+    }
+  }
   # Combine BISG probabilities back into voter file
-  voter_file_w_bisg <- dplyr::bind_cols(voter_file, p_r_s_g)
+  voter_file <- dplyr::bind_cols(voter_file, p_r_s_g)
   if (verbose) {
     message("BISG complete.")
   }
-  return(voter_file_w_bisg)
+  return(voter_file)
 }
