@@ -1,3 +1,13 @@
+#' Gets identifier for geographic unit at the level above the provided unit.
+#'
+#' This function accept a Census geographic identifier and returns the
+#' identifier one level above the provided one, in terms of spatial coverage.
+#'
+#' @param census_geo A string indicating the geographic level.
+#' @return A string indicating the geographic unit one level above the provided
+#'  unit.
+#'
+#' @export swap_census_geography
 swap_census_geography <- function(census_geo) {
   if (census_geo == "block") {
     new_geo <- "block group"
@@ -7,6 +17,8 @@ swap_census_geography <- function(census_geo) {
     new_geo <- "county"
   } else if (census_geo == "county") {
     new_geo <- "state"
+  } else {
+    stop("Incorrect Census geographic identifier.")
   }
   return(new_geo)
 }
@@ -26,6 +38,7 @@ swap_census_geography <- function(census_geo) {
 #'  data is obtained from all counties in the state.
 #' @param year The year to obtain Census data from. If 2010, uses decennial
 #'  data. Otherwise, uses the 5-year ACS summary data.
+#' @param cache A bool denoting whether the Census data should be cached.
 #' @return A tibble containing the race counts per geography unit for white,
 #'  black, Hispanic/Latino, Asian, and other voters.
 #'
@@ -34,7 +47,7 @@ swap_census_geography <- function(census_geo) {
 #' @importFrom tigris list_counties
 #' @export get_census_race_counts
 get_census_race_counts <- function(
-  geography, state, county = NULL, year = 2010
+  geography, state, county = NULL, year = 2010, cache = FALSE
 ) {
   # Get FIPS county codes if they're not provided
   if (is.null(county)) {
@@ -59,7 +72,8 @@ get_census_race_counts <- function(
       year = year,
       state = state,
       county = county,
-      output = "wide")) %>%
+      output = "wide",
+      cache_table = cache)) %>%
       dplyr::mutate(
         fips = GEOID,
         whi = P005003,
@@ -88,7 +102,8 @@ get_census_race_counts <- function(
       output = "wide",
       state = state,
       county = county,
-      survey = "acs5")) %>%
+      survey = "acs5",
+      cache_table = cache)) %>%
       dplyr::mutate(
         fips = GEOID,
         whi = B03002_003E,
@@ -103,6 +118,7 @@ get_census_race_counts <- function(
   }
   return(counts)
 }
+
 
 #' Computes the probability a person is located in a specific geographic unit.
 #'
@@ -138,9 +154,11 @@ compute_p_g <- function(counts, cols = c("whi", "bla", "his", "asi", "oth")) {
 #'  the probability of selecting a person per racial group (columns) conditioned
 #'  on racial group (rows).
 #'
+#' @importFrom dplyr across mutate
 #' @export compute_p_r_cond_g
-compute_p_r_cond_g <- function(counts,
-                               cols = c("whi", "bla", "his", "asi", "oth")) {
+compute_p_r_cond_g <- function(
+  counts, cols = c("whi", "bla", "his", "asi", "oth")
+) {
   p_r_g <- counts %>%
     dplyr::mutate(
       dplyr::across(.cols = cols, .fns = ~ . / rowSums(counts[, cols]))
@@ -164,9 +182,11 @@ compute_p_r_cond_g <- function(counts,
 #'  the probability of selecting a person per geographic unit (rows)
 #'  conditioned on racial group (columns).
 #'
+#' @importFrom dplyr across all_of mutate
 #' @export compute_p_r_cond_g
-compute_p_g_cond_r <- function(counts,
-                               cols = c("whi", "bla", "his", "asi", "oth")) {
+compute_p_g_cond_r <- function(
+  counts, cols = c("whi", "bla", "his", "asi", "oth")
+) {
   # Need P(G) and P(R|G) to invert for P(G|R) according to Bayes' Theorem
   p_g <- compute_p_g(counts, cols)
   p_r_g <- compute_p_r_cond_g(counts, cols)
@@ -189,10 +209,11 @@ compute_p_g_cond_r <- function(counts,
 #' @param voter_file A tibble containing a list of voters (by row), and a
 #'  column that denotes their surname.
 #' @param surname_col A string denoting which column contains the voter surname.
-#'
 #' @return A tibble with rows denoting voters and columns denoting the
 #'  probability that each voter is of a particular racial group.
 #'
+#' @import dplyr
+#' @importFrom wru merge_surnames
 #' @export compute_p_r_cond_s
 compute_p_r_cond_s <- function(voter_file, surname_col) {
   p_r_s <- suppressWarnings(suppressMessages(wru::merge_surnames(
@@ -230,14 +251,20 @@ compute_p_r_cond_s <- function(voter_file, surname_col) {
 #' @param surname_col A string denoting which column contains the voter surname.
 #' @param geo_col A string denoting which column contains the geographic unit
 #'  ID.
-#' @param race_ols A list of strings denoting the columns containing racial
+#' @param race_cols A list of strings denoting the columns containing racial
 #'  groups.
 #' @param geo_col_counts A string denoting the column in the counts tibble that
 #'  refers to the geographic unit.
+#' @param p_r_s A dataframe denoting the probability of race conditioned on
+#'  surname that matches with the provided voter file. Can accelerate
+#'  computation if provided up front.
 #'
 #' @return A tibble with rows denoting voters and columns denoting the
 #'  probability that each voter is of a particular racial group.
 #'
+#' @import dplyr
+#' @importFrom stats setNames
+#' @importFrom stringr str_length str_sub
 #' @export compute_p_r_cond_s_g
 compute_p_r_cond_s_g <- function(
   voter_file, counts, surname_col, geo_col,
@@ -251,6 +278,11 @@ compute_p_r_cond_s_g <- function(
   }
   # Compute probability of geography conditioned on race, for all geographies
   p_g_r_all <- compute_p_g_cond_r(counts = counts, cols = race_cols)
+  # Check if the IDs for voter file and the counts have the same length
+  fips_length <- unique(stringr::str_length(counts[[geo_col_counts]]))
+  voter_file[[geo_col]] <- stringr::str_sub(
+    voter_file[[geo_col]],
+    end = fips_length)
   # Merge p(G|R) into the voter file by FIPS code
   p_g_r <- dplyr::left_join(
     x = voter_file,
@@ -287,21 +319,26 @@ compute_p_r_cond_s_g <- function(
 #'  data is obtained from all counties in the state.
 #' @param year The year to obtain Census data from. If 2010, uses decennial
 #'  data. Otherwise, uses the 5-year ACS summary data.
-#' @param cols A list of strings denoting the columns containing racial groups.
 #' @param geo_col_counts A string denoting the column in the counts tibble that
 #'  refers to the geographic unit.
-#' @param race_ols A list of strings denoting the columns containing racial
+#' @param race_cols A list of strings denoting the columns containing racial
 #'  groups.
+#' @param impute_missing A bool denoting whether voter file entries that do not
+#'  match at the geographic level should be imputed with either the surname
+#'  probabilities, or should be imputed with probabilities calculated at a
+#'  broader geographic unit.
 #' @param verbose A boolean denoting the verbosity.
+#' @param cache A boolean denoting whether Census data should be cached.
 #' @return A tibble with rows denoting voters and columns denoting the
 #'  probability that each voter is of a particular racial group.
 #'
+#' @importFrom dplyr bind_cols
 #' @export bisg
 bisg <- function(
   voter_file, surname_col, geo_col, census_counts = NULL, geography = NULL,
   state = NULL, county = NULL, year = NULL, geo_col_counts = "fips",
   race_cols = c("whi", "bla", "his", "asi", "oth"), impute_missing = TRUE,
-  verbose = FALSE
+  verbose = FALSE, cache = FALSE
 ) {
   # If counts aren't provided, obtain then via tidycensus
   if (is.null(census_counts)) {
@@ -312,7 +349,8 @@ bisg <- function(
       geography = geography,
       state = state,
       county = county,
-      year = year
+      year = year,
+      cache = cache
     )
   }
   # Merge voter file with WRU surname database
@@ -359,11 +397,13 @@ bisg <- function(
         if (verbose) {
           message(paste("Re-performing BISG at the", geography, "level."))
         }
+        # Get Census counts at a broader spatial extent
         census_counts <- get_census_race_counts(
           geography = geography,
           state = state,
           county = county,
-          year = year
+          year = year,
+          cache = cache
         )
         # Re-perform BISG
         new_p_r_s_g <- compute_p_r_cond_s_g(
