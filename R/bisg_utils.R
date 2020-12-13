@@ -43,6 +43,7 @@ swap_census_geography <- function(census_geo) {
 #'  black, Hispanic/Latino, Asian, and other voters.
 #'
 #' @import dplyr
+#' @importFrom rlang :=
 #' @importFrom tidycensus get_decennial get_acs
 #' @importFrom tigris list_counties
 #' @export get_census_race_counts
@@ -81,7 +82,7 @@ get_census_race_counts <- function(
         his = P005010,
         asi = P005006 + P005007,
         oth = P005005 + P005008 + P005009) %>%
-      dplyr::select(fips, whi, bla, his, asi, oth)
+      dplyr::select(dplyr::all_of(c("fips", "whi", "bla", "his", "asi", "oth")))
   } else {
     # Variable names for ACS
     variables <- c("B03002_003",
