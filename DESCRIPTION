@@ -65,6 +65,7 @@ Imports:
   stringr,
   tidyr,
   leaflet,
+  tidycensus,
   tidyselect
 NeedsCompilation: no
 Suggests:
