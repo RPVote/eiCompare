@@ -219,7 +219,7 @@ run_geocoder <- function(voter_file,
       dfList <- list()
 
       # Creates lists of dataframes that holds voter data in batches of 10000
-      for (i in 1:seq_len(n_loops)) {
+      for (i in seq_len(n_loops)) {
         df <- voter_file[start_row:stop_row, ]
         if (start_row == last_row_start) {
           df <- voter_file[last_row_start:last_row_stop, ]
@@ -283,7 +283,7 @@ run_geocoder <- function(voter_file,
       )
       # Geocode using new address format for opencage and create columns for
       # geographies
-      for (m in 1:seq_len(num_obs)) {
+      for (m in seq_len(num_obs)) {
         tryCatch(
           {
             if (requireNamespace("opencage", quietly = TRUE)) {
