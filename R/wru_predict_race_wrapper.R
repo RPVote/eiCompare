@@ -74,7 +74,7 @@ wru_predict_race_wrapper <- function(voter_file,
       message("Matching surnames.")
     }
     merged_surnames <- suppressWarnings(
-      wru::merge_surnames(
+      wru:::merge_surnames(
         voter.file = wru_voter_file,
         surname.year = surname_year,
         clean.surname = TRUE,
@@ -167,7 +167,7 @@ wru_predict_race_wrapper <- function(voter_file,
     # Use probabilities from surnames only for those that don't match
     invisible(capture.output(
       no_match_surnames <- suppressWarnings(
-        wru::merge_surnames(
+        wru:::merge_surnames(
           voter.file = wru_voter_file[no_match_final, ],
           surname.year = surname_year,
           clean.surname = TRUE,

@@ -253,7 +253,7 @@ predict_race_multi_barreled <- function(voter_file,
     new_voter_file <- data.frame(surname = surnames)
     # Calculate probabilities using surnames only
     probabilities <- suppressWarnings(
-      wru::merge_surnames(
+      wru:::merge_surnames(
         voter.file = new_voter_file,
         surname.year = 2010,
         clean.surname = FALSE,
@@ -281,8 +281,8 @@ predict_race_multi_barreled <- function(voter_file,
           surname.year = surname_year,
           census.geo = census_geo,
           census.data = census_data,
-          age = use_age,
-          sex = use_sex,
+          age = F,
+          sex = F,
         )
       )
     ))
