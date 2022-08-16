@@ -25,7 +25,7 @@ The Voting Rights Team of the 2020 University of Washington Data Science for Soc
 - Performance analysis tools for comparing different election maps.
 - Functions for preprocessing address data, surname data, data for ecological inference.
 
-See [here](news.md) for a full list of new features. 
+See [here](NEWS.md) for a full list of new features. 
 
 ## Installation
 
