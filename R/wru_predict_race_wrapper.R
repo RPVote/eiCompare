@@ -67,7 +67,17 @@ wru_predict_race_wrapper <- function(voter_file,
     tract = tract,
     block = block
   )
-
+  
+  # Temporary check to force use_sex and use_age into FALSE
+  if (use_age) {
+    warning("age is currently disabled in wru... forcing use_age to be FALSE")
+    use_age == FALSE
+  }
+  if (use_sex) {
+    warning("sex is currently disabled in wru... forcing use_sex to be FALSE")
+    use_sex == FALSE
+  }
+  
   # If necessary, check which surnames matched
   if (return_surname_flag) {
     if (verbose) {
