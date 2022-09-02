@@ -51,7 +51,7 @@ suppressPackageStartupMessages({
 })
 ```
 
-Load in census data, the shape file and geocoded voter registation data with latitude and longitude coordinates.
+Load in census data, the shape file and geocoded voter registration data with latitude and longitude coordinates.
 ```{r}
 # Load Georgia census data
 data(georgia_census)
@@ -123,6 +123,8 @@ class(voter_file_complete)
 ```
 
 ```{r}
+georgia_census$GA$year <- 2010
+
 # Perform BISG
 bisg_df <- eiCompare::wru_predict_race_wrapper(
   voter_file = voter_file_complete,

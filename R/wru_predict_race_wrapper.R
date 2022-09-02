@@ -40,6 +40,7 @@
 #' @export wru_predict_race_wrapper
 #' @import wru
 #' @importFrom dplyr relocate
+#' @importFrom utils getFromNamespace
 wru_predict_race_wrapper <- function(voter_file,
                                      census_data,
                                      voter_id = NULL,
@@ -71,12 +72,15 @@ wru_predict_race_wrapper <- function(voter_file,
   # Temporary check to force use_sex and use_age into FALSE
   if (use_age) {
     warning("age is currently disabled in wru... forcing use_age to be FALSE")
-    use_age == FALSE
+    use_age <- FALSE
   }
   if (use_sex) {
     warning("sex is currently disabled in wru... forcing use_sex to be FALSE")
-    use_sex == FALSE
+    use_sex <- FALSE
   }
+  
+  # Get merge_surnames function out from wru
+  merge_surnames <- utils::getFromNamespace("merge_surnames", "wru")
   
   # If necessary, check which surnames matched
   if (return_surname_flag) {
@@ -84,7 +88,7 @@ wru_predict_race_wrapper <- function(voter_file,
       message("Matching surnames.")
     }
     merged_surnames <- suppressWarnings(
-      wru::merge_surnames(
+      merge_surnames(
         voter.file = wru_voter_file,
         surname.year = surname_year,
         clean.surname = TRUE,
@@ -177,7 +181,7 @@ wru_predict_race_wrapper <- function(voter_file,
     # Use probabilities from surnames only for those that don't match
     invisible(capture.output(
       no_match_surnames <- suppressWarnings(
-        wru::merge_surnames(
+        merge_surnames(
           voter.file = wru_voter_file[no_match_final, ],
           surname.year = surname_year,
           clean.surname = TRUE,
