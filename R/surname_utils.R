@@ -132,6 +132,7 @@ get_multi_barreled_surnames <- function(voter_file,
 #' @return A vector of logicals denoting a match or not.
 #'
 #' @export surname_match
+#' @importFrom utils getFromNamespace
 surname_match <- function(voter_file,
                           surname_col = "last_name",
                           strip_special = FALSE) {
@@ -142,6 +143,7 @@ surname_match <- function(voter_file,
       replace = ""
     )
   }
+  
   # Determine if there's a surname match
   surname_match <- voter_file[[surname_col]] %in% wru::surnames2010$surname
   return(surname_match)
@@ -224,6 +226,7 @@ surname_summary <- function(voter_file, surname_col) {
 #' @return A vector of probabilities for each surname.
 #'
 #' @export predict_race_multi_barreled
+#' @importFrom utils getFromNamespace
 predict_race_multi_barreled <- function(voter_file,
                                         surname_col = "last_name",
                                         surname_only = TRUE,
@@ -248,12 +251,15 @@ predict_race_multi_barreled <- function(voter_file,
     surnames <- surnames[!(surnames %in% remove_patterns)]
   }
 
+  # Get merge_surnames function out from wru
+  merge_surnames_copy <- utils::getFromNamespace("merge_surnames", "wru")
+  
   # Use surname only
   if (surname_only) {
     new_voter_file <- data.frame(surname = surnames)
     # Calculate probabilities using surnames only
     probabilities <- suppressWarnings(
-      wru::merge_surnames(
+      merge_surnames_copy(
         voter.file = new_voter_file,
         surname.year = 2010,
         clean.surname = FALSE,
@@ -270,7 +276,7 @@ predict_race_multi_barreled <- function(voter_file,
       tract = voter_file[[tract]],
       block = voter_file[[block]]
     )
-
+    
     # Predict race using full BISG
     invisible(capture.output(
       bisg <- suppressWarnings(
