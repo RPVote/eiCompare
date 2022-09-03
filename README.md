@@ -74,6 +74,10 @@ The top panel shows that the majority of white voters voted for Brian Kemp, who 
 
 Please refer to the package vignettes for detailed walkthroughs of how this package facilitates ecological inference. To view these in Rstudio, enter `browseVignettes("eiCompare")` in the console after installing the package.
 
+## Platform dependencies
+
+The following platform dependencies may be required on Ubuntu/Debian based systems:
+sudo apt install libfftw3-dev fftw-dev
 
 ## Learn More
 
