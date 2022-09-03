@@ -185,7 +185,7 @@ ei_rxc <- function(
       # Loop through races to get proportion of race voting for each cand
       # This loop is required to get proportions within races
       for (i in 1:length(race_cols)) {
-        race_indices <- grep(race_cols[i], colnames(chains_raw))
+        race_indices <- grep(paste0('\\b',race_cols[i],'\\b'), colnames(chains_raw))
         race_draws <- chains_raw[, race_indices]
         race_pr <- race_draws / rowSums(race_draws)
         chains_pr[, race_indices] <- race_pr
@@ -247,7 +247,7 @@ ei_rxc <- function(
     # Loop through races to get proportion of race voting for each cand
     # This loop is required to get proportions within races
     for (i in 1:length(race_cols)) {
-      race_indices <- grep(race_cols[i], colnames(chains_raw))
+      race_indices <- grep(paste0('\\b',race_cols[i],'\\b'), colnames(chains_raw))
       race_draws <- chains_raw[, race_indices]
       race_pr <- race_draws / rowSums(race_draws)
       chains_pr[, race_indices] <- race_pr
