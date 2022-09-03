@@ -14,7 +14,7 @@ test_that("WRU wrapper correctly calculates probabilities.", {
 
   # Load Rockland county Census information
   data(rockland_census)
-
+  rockland_census$NY$year <- 2010
   # Run predict race wrapper function
   bisg <- wru_predict_race_wrapper(
     voter_file = voter_file,

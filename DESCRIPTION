@@ -38,7 +38,7 @@ Authors@R:
              comment = c(ORCID = "0000-0003-2423-6395")))
 URL: https://github.com/RPVote/eiCompare
 Description: Compares estimates from three ecological inference routines, based on King (1997) <ISBN: 0691012407>, <https://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <https://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
-License: GPL-3
+License: GPL-3 + file LICENSE
 Depends: R (>= 3.5.0), eiPack, ei, wru
 Imports: censusxy, bayestestR, coda, data.table, doParallel, doSNOW,
         dplyr, foreach, ggplot2, graphics, magrittr, mcmcse, methods,
@@ -47,7 +47,7 @@ Imports: censusxy, bayestestR, coda, data.table, doParallel, doSNOW,
 NeedsCompilation: no
 Suggests: knitr, opencage, plyr, rmarkdown, reshape2, RColorBrewer,
         RJSONIO, testthat, tigris
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 Packaged: 2020-09-08 07:00:35 UTC; lorencollingwood
@@ -60,3 +60,4 @@ Author: Loren Collingwood [aut, cre] (<https://orcid.org/0000-0002-4447-8204>),
   Spencer Wood [ctb] (<https://orcid.org/0000-0002-5794-2619>),
   Matt Barreto [ctb] (<https://orcid.org/0000-0003-2423-6395>)
 Maintainer: Loren Collingwood <loren.collingwood@gmail.com>
+LazyData: true

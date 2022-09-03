@@ -165,6 +165,8 @@ Since New York state does not report race on the voter file, we need to estimate
 # Load Rockland County Census information
 data(rockland_census)
 
+rockland_census$NY$year <- 2010
+
 # Apply BISG to the voter file to get race predictions
 voter_file_with_race <- eiCompare::wru_predict_race_wrapper(
   voter_file = as.data.frame(voter_file_w_ward),
