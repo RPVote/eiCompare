@@ -42,7 +42,7 @@ map_interactive <-  function(voter_file,
          latitude = "lat",
          longitude = "lon") {
     
-    if (class(voter_file) == "data.frame" & any(colnames(voter_file) == "geometry")) {
+    if (is(voter_file, "data.frame") & any(colnames(voter_file) == "geometry")) {
         voter_file <- tidyr::extract(voter_file,
                                      .data$geometry,
                                      into = c("lat", "lon"), "\\((.*),(.*)\\)",

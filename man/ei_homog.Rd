@@ -24,6 +24,14 @@ ei_homog(
 \item{totals_col}{The name of the column containing total votes cast in each precinct}
 
 \item{cp}{numeric; homogeneous precinct cut-point, e.g., 0.80; default = 0.80}
+
+\item{warn_row}{= numeric; threshold number of precincts racial group must be above to 
+conduct analysis; default = 5. For example, with three groups, whites, blacks, Hispanics, 
+each group must have at least 5 precincts with at least 80% share of the population for 
+that group. All racial groups need to have at least n number of precincts at or above 
+warn_row level or error will be thrown.}
+
+\item{verbose}{A boolean indicating whether to print out status messages.}
 }
 \value{
 matrix with homogeneous precinct results, columns = race groups, rows = candidates
