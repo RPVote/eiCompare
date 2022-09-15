@@ -39,7 +39,7 @@ Authors@R:
 URL: https://github.com/RPVote/eiCompare
 Description: Compares estimates from three ecological inference routines, based on King (1997) <ISBN: 0691012407>, <https://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <https://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
 License: GPL-3 + file LICENSE
-Depends: R (>= 3.5.0), eiPack, ei, wru
+Depends: R (>= 3.5.0), eiPack, ei, wru (>= 1.0.0)
 Imports: censusxy, bayestestR, coda, data.table, doParallel, doSNOW,
         dplyr, foreach, ggplot2, graphics, magrittr, mcmcse, methods,
         overlapping, purrr, rlang, sf, stringr, tidyr, leaflet,
