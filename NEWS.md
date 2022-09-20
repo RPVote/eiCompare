@@ -1,3 +1,10 @@
+# eiCompare 3.0.1
+
+## Minor package changes
+
+* Switched maintainer from Loren Collingwood to Ari Decter-Frain (@aridf)
+* Minor changes to functions dependent on `wru` to ensure compatibility with new version
+
 # eiCompare 3.0.0
 
 ## General package changes

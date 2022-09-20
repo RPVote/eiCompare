@@ -1,7 +1,7 @@
 Package: eiCompare
 Type: Package
 Title: Compares EI, Goodman, RxC Estimates
-Version: 3.0.0
+Version: 3.0.1
 Authors@R: 
     c(person(given = "Loren",
              family = "Collingwood",
@@ -59,5 +59,5 @@ Author: Loren Collingwood [aut, cre] (<https://orcid.org/0000-0002-4447-8204>),
   Scott Henderson [ctb] (<https://orcid.org/0000-0003-0624-4965>),
   Spencer Wood [ctb] (<https://orcid.org/0000-0002-5794-2619>),
   Matt Barreto [ctb] (<https://orcid.org/0000-0003-2423-6395>)
-Maintainer: Loren Collingwood <loren.collingwood@gmail.com>
+Maintainer: Ari Decter-Frain <adecterfrain@gmail.com>
 LazyData: true
