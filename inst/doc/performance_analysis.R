@@ -7,6 +7,7 @@ suppressMessages({
   library(wru)
 })
 
+
 ## ----load_data----------------------------------------------------------------
 # Load the map
 data("ersd_maps")
@@ -89,6 +90,7 @@ voter_file_w_ward$tract <- c("010801", "012202", "012501", "011502", "012202")
 voter_file_w_ward$block <- c("1016", "3002", "1016", "4001", "2004")
 
 ## ----apply_bisg---------------------------------------------------------------
+
 # Load Rockland County Census information
 data(rockland_census)
 
@@ -131,6 +133,7 @@ data("ramapo2018")
 print(head(ramapo2018, 10))
 
 ## ----performance_analysis-----------------------------------------------------
+
 # Load Ramapo 2018 voter file
 data("ramapo2018")
 
