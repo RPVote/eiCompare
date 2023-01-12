@@ -32,7 +32,7 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .ipynb_checkpoints/
-inst/doc
+
 
 # macOS
 .DS_Store
