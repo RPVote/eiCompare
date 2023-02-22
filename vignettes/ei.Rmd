@@ -11,6 +11,8 @@ This vignette illustrates how we can use the Ecological Inference (EI) tools
 within `eiCompare` to learn about the voting behavior of different groups of 
 voters. 
 
+Note: Some lines of code below are commented out to limit testing time. To run this demo, uncomment them.
+
 ## The ecological inference problem
 
 Ecological Inference involves estimating the voting behaviors of different 
@@ -200,35 +202,35 @@ We can run both methods with their respective functions. They take some time to 
 First, we conduct iterative EI using `ei_iter()`.
 
 ```{r}
-ei_results_iter <- ei_iter(
-  data = gwinnett_ei,
-  cand_cols = cands,
-  race_cols = races,
-  totals_col = total,
-  name = "Iter"
-)
-summary(ei_results_iter)
+# ei_results_iter <- ei_iter(
+#  data = gwinnett_ei,
+#  cand_cols = cands,
+#  race_cols = races,
+#  totals_col = total,
+#  name = "Iter"
+#)
+#summary(ei_results_iter)
 ```
 
 Notice that the `name` field is used to give a name to the results object. The name entered here is what differentiates results objects from each other when they are summarized or plotted together.  Next, we conduct RxC EI using `ei_rxc()`. This function uses a Markov Chain Monte Carlo (MCMC) algorithm to compute estimates. Here, the MCMC parameters are set to prioritize speed over accuracy. In practice, to ensure robust results, users should use at least the default number of samples (probably more), and check the diagnostics of the MCMC chain to ensure that everything worked correctly.  
 ```{r}
-ei_results_rxc <- ei_rxc(
-  data = gwinnett_ei,
-  cand_cols = cands,
-  race_cols = races,
-  totals_col = total,
-  ntunes = 1,
-  samples = 5000,
-  thin = 1,
-  name = "RxC"
-)
-summary(ei_results_iter, ei_results_rxc)
+#ei_results_rxc <- ei_rxc(
+#  data = gwinnett_ei,
+#  cand_cols = cands,
+#  race_cols = races,
+#  totals_col = total,
+#  ntunes = 1,
+#  samples = 5000,
+#  thin = 1,
+#  name = "RxC"
+#)
+#summary(ei_results_iter, ei_results_rxc)
 ```
 Here we use the `eiCompare` `summary()` method to compare multiple ecological inference estimates. This is where the name `eiCompare` comes from!
 
 Finally, we can plot the results of the two methods using the eiCompare `plot()` method. This method accepts a list of `eiCompare` objects outputted by `ei_iter()` and `ei_rxc()`. It plots the point estimates and 95% credible intervals for each candidate-race pair, for however many objects are passed in. 
 ```{r fig.height = 6, fig.width = 8, fig.align = "center"}
-plot(ei_results_iter, ei_results_rxc)
+#plot(ei_results_iter, ei_results_rxc)
 ```
 This plot shows the results of both ecological inference methods. The plot presents one panel for each race group. Each panel has a row for each candidate. The x-axis indicates the proportion of the each race group's vote that is estimated to have gone to each candidate in the election. Lastly, the different colored points represent results from different methods, listed in the legend below the plot. 
 

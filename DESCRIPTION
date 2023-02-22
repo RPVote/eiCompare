@@ -5,13 +5,13 @@ Version: 3.0.1
 Authors@R: 
     c(person(given = "Loren",
              family = "Collingwood",
-             role = c("aut", "cre"),
+             role = c("aut"),
              email = "loren.collingwood@gmail.com",
              comment = c(ORCID = "0000-0002-4447-8204")),
       person(given = "Ari",
              family = "Decter-Frain",
              email = "adecterfrain@gmail.com",
-             role = "aut",
+             role = c("aut", "cre"),
              comment = c(ORCID = "0000-0001-9635-3334")),
       person(given = "Hikari",
              family = "Murayama",
@@ -39,7 +39,7 @@ Authors@R:
              comment = c(ORCID = "0000-0003-2423-6395")))
 URL: https://github.com/RPVote/eiCompare
 Description: Compares estimates from three ecological inference routines, based on King (1997) <ISBN: 0691012407>, <https://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <https://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
-License: GPL-3 + file LICENSE
+License: GPL-3
 Depends: R (>= 3.5.0), eiPack, ei, wru (>= 1.0.0)
 Imports: censusxy, bayestestR, coda, data.table, doParallel, doSNOW,
         dplyr, foreach, ggplot2, graphics, magrittr, mcmcse, methods,
@@ -52,8 +52,8 @@ RoxygenNote: 7.2.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 Packaged: 2020-09-08 07:00:35 UTC; lorencollingwood
-Author: Loren Collingwood [aut, cre] (<https://orcid.org/0000-0002-4447-8204>),
-  Ari Decter-Frain [aut] (<https://orcid.org/0000-0001-9635-3334>),
+Author: Loren Collingwood [aut] (<https://orcid.org/0000-0002-4447-8204>),
+  Ari Decter-Frain [aut, cre] (<https://orcid.org/0000-0001-9635-3334>),
   Hikari Murayama [aut] (<https://orcid.org/0000-0002-4067-4734>),
   Pratik Sachdeva [aut] (<https://orcid.org/0000-0002-6809-2437>),
   Juandalyn Burke [aut] (<https://orcid.org/0000-0002-6345-7505>),
