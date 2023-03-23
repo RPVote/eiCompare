@@ -45,6 +45,9 @@ have a concatenated geometry column with a
 "c(latitude, longitude)" structure as in the output from the
 geocoder censusxy}
 }
+\value{
+A leaflet html widget object
+}
 \description{
 This function allows the user to plot an interactive map
 of the voter longitude and latitude points.

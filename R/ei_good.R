@@ -11,6 +11,7 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @return matrix with precinct results, columns = race groups, rows = candidates
 #' @references eiPack King et. al. (http://gking.harvard.edu/eiR)
 #'
 #' L. A. Goodman. Ecological regressions and behavior of individuals. American

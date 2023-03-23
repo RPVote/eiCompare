@@ -4,7 +4,7 @@
 \alias{od_plot_create}
 \title{od_plot_create}
 \usage{
-od_plot_create(race, cand_pair, dens_data, out, plot_path = "", cand_colors)
+od_plot_create(race, cand_pair, dens_data, out, plot_path = NULL, cand_colors)
 }
 \arguments{
 \item{race}{Racial demographic of interest}
@@ -16,7 +16,7 @@ od_plot_create(race, cand_pair, dens_data, out, plot_path = "", cand_colors)
 \item{out}{Summary table from overlay_density_plot for every race candidate
 pair}
 
-\item{plot_path}{Path to save plots}
+\item{plot_path}{Path to save plots. If NULL, plot is not saved.}
 
 \item{cand_colors}{Colors for every candidate}
 }

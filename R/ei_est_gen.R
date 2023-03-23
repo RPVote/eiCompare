@@ -18,6 +18,7 @@
 #' plot to working directory. Default is FALSE
 #' @param density_plot Logical to display density plot of betab and betaw. If
 #' true will save pdf plot to working directory. Default is FALSE
+#' @param plot_path Path to save. If NULL, plot is not saved.
 #' @param seed An integer seed value for replicating estimate results across
 #' runs. If NULL, a random seed is chosen. Defaulted to NULL.
 #' @param beta_yes Logical to export betas (b, w) in list object in addition to
@@ -94,9 +95,10 @@ ei_est_gen <- function(cand_vector,
                        data,
                        table_names,
                        sample = 1000,
-                       tomog = F,
-                       density_plot = F,
-                       beta_yes = F,
+                       tomog = FALSE,
+                       density_plot = FALSE,
+                       plot_path = NULL,
+                       beta_yes = FALSE,
                        seed = NULL,
                        ...) {
   list_extract <- function(x) x[, 1:2]
@@ -125,23 +127,23 @@ ei_est_gen <- function(cand_vector,
       if (gm == "Maximizing likelihood\\n         Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'") {
         stop("Maximizing likelihood\\n             Error in .subset2(x, i, exact = exact) : invalid subscript type 'list'\\n\\n             \\n ei package error try re-running ei_est_gen()")
       }
-      cat(paste("Model:", cand_vector[i], race_group[k],
+      message(paste("Model:", cand_vector[i], race_group[k],
         "\\n",
         sep = " "
       ))
-      print(summary(ei_out))
-      if (tomog) {
-        grDevices::pdf(paste(cand_vector[i], race_group[k], ".pdf",
+      message(summary(ei_out))
+      if (tomog & !is.null(plot_path)) {
+        grDevices::pdf(file.path(plot_path, paste(cand_vector[i], race_group[k], ".pdf",
           sep = ""
-        ))
+        )))
         plot(ei_out, "tomogE")
         graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1
         )
         # imguR::dev.off() #not required?
       }
-      if (density_plot) {
-        grDevices::pdf(paste("density_plot", k, i, ".pdf", sep = "_"))
+      if (density_plot & !is.null(plot_path)) {
+        grDevices::pdf(file.path(plot_path, paste("density_plot", k, i, ".pdf", sep = "_")))
         plot(ei_out, "betab", "betaw")
         graphics::mtext(paste(cand_vector[i], race_group[k], sep = " "),
           outer = T, line = -1

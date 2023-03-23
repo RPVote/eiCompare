@@ -14,8 +14,7 @@
 #' @param corrs A boolean indicating whether to include correlation coefficients
 #' on the plot.
 #' @param save A boolean indicating whether to save the plot to a file.
-#' @param path A string to specify plot save location. Defaulted to
-#' working directory
+#' @param path A string to specify plot save location. If NULL, plot is not saved.
 #'
 #' @export
 #'
@@ -26,7 +25,7 @@ plot_bivariate <- function(
                            race_cols,
                            corrs = FALSE,
                            save = FALSE,
-                           path = "") {
+                           path = NULL) {
   data <- data[, c(cand_cols, race_cols)]
 
   n_races <- length(race_cols)
@@ -97,7 +96,7 @@ plot_bivariate <- function(
       )
   }
 
-  if (save) {
+  if (save & !is.null(path)) {
     ggplot2::ggsave(
       paste0(path, "bivariate_plot_", n_cands, "x", n_races, ".png"),
       bivariate_plot,
@@ -116,7 +115,7 @@ plot_bivariate <- function(
 #' each candidate
 #' @param race_cols A character vector listing the column names for turnout by
 #' race
-#'
+#' @return a dataframe of correlation coefficients describing to correlation between the racial proportion of a precinct and the vote share of each candidate.
 #' @export
 #'
 #' @importFrom stats cor

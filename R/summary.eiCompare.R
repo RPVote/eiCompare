@@ -25,5 +25,5 @@ summary.eiCompare <- function(object, ...) {
     race <- race_groups[[ii]]
     outputs[[race]] <- data.frame(lapply(tables, function(x) x[[race]]))
   }
-  print(outputs)
+  message(outputs)
 }

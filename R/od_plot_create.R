@@ -7,7 +7,7 @@
 #' @param dens_data Beta values long for each race and candidate pair
 #' @param out Summary table from overlay_density_plot for every race candidate
 #'  pair
-#' @param plot_path Path to save plots
+#' @param plot_path Path to save plots. If NULL, plot is not saved.
 #' @param cand_colors Colors for every candidate
 #' @return Comparison density plots
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
@@ -26,7 +26,7 @@ od_plot_create <- function(race,
                            cand_pair,
                            dens_data,
                            out,
-                           plot_path = "",
+                           plot_path = NULL,
                            cand_colors) {
   # Set new variables to NULL
   value <- Candidate <- sd_minus <- sd_plus <- NULL
@@ -165,10 +165,13 @@ od_plot_create <- function(race,
 
 
   # Save out to user designated path
-  ggplot2::ggsave(paste0(
-    plot_path, cand_pair[1], "_", cand_pair[2], "_",
-    gsub("pct_", "", race), ".png"
-  ), height = 4, width = 6)
+  if (!is.null(plot_path)) {
+    ggplot2::ggsave(paste0(
+      plot_path, cand_pair[1], "_", cand_pair[2], "_",
+      gsub("pct_", "", race), ".png"
+    ), height = 4, width = 6)
+  }
+  
 
   return(densplot)
 }

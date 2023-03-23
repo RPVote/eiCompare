@@ -38,7 +38,7 @@ Authors@R:
              role = "ctb",
              comment = c(ORCID = "0000-0003-2423-6395")))
 URL: https://github.com/RPVote/eiCompare
-Description: Compares estimates from three ecological inference routines, based on King (1997) <ISBN: 0691012407>, <https://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <https://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
+Description: Provides a comprehensive suite of tools for estimating the candidate preferences of racial/ethnic voting blocs in elections. Includes functions for geocoding, predicting voter race/ethnicity, and conducting ecological inference. Race/ethnicity prediction builds on `wru` developed by Imai et al. (2016) <doi:10.1093/pan/mpw001>. Ecological inference methods are based on King (1997) <ISBN: 0691012407>, <https://gking.harvard.edu/eicamera/kinroot.html>; King et. al. (2004) <ISBN: 0521542804>, <https://gking.harvard.edu/files/abs/ecinf04-abs.shtml>.
 License: GPL-3
 Depends: R (>= 3.5.0), eiPack, ei, wru (>= 1.0.0)
 Imports: censusxy, bayestestR, coda, data.table, doParallel, doSNOW,

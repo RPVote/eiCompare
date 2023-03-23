@@ -52,7 +52,7 @@ primarily for assessing posterior distribution tests.
 }
 \examples{
 
-\dontrun{
+\donttest{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
 candb <- 20 - canda
@@ -63,7 +63,7 @@ toy <- data.frame(canda, candb, white, black)
 # Generate formula for passage to ei.reg.bayes() function
 form <- formula(cbind(canda, candb) ~ cbind(black, white))
 # Then excute md_bayes_draw(); not run here due to time
-# md_bayes_draw_lambda(toy, c(2,3), form )
+md_bayes_draw_lambda(toy, c(2,3), form )
 }
 }
 \references{

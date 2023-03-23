@@ -31,7 +31,7 @@ ei_rc_congruence <- function(ei_rc_table, cand_race, group_race) {
   dat[, 1] <- as.character(dat[, 1]) # convert to character
   # Up to 4 groups
   n_groups <- length(ei_rc_table@groups)
-  cat(paste0("Number of Groups is: ", n_groups, "\n"))
+  message(paste0("Number of Groups is: ", n_groups, "\n"))
   if (n_groups == 2) { # Number of groups = 2
     dat <- dat[, c(1:3, 5:6)]
   } else if (n_groups == 3) { # Number of groups = 3
@@ -43,7 +43,7 @@ ei_rc_congruence <- function(ei_rc_table, cand_race, group_race) {
   dat <- dat[dat$Candidate != "se" & dat$Candidate != "Total", ]
   dat$cand_race <- cand_race
   dat <- dat[order(dat$cand_race), ] # Sort so that minority candidate comes first
-  cat(paste0("Number of Candidates is: ", nrow(dat), "\n"))
+  message(paste0("Number of Candidates is: ", nrow(dat), "\n"))
   # Use Switch to label
   dat$Candidate[1] <- switch(dat$cand_race[1],
     "1" = paste0("Latino Candidate: ", dat$Candidate[1]),
@@ -57,8 +57,8 @@ ei_rc_congruence <- function(ei_rc_table, cand_race, group_race) {
     "3" = paste0("Asian Candidate: ", dat$Candidate[2]),
     "4" = paste0("White Candidate: ", dat$Candidate[2])
   )
-  cat(paste("MC1: ", dat$Candidate[1], "\n"))
-  cat(paste("WC1: ", dat$Candidate[2], "\n"))
+  message(paste("MC1: ", dat$Candidate[1], "\n"))
+  message(paste("WC1: ", dat$Candidate[2], "\n"))
   # Order Columns to 2 minority columns first two, whites/nons last 2
   if (4 %in% group_race) {
     col_pos <- which(group_race == 4)

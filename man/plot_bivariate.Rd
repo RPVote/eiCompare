@@ -11,7 +11,7 @@ plot_bivariate(
   race_cols,
   corrs = FALSE,
   save = FALSE,
-  path = ""
+  path = NULL
 )
 }
 \arguments{
@@ -29,8 +29,7 @@ on the plot.}
 
 \item{save}{A boolean indicating whether to save the plot to a file.}
 
-\item{path}{A string to specify plot save location. Defaulted to
-working directory}
+\item{path}{A string to specify plot save location. If NULL, plot is not saved.}
 }
 \value{
 ggplot object with bivariate plots faceted by candidate and race

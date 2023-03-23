@@ -11,6 +11,9 @@ surname_summary(voter_file, surname_col)
 
 \item{surname_col}{A string denoting the surname column.}
 }
+\value{
+No return value, called for side effects (message)
+}
 \description{
 Briefly summarizes the surnames in a voter file.
 }

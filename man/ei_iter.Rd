@@ -17,7 +17,7 @@ ei_iter(
   betas = FALSE,
   par_compute = FALSE,
   verbose = FALSE,
-  plot_path = "",
+  plot_path = NULL,
   ...
 )
 }
@@ -53,8 +53,7 @@ tomography plots}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
 
-\item{plot_path}{A string to specify plot save location. Defaulted to working
-directory.}
+\item{plot_path}{A string to specify plot save location. If NULL, plot is not saved}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }

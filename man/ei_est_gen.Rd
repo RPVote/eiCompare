@@ -12,9 +12,10 @@ ei_est_gen(
   data,
   table_names,
   sample = 1000,
-  tomog = F,
-  density_plot = F,
-  beta_yes = F,
+  tomog = FALSE,
+  density_plot = FALSE,
+  plot_path = NULL,
+  beta_yes = FALSE,
   seed = NULL,
   ...
 )
@@ -43,6 +44,8 @@ plot to working directory. Default is FALSE}
 
 \item{density_plot}{Logical to display density plot of betab and betaw. If
 true will save pdf plot to working directory. Default is FALSE}
+
+\item{plot_path}{Path to save. If NULL, plot is not saved.}
 
 \item{beta_yes}{Logical to export betas (b, w) in list object in addition to
 table of results. Default is FALSE}

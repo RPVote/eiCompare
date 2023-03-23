@@ -35,14 +35,14 @@ race_check_2_3 <- function(dat, split = c(3, 4), catch = FALSE, catch_col = NULL
   # Check negative values in "No Vote/Other vote" and "Race/Other" variables #
   if (catch) {
     if (all(dat[, catch_col[1]] > 0)) {
-      cat("All Catch variable 1 (Votes) values positive\n")
+      message("All Catch variable 1 (Votes) values positive\n")
     } else {
-      cat("Catch variable 1 (Votes) has negative values, must be zero or positive")
+      message("Catch variable 1 (Votes) has negative values, must be zero or positive")
     }
     if (all(dat[, catch_col[2]] > 0)) {
-      cat("All Catch variable 2 (Demographics) values positive\n")
+      message("All Catch variable 2 (Demographics) values positive\n")
     } else {
-      cat("Catch variable 2 (Demographics) has negative values, must be zero or positive")
+      message("Catch variable 2 (Demographics) has negative values, must be zero or positive")
     }
   }
   # Check each Equation side is matching column totals by row #
@@ -51,18 +51,18 @@ race_check_2_3 <- function(dat, split = c(3, 4), catch = FALSE, catch_col = NULL
   right_dat <- apply(dat[, race_vote_split[2]:ncol(dat)], 1, sum)
 
   if (print_sides) {
-    cat("Equation left hand side aggregate\n")
-    print(left_dat)
-    cat("Equation right hand side aggregate\n")
-    print(right_dat)
+    message("Equation left hand side aggregate\n")
+    message(left_dat)
+    message("Equation right hand side aggregate\n")
+    message(right_dat)
   }
   # Check
   if (all.equal(left_dat, right_dat) == TRUE) {
-    print("Both sides of equation equal, booya, proceed")
+    message("Both sides of equation equal, booya, proceed")
     return(dat = data.frame(dat, left_dat, right_dat, diff = left_dat - right_dat))
   } else {
-    cat("Rows numbers that are unequal. Even out rounding.\n")
-    print(which(left_dat != right_dat))
+    message("Rows numbers that are unequal. Even out rounding.\n")
+    message(which(left_dat != right_dat))
     return(dat = data.frame(dat, left_dat, right_dat, diff = left_dat - right_dat))
   }
 }

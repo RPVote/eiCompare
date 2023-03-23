@@ -110,7 +110,7 @@ To run in this parallel, all you need to do is toggle `par_compute` to be TRUE.
 ```{r eval=FALSE}
 # Run with paralleization
 #start_time <- Sys.time()
-#results_test <- ei_iter(corona, cand_cols, race_cols, totals_col, par_compute = TRUE)
+#results_test <- ei_iter(corona, cand_cols, race_cols, totals_col, par_compute = TRUE, cores = 2)
 #(end_time <- Sys.time() - start_time)
 ```
 This saves us a about a minute for this specific data set (on the computer we ran this on, but times will vary). With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.

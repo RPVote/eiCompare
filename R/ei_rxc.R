@@ -28,7 +28,7 @@
 #' @param diagnostic Boolean. If true, run diagnostic test to assess viability of MCMC
 #' parameters (will return all chain results)
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
-#' @param plot_path A string to specify plot save location. Defaulted to working directory
+#' @param plot_path A string to specify plot save location. If NULL, plot is not saved.
 #' @param par_compute Boolean. If true, diagnostic test will be run in parallel.
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
@@ -71,7 +71,7 @@ ei_rxc <- function(
                    verbose = FALSE,
                    diagnostic = FALSE,
                    n_chains = 3,
-                   plot_path = "",
+                   plot_path = NULL,
                    par_compute = FALSE,
                    ...) {
 
@@ -209,16 +209,18 @@ ei_rxc <- function(
     # Combine chains
     chains_list <- coda::mcmc.list(md_mcmc)
 
-    if (verbose) message("Creating and saving plots")
-    # Generate trace and general density plots
-    pdf(paste0(plot_path, "trace_density.pdf"))
-    plot(chains_list)
-    grDevices::dev.off()
-
-    # Generate Gelman plot for convergence
-    pdf(paste0(plot_path, "gelman.pdf"))
-    coda::gelman.plot(chains_list)
-    grDevices::dev.off()
+    if (!is.null(plot_path)) {
+      if (verbose) message("Creating and saving plots")
+      # Generate trace and general density plots
+      pdf(paste0(plot_path, "trace_density.pdf"))
+      plot(chains_list)
+      grDevices::dev.off()
+      
+      # Generate Gelman plot for convergence
+      pdf(paste0(plot_path, "gelman.pdf"))
+      coda::gelman.plot(chains_list)
+      grDevices::dev.off()
+    }
 
     return(chains_list)
   } else {

@@ -154,7 +154,7 @@ surname_match <- function(voter_file,
 #'
 #' @param voter_file The voter file, with each row consisting of a voter.
 #' @param surname_col A string denoting the surname column.
-#'
+#' @return No return value, called for side effects (message)
 #' @export surname_summary
 surname_summary <- function(voter_file, surname_col) {
   # Print number of voters

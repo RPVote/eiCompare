@@ -90,7 +90,7 @@ duplicates...")
 #' where variables are missing. "MEAN" imputes missing values as the mean of the
 #' column
 #' @param verbose A boolean indicating whether to give status updates
-#'
+#' @return A dataframe of inputs to ecological inference without any missing values.
 #' @export
 resolve_missing_vals <- function(
                                  data,

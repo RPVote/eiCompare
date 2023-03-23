@@ -19,21 +19,6 @@
 #' @return Matrix object, of simulation reults
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
-#' @examples
-#'
-#' \dontrun{
-#' # TOY DATA EXAMPLE
-#' canda <- c(10, 8, 10, 4, 8)
-#' candb <- 20 - canda
-#' white <- c(15, 12, 18, 6, 10)
-#' black <- 20 - white
-#' toy <- data.frame(canda, candb, white, black)
-#'
-#' # Generate formula for passage to ei.reg.bayes() function
-#' form <- formula(cbind(canda, candb) ~ cbind(black, white))
-#' # Then excute md_bayes_draw(); not run here due to time
-#' # md_bayes_draw(toy, c(2,3), form )
-#' }
 #' @import eiPack
 #' @export md_bayes_draw
 md_bayes_draw <- function(dat, race_vote_split, form,
@@ -56,7 +41,7 @@ md_bayes_draw <- function(dat, race_vote_split, form,
     data = dat, sample = sample, thin = thin,
     burnin = burnin, ret.mcmc = ret.mcmc, tune.list = tune.nocov
   )
-  print(summary(md.out))
+  message(summary(md.out))
 
   # Extract the simulations
   md_draw <- md.out$draws$Cell.counts

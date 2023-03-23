@@ -4,12 +4,12 @@
 \alias{rpv_density}
 \title{rpv_density}
 \usage{
-rpv_density(agg_betas, plot_path)
+rpv_density(agg_betas, plot_path = NULL)
 }
 \arguments{
 \item{agg_betas}{Aggregated beta values}
 
-\item{plot_path}{Path to save}
+\item{plot_path}{Path to save. If NULL, plot is not saved.}
 }
 \value{
 Return density for every race/candidate pair for Bb-Bw

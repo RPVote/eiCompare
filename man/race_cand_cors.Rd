@@ -16,6 +16,9 @@ each candidate}
 \item{race_cols}{A character vector listing the column names for turnout by
 race}
 }
+\value{
+a dataframe of correlation coefficients describing to correlation between the racial proportion of a precinct and the vote share of each candidate.
+}
 \description{
 Table of bivariate correlations
 }

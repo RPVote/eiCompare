@@ -25,7 +25,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
@@ -36,7 +36,7 @@
 #' # Generate formula for passage to ei.reg.bayes() function
 #' form <- formula(cbind(canda, candb) ~ cbind(black, white))
 #' # Then excute md_bayes_draw(); not run here due to time
-#' # md_bayes_draw_lambda(toy, c(2,3), form )
+#' md_bayes_draw_lambda(toy, c(2,3), form )
 #' }
 #' @import eiPack
 #' @export md_bayes_draw_lambda
@@ -59,7 +59,7 @@ md_bayes_draw_lambda <- function(dat, race_vote_split, form, ntunes = 10, totald
     data = dat, sample = sample,
     thin = thin, burnin = burnin, ret.mcmc = ret.mcmc, tune.list = tune.nocov
   )
-  cat(paste("Taking first ", race_vote_split[1], " names from dat object\n", sep = ""))
+  message(paste("Taking first ", race_vote_split[1], " names from dat object\n", sep = ""))
   lmd <- eiPack::lambda.MD(md.out, columns = names(dat[, 1:race_vote_split[1]]))
   return(lmd)
 }

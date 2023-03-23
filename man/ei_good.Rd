@@ -19,6 +19,9 @@ race}
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
 }
+\value{
+matrix with precinct results, columns = race groups, rows = candidates
+}
 \description{
 EI iterative estimation via Goodman's Regression
 }

@@ -33,6 +33,9 @@ column}
 
 \item{verbose}{A boolean indicating whether to give status updates}
 }
+\value{
+A dataframe of inputs to ecological inference without any missing values.
+}
 \description{
 Remove / Impute NAs in an EI dataset
 }

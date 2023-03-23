@@ -24,7 +24,8 @@
 #' have a concatenated geometry column with a
 #' "c(latitude, longitude)" structure as in the output from the
 #' geocoder censusxy
-#'
+#' 
+#' @return A leaflet html widget object
 #' @importFrom tidyr extract
 #' @importFrom rlang .data
 #' @importFrom leaflet addTiles addMarkers

@@ -20,23 +20,6 @@ Character string 15-digit FIPS code corresponding to Lat/Long entry
 Converts latitude/longitude coordinates to 15-digit FIPS code. Communicates
 with FCC API.
 }
-\examples{
-
-\dontrun{
-# EXAMPLE: NOT RUN #
-# census_block <- list()
-# num_catch <- rep(NA, nrow(nom_geo))
-
-# for (i in 1:nrow(nom_geo)) {
-
-#  census_block[[i]] <- latlong2fips(nom_geo$lat[i], nom_geo$lon[i], i)
-# }
-
-# Row Bind the list into a data.frame object #
-# fips_df <- rbindlist(census_block)
-}
-
-}
 \references{
 https://geo.fcc.gov/api/census/block/
 }

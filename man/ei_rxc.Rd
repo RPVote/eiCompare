@@ -22,7 +22,7 @@ ei_rxc(
   verbose = FALSE,
   diagnostic = FALSE,
   n_chains = 3,
-  plot_path = "",
+  plot_path = NULL,
   par_compute = FALSE,
   ...
 )
@@ -73,7 +73,7 @@ parameters (will return all chain results)}
 
 \item{n_chains}{Number of chains for diagnostic test. Default is set to 3.}
 
-\item{plot_path}{A string to specify plot save location. Defaulted to working directory}
+\item{plot_path}{A string to specify plot save location. If NULL, plot is not saved.}
 
 \item{par_compute}{Boolean. If true, diagnostic test will be run in parallel.}
 

@@ -2,7 +2,7 @@
 #'
 #'
 #' @param agg_betas Aggregated beta values
-#' @param plot_path Path to save
+#' @param plot_path Path to save. If NULL, plot is not saved.
 #' @return Return density for every race/candidate pair for Bb-Bw
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @author Hikari Murayama
@@ -15,9 +15,8 @@
 #'
 #'
 #'
-
 # pair wise subtraction
-rpv_density <- function(agg_betas, plot_path) {
+rpv_density <- function(agg_betas, plot_path = NULL) {
   value <- NULL
 
 
@@ -49,9 +48,10 @@ rpv_density <- function(agg_betas, plot_path) {
     ggplot2::xlab("Bb - Bw") +
     ggplot2::ylab("Density")
 
-  ggplot2::ggsave(paste0(
-    plot_path, "rpv_density.png"
-  ), height = 4, width = 6)
-
+  if (!is.null(plot_path)) {
+    ggplot2::ggsave(paste0(
+      plot_path, "rpv_density.png"
+    ), height = 4, width = 6)
+  }
   return(rpv_plot)
 }
