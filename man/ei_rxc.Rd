@@ -24,6 +24,7 @@ ei_rxc(
   n_chains = 3,
   plot_path = NULL,
   par_compute = FALSE,
+  n_cores = NULL,
   ...
 )
 }
@@ -76,6 +77,8 @@ parameters (will return all chain results)}
 \item{plot_path}{A string to specify plot save location. If NULL, plot is not saved.}
 
 \item{par_compute}{Boolean. If true, diagnostic test will be run in parallel.}
+
+\item{n_cores}{The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used}
 
 \item{...}{Additional parameters passed to eiPack::tuneMD()}
 }

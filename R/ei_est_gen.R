@@ -35,7 +35,7 @@
 #' @examples
 #'
 #' # TOY DATA EXAMPLE
-#' \dontrun{
+#' \donttest{
 #' canda <- c(.1, .09, .85, .9, .92)
 #' candb <- 1 - canda
 #' white <- c(.8, .9, .10, .08, .11)

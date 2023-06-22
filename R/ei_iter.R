@@ -35,6 +35,7 @@
 #' @param eiCompare_class default = TRUE
 #' @param betas A boolean to return precinct-level betas for each 2x2 ei
 #' @param par_compute A boolean to conduct ei using parallel processing
+#' @param n_cores The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @param plot_path A string to specify plot save location. If NULL, plot is not saved
 #' @param ... Additional arguments passed directly to ei::ei()
@@ -72,6 +73,7 @@ ei_iter <- function(
                     eiCompare_class = TRUE,
                     betas = FALSE,
                     par_compute = FALSE,
+                    n_cores = NULL,
                     verbose = FALSE,
                     plot_path = NULL,
                     ...) {
@@ -88,7 +90,11 @@ ei_iter <- function(
     }
 
     # Standard to use 1 less core for clusters
-    clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    if (is.null(n_cores)) {
+      clust <- parallel::makeCluster(parallel::detectCores() - 1)
+    } else {
+      clust <- parallel::makeCluster(n_cores)
+    }
 
     # Register parallel processing cluster
     doSNOW::registerDoSNOW(clust)

@@ -16,7 +16,7 @@ Matrix object, table of results
 Creates EI reg bayes tables with confidence bands
 }
 \examples{
-\dontrun{
+\donttest{
 # Toy data example
 cand_a <- c(.1, .09, .85, .9, .92)
 cand_b <- 1 - cand_a

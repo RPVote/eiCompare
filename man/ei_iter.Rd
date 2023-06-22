@@ -16,6 +16,7 @@ ei_iter(
   eiCompare_class = TRUE,
   betas = FALSE,
   par_compute = FALSE,
+  n_cores = NULL,
   verbose = FALSE,
   plot_path = NULL,
   ...
@@ -50,6 +51,8 @@ tomography plots}
 \item{betas}{A boolean to return precinct-level betas for each 2x2 ei}
 
 \item{par_compute}{A boolean to conduct ei using parallel processing}
+
+\item{n_cores}{The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
 

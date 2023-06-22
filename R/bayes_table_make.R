@@ -41,7 +41,7 @@
 #' ei_bayes_res
 #'
 #' # Example 2: Corona data
-#' \dontrun{
+#' \donttest{
 #' data(corona)
 #' # create character vectors
 #' cands <- c(

@@ -20,7 +20,7 @@ with EI table of results.
 }
 \examples{
 
-\dontrun{
+\donttest{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
 candb <- 20 - canda

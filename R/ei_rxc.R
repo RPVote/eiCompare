@@ -30,6 +30,7 @@
 #' @param n_chains  Number of chains for diagnostic test. Default is set to 3.
 #' @param plot_path A string to specify plot save location. If NULL, plot is not saved.
 #' @param par_compute Boolean. If true, diagnostic test will be run in parallel.
+#' @param n_cores The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>, <loren.collingwood@@gmail.com>
@@ -73,6 +74,7 @@ ei_rxc <- function(
                    n_chains = 3,
                    plot_path = NULL,
                    par_compute = FALSE,
+                   n_cores = NULL,
                    ...) {
 
   # Check for valid arguments
@@ -134,7 +136,11 @@ ei_rxc <- function(
       if (verbose) message("Running in paralllel")
 
       # Standard to use 1 less core for clusters
-      clust <- parallel::makeCluster(parallel::detectCores() - 1)
+      if (is.null(n_cores)) {
+        clust <- parallel::makeCluster(parallel::detectCores() - 1)
+      } else {
+        clust <- parallel::makeCluster(n_cores)
+      }
 
       # Register parallel processing cluster
       doSNOW::registerDoSNOW(clust)

@@ -23,19 +23,6 @@ Table of congruence scores
 \description{
 Calculates congruence scores between EI and RxC for the 2x2 Scenario
 }
-\examples{
-
-
-# LA County 2010 Insurance Commissioner Race
-# ei_rc_combine <- ei_rc_good_table(results, ei_bayes_res,
-#                                  groups= c("Latino", "Non Latino"))
-\dontrun{
-load(system.file("extdata/congruence_table.RData", package = "eiCompare"))
-
-ei_rc_congruence(ei_rc_combine2_2, c(1, 4), c(1, 4))
-}
-
-}
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>, Matt Barreto
 <barretom@ucla.edu>

@@ -12,7 +12,7 @@
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
 #' candb <- 20 - canda
@@ -56,7 +56,7 @@ md_bayes_table <- function(md_results) {
   } else {
     # more than one candidate
     se_cols <- rep("se", length(rnames))
-    rn <- c(rbind(rnames, se_cols))
+    rn <- c(rbind(rnames, se_cols), "Total")
   }
 
   # result NA matrix holder

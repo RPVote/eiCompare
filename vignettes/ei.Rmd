@@ -207,7 +207,7 @@ First, we conduct iterative EI using `ei_iter()`.
 #  cand_cols = cands,
 #  race_cols = races,
 #  totals_col = total,
-#  name = "Iter"
+#  name = "Iter",
 #)
 #summary(ei_results_iter)
 ```
