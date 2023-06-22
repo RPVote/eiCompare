@@ -1,3 +1,9 @@
+# eiCompare 3.0.2 
+
+## Package changes
+
+* Removed geocoding helpers from package. These are mostly trivial to code separately and added extra dependencies to the package. Change instigated by update to previous dependency `censusxy`.
+
 # eiCompare 3.0.1
 
 ## Minor package changes

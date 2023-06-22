@@ -2,7 +2,7 @@
 [![R build status](https://github.com/RPVote/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=R-CMD-check)
 [![Style status](https://github.com/RPVote/eiCompare/workflows/Styler/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=Styler)
 
-`eiCompare` is an R package built to help practitioners and academics quantify racially polarized voting (RPV) with ease and confidence. It builds on top of several existing packages, augmenting their utility for measuring racially polarized voting in elections. Underlying packages include `ei`, `eiPack`, `wru`, and `censusxy`. 
+`eiCompare` is an R package built to help practitioners and academics quantify racially polarized voting (RPV) with ease and confidence. It builds on top of several existing packages, augmenting their utility for measuring racially polarized voting in elections. Underlying packages include `ei`, `eiPack`, and `wru`. 
 
 `eiCompare` was built with several types of users in mind:
 
@@ -12,6 +12,19 @@
 - Academics who study the causes and consequences of vote dilution and racially polarized voting.
 
 ## News
+
+### eiCompare 3.0.2 
+
+#### Package changes
+
+* Removed geocoding helpers from package. These are mostly trivial to code separately and added extra dependencies to the package. Change instigated by update to previous dependency `censusxy`.
+
+### eiCompare 3.0.1
+
+#### Minor package changes
+
+* Switched maintainer from Loren Collingwood to Ari Decter-Frain (@aridf)
+* Minor changes to functions dependent on `wru` to ensure compatibility with new version
 
 ### 3.0 Update:
 
