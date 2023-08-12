@@ -39,6 +39,7 @@
 #'
 #' @export wru_predict_race_wrapper
 #' @import wru
+#' @importFrom methods is
 #' @importFrom dplyr relocate
 #' @importFrom utils getFromNamespace
 wru_predict_race_wrapper <- function(voter_file,
@@ -104,7 +105,7 @@ wru_predict_race_wrapper <- function(voter_file,
     message("Performing BISG to obtain race probabilities.")
   }
   invisible(capture.output(
-    bisg <- suppressWarnings(
+    bisg <- try(suppressWarnings(
       wru::predict_race(
         voter.file = wru_voter_file,
         census.surname = use_surname,
@@ -116,7 +117,17 @@ wru_predict_race_wrapper <- function(voter_file,
         sex = use_sex,
       )
     )
-  ))
+  )))
+  if (is(bisg, 'try-error')) {
+    error_type <- attr(bisg, "condition")
+    
+    if (grep('cannot open the connection', error_type$message)) {
+      message('Failed to connect to the remote data sources. Check internet connection. Returning NULL')
+      return()
+    } else {
+      stop()
+    }
+  }
   # Re-order race predictions to match voter file
   bisg <- bisg[match(wru_voter_file$voterid, bisg$voterid), ]
   # Find out which geographic units didn't match
@@ -138,7 +149,7 @@ wru_predict_race_wrapper <- function(voter_file,
     }
     # Re-run the BISG only on voters that didn't match
     invisible(capture.output(
-      bisg_no_match <- suppressWarnings(
+      bisg_no_match <- try(suppressWarnings(
         wru::predict_race(
           voter.file = no_match_voters,
           census.surname = use_surname,
@@ -150,7 +161,17 @@ wru_predict_race_wrapper <- function(voter_file,
           sex = use_sex,
         )
       )
-    ))
+    )))
+    if (is(bisg_no_match, 'try-error')) {
+      error_type <- attr(bisg_no_match, "condition")
+      
+      if (grep('cannot open the connection', error_type$message)) {
+        message('Failed to connect to the remote data sources. Check internet connection. Returning NULL')
+        return()
+      } else {
+        stop()
+      }
+    }
     # Re-order race predictions to match voter file
     bisg_no_match <- bisg_no_match[match(
       no_match_voters$voterid,

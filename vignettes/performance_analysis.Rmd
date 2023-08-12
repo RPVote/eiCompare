@@ -159,7 +159,8 @@ voter_file_w_ward$block <- c("1016", "3002", "1016", "4001", "2004")
 
 ## Predicting race using BISG
 
-Since New York state does not report race on the voter file, we need to estimate it using BISG (see the BISG vignette for more details on this approach). Briefly, BISG provides a probabilistic estimate of race by combining knowledge of a voter's location and surname, both of which are informative of their race. `eiCompare` has a wrapper function for passing a voter file into the BISG function provided by the WRU package. To use this function, we'll load some Census data that was extracted using WRU containing information about the racial demographics of Rockland County:
+Since New York state does not report race on the voter file, we need to estimate it using BISG (see the BISG vignette for more details on this approach). Briefly, BISG provides a probabilistic estimate of race by combining knowledge of a voter's location and surname, both of which are informative of their race. `eiCompare` has a wrapper function for passing a voter file into the BISG function provided by the WRU package. To use this function, we'll load some Census data that was extracted using WRU containing information about the racial demographics of Rockland County. Note that `wru` requires an internet connection to pull in supplemental data. If the connection cannot be made, `wru_predict_race_wrapper` will return `NULL`.
+
 
 ```{r apply_bisg}
 # Load Rockland County Census information

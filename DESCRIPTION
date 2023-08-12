@@ -43,7 +43,7 @@ License: GPL-3
 Depends: R (>= 3.5.0), eiPack, ei, wru (>= 1.0.0)
 Imports: bayestestR, coda, data.table, doSNOW,
         dplyr, foreach, ggplot2, graphics, magrittr, mcmcse, methods,
-        overlapping, purrr, rlang, sf, stringr, tidyr,tidyselect
+        overlapping, purrr, rlang, sf, stringr, tidyr, tidyselect
 NeedsCompilation: no
 Suggests: knitr, plyr, rmarkdown, reshape2, RColorBrewer,
         RJSONIO, testthat, tigris

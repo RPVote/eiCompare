@@ -122,6 +122,7 @@ voter_file_complete <- as.data.frame(voter_file_dedupe)
 class(voter_file_complete)
 ```
 
+Note that `wru` requires an internet connection to pull in supplemental data. If the connection cannot be made, `wru_predict_race_wrapper` will return `NULL`.
 ```{r}
 georgia_census$GA$year <- 2010
 

@@ -61,8 +61,7 @@ voters to self-report their race when they register. This means anyone can
 tabulate the number of voters self-reporting with each group in each precinct, 
 provided they gain access to a voter file. That's exactly what we've done here.
 To learn more about how to estimate voters' race based only on their name and 
-address, see the tutorials on [Geocoding voter files](geocoding.html) and 
-[Bayesian Improved Surname Geocoding](bisg.html)
+address, see the tutorial on [Bayesian Improved Surname Geocoding](bisg.html)
 
 We know the number of votes cast for each candidate and by each racial/ethnic 
 group. From this data, we want to learn whether voters from different ethnic
