@@ -24,8 +24,6 @@ This vignette aims to highlight the parallel processing capabilities within `eiC
 
 - `ei_rxc()` (only for diagnostic)
 
-- `run_geocoder()`
-
 Prior to attempting to run these functions in parallel, it is advised you check your computer or server for the following properites:
 
 - You should more than 4 physical cores
@@ -39,7 +37,7 @@ Building off of existing parallel processing packages such as `foreach` and `doS
 
 _Parallel processing_ decreases the time needed for your processes by splitting the job amongst your computer's CPU cores. We recommend 16 GB of RAM so that R can store the data you are currently working on. Furthermore, if you are using multiple cores, the minimum RAM needed is the product of the number of cores you're using and the size of your data. So if you are working on 4 cores and your dataset is 1 GB, you'll be using at least 4 GB of RAM.
 
-In order to make this functionality more accessible to users, the `eiCompare` functions that include parallel processing include a check for the number of cores you have available to you. If you have less than 4 cores, our functions will not let you proceed with parallelization Even with exactly 4 cores, the functions will return a warning that parallelization is not recommended. 
+In order to make this functionality more accessible to users, the `eiCompare` functions that include parallel processing include a check for the number of cores you have available to you. If you have less than 4 cores, our functions will not let you proceed with parallelization. Even with exactly 4 cores, the functions will return a warning that parallelization is not recommended. 
 
 There are many resources online if you'd like to learn more about parallelization in general.
 
@@ -110,10 +108,16 @@ To run in this parallel, all you need to do is toggle `par_compute` to be TRUE.
 ```{r eval=FALSE}
 # Run with paralleization
 #start_time <- Sys.time()
-#results_test <- ei_iter(corona, cand_cols, race_cols, totals_col, par_compute = TRUE, n_cores = 2)
+#results_test <- ei_iter(
+#   corona, 
+#   cand_cols, 
+#   race_cols, 
+#   totals_col, 
+#   par_compute = TRUE, 
+#   n_cores = 2)
 #(end_time <- Sys.time() - start_time)
 ```
-This saves us a about a minute for this specific data set (on the computer we ran this on, but times will vary). With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.
+This saves us about a minute for this specific data set (on the computer we ran this on, but times will vary). With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.
 
 ## Expectations for parallelization
 
@@ -126,4 +130,4 @@ knitr::include_graphics("para_benchmark_box_nsamples.png")
 
 ## Summary
 
-`eiCompare` provides capabilities to parallelize operations for iterative ei in `ei_iter()`, diagnostic tests in `ei_rxc()`,  and geocoding in `run_geocoder()`. By setting the parallelization toggle to `TRUE`, as well as having the proper set up with more than 4 cores and more than 16 GB of RAM, the user should be able to run these operations multitudes faster.
+`eiCompare` provides capabilities to parallelize operations for iterative ei in `ei_iter()` and diagnostic tests in `ei_rxc()`. By setting the parallelization toggle to `TRUE`, as well as having the proper set up with more than 4 cores and more than 16 GB of RAM, the user should be able to run these operations multitudes faster.
