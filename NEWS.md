@@ -1,3 +1,9 @@
+# eiCompare 3.0.3
+
+## Package changes
+
+* fix vignette install error
+
 # eiCompare 3.0.2 
 
 ## Package changes
