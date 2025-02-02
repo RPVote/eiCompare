@@ -20,6 +20,7 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+inst/doc
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
@@ -32,7 +33,6 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .ipynb_checkpoints/
-
 
 # macOS
 .DS_Store

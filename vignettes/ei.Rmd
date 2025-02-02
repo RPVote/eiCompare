@@ -60,9 +60,6 @@ however, can present more of a challenge. Luckily, the state of Georgia requires
 voters to self-report their race when they register. This means anyone can 
 tabulate the number of voters self-reporting with each group in each precinct, 
 provided they gain access to a voter file. That's exactly what we've done here.
-To learn more about how to estimate voters' race based only on their name and 
-address, see the tutorials on [Geocoding voter files](geocoding.html) and 
-[Bayesian Improved Surname Geocoding](bisg.html)
 
 We know the number of votes cast for each candidate and by each racial/ethnic 
 group. From this data, we want to learn whether voters from different ethnic
@@ -160,7 +157,7 @@ table(cand_sums, race_sums)
 ```
 Here we see that, for each row in the dataset, the sum of the race columns equals one, and the sum of the candidate columns also equals one. We *always* need to satisfy this condition before running the EI functions.
 
-We now have a new dataframe without missing values, with no duplicated precincts, and with standardized candidate and racial vote proportion colums. We can begin conducting ecological inference.
+We now have a new dataframe without missing values, with no duplicated precincts, and with standardized candidate and racial vote proportion columns. We can begin conducting ecological inference.
 
 ## Descriptive Analysis
 
