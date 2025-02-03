@@ -147,27 +147,4 @@ surname_summary <- function(voter_file, surname_col) {
     "Voter file has", n_special_character_surnames,
     "voters containing special characters."
   ))
-
-  # Print number of matches by default
-  n_organic_matches <- sum(eiCompare::surname_match(
-    voter_file = voter_file,
-    surname_col = surname_col,
-    strip_special = FALSE
-  ))
-  message(paste(
-    "Voter file has", n_organic_matches,
-    "voters with surnames matching the database by default."
-  ))
-
-  # Print number of matches after stripping special characters
-  n_stripped_matches <- sum(eiCompare::surname_match(
-    voter_file = voter_file,
-    surname_col = surname_col,
-    strip_special = TRUE
-  ))
-  message(paste(
-    "Voter file has", n_stripped_matches,
-    "voters with surnames matching the database after removing",
-    "special characters."
-  ))
 }
