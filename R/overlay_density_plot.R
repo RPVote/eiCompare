@@ -103,7 +103,7 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
     }
 
 
-    out <- inner_join(rt_sub, out, by = "Candidate")
+    out <- dplyr::inner_join(rt_sub, out, by = "Candidate")
     out$sd_minus <- out$mean_size - out$sd_size
     out$sd_plus <- out$mean_size + out$sd_size
 
