@@ -38,6 +38,8 @@
 #' @param n_cores The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @param plot_path A string to specify plot save location. If NULL, plot is not saved
+#' @param CI  Numeric. Confidence interval level (default = 0.95). Specifies the
+#'   interval width for calculation with bayestestR package.
 #' @param ... Additional arguments passed directly to ei::ei()
 #'
 #' @return If eiCompare_class = TRUE, an object of class eiCompare is returned.
@@ -76,6 +78,7 @@ ei_iter <- function(
                     n_cores = NULL,
                     verbose = FALSE,
                     plot_path = NULL,
+                    CI = .95,
                     ...) {
 
   # Preparation for parallel processing if user specifies parallelization
@@ -156,7 +159,7 @@ ei_iter <- function(
   # Loop through each 2x2 ei
   ei_results <- foreach::foreach(
     i = seq_len(n_iters),
-    .inorder = FALSE,
+    .inorder = TRUE,
     .packages = c("ei", "stats", "utils", "mvtnorm"),
     .options.snow = opts
   ) %myinfix% {
@@ -200,11 +203,6 @@ ei_iter <- function(
               )
           })
           break
-          # This was meant to enable parameterization of the ei importance sample
-          # size, but its inclusion changes results dramatically.
-          # utils::capture.output({
-          #  ei_out <- suppressMessages(ei_sim(ei_out, samples))
-          # })
         },
         error = function(cond) {
           if (ii == n_erhos) {
@@ -393,7 +391,7 @@ ei_iter <- function(
       # Both CIs
       suppressMessages({
         suppressWarnings({
-          cis <- bayestestR::ci(aggs, ci = 0.95, method = "HDI")
+          cis <- bayestestR::ci(aggs, ci = CI, method = "HDI")
         })
       })
       ci_lowers <- append(ci_lowers, cis$CI_low)
@@ -436,9 +434,9 @@ ei_iter <- function(
     estimates <- data.frame(cbind(means, sds, ci_lowers, ci_uppers))
     estimates <- cbind(cands, races, estimates)
     colnames(estimates) <- c(
-      "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
+      "cand", "race", "mean", "sd",
+      "ci_lower", "ci_upper"
     )
-
     output <- list(
       "type" = "iter",
       "estimates" = estimates,

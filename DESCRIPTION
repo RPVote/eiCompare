@@ -43,11 +43,11 @@ License: GPL-3
 Depends: R (>= 3.5.0), eiPack, ei, wru (>= 1.0.0)
 Imports: bayestestR, coda, data.table, doSNOW,
         dplyr, foreach, ggplot2, graphics, magrittr, mcmcse, methods,
-        overlapping, purrr, rlang, sf, stringr, tidyr,tidyselect
+        overlapping, purrr, rlang, sf, stringr, tidyr, tidyselect, viridis
 NeedsCompilation: no
 Suggests: knitr, plyr, rmarkdown, reshape2, RColorBrewer,
         RJSONIO, testthat, tigris
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 VignetteBuilder: knitr
 Packaged: 2020-09-08 07:00:35 UTC; lorencollingwood
