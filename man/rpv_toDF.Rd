@@ -2,7 +2,7 @@
 % Please edit documentation in R/rpv_toDF.R
 \name{rpv_toDF}
 \alias{rpv_toDF}
-\title{Transform RPV results from \code{eiCompare} into a simple dataframe
+\title{Transform RPV results into a simple dataframe
 object}
 \usage{
 rpv_toDF(

@@ -164,8 +164,9 @@ ei_rxc <- function(
       chain = seq_len(n_chains),
       .inorder = TRUE,
       .packages = c("ei"),
-      .options.snow = opts) %myinfix% 
-      {
+      .options.snow = opts
+      ) %myinfix%  {
+        # Bayes model estimation
         suppressWarnings(
         md_out <- ei.MD.bayes(
           formula = formula,
@@ -260,13 +261,22 @@ ei_rxc <- function(
       chains_pr[, race_indices] <- race_pr
     }
 
+    # Get point estimates and standard errors
     estimate <- mcmcse::mcse.mat(chains_pr)
+    
+    # Get standard deviation of each distribution
     sds <- apply(chains_pr, 2, stats::sd)
 
+    # The upper and lower CI estimates also have standard errors. Here these
+    # errors are conservatively used to extend the 95% confidence bound further
+
+    # Set bounds according to   
     if (eiCompare_class) {
+      # eiCompare class object reports fixed CIs
       ci_lower <- 0.025
       ci_upper <- 0.975
     } else {
+      # Get upper, lower CI limits
       ci_lower <- (1 - ci_size) / 2
       ci_upper <- 1 - ci_lower
       if (verbose) {
@@ -274,18 +284,28 @@ ei_rxc <- function(
         message(paste("Setting CI upper bound equal to", ci_upper))
       }
     }
+    
+    # Lower CI estimate
     lower <- mcmcse::mcse.q.mat(chains_pr, q = ci_lower)
     lower_est <- lower[, 1]
     lower_se <- lower[, 2]
     lower <- lower_est - lower_se
+    
+    # Upper CI estimate
     upper <- mcmcse::mcse.q.mat(chains_pr, q = ci_upper)
     upper_est <- upper[, 1]
     upper_se <- upper[, 2]
     upper <- upper_est + upper_se
+    
+    # Get race and cand cols for the final table
     cand_col <- rep(cand_cols, each = length(race_cols))
     race_col <- rep(race_cols, times = length(cand_cols))
+    
+    # Put names on chains_pr
     names <- paste(cand_col, race_col, sep = "_")
     colnames(chains_pr) <- names
+    
+    # Create, name an output table
     results_table <- data.frame(cbind(estimate[, 1], sds, lower, upper))
     results_table <- cbind(cand_col, race_col, results_table)
     if (!eiCompare_class) {
@@ -305,7 +325,10 @@ ei_rxc <- function(
     }
 
     if (!eiCompare_class) {
+      # Match expected output
       results_table <- get_md_bayes_gen_output(results_table)
+      
+      # Return results and chains if requested
       if (ret_mcmc) {
         return(list(table = results_table, chains = chains_pr))
       } else {

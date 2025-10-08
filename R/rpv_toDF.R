@@ -3,7 +3,7 @@
 #'@author Rachel Carroll <rachelcarroll4@@gmail.com>
 #'@author Kassra Oskooii  <kassrao@@gmail.com>
 
-#' @title Transform RPV results from \code{eiCompare} into a simple dataframe
+#' @title Transform RPV results into a simple dataframe
 #' object 
 #' 
 #' @description Create a dataframe from RPV analysis output to facilitate 
@@ -67,12 +67,28 @@
 #'# )
 #' }
 
-
-rpv_toDF <- function (rpv_results = NULL, model = NULL, jurisdiction = "", 
-                       preferred_candidate = "", party = "", election_type = "", 
-                       year = "", contest = "", candidate = "") 
-{
+rpv_toDF <- function(
+    rpv_results = NULL,
+    model = NULL,
+    jurisdiction = "", 
+    preferred_candidate = "",
+    party = "", 
+    election_type = "", # general or primary
+   year = "", 
+   contest = "", #e.g. "Senate"
+   candidate = "" # cand names
+   ) {
+  
+  # -------------------------      Initialize dataframe      ---------------------------
+  
+  # If rxc or eiiter output
+  # NOTE: This new way makes a dataframe from each object of summary(rpv_results)
+  #   list then joins them. This is so if the summary(rpv_results) list 
+  #   objects have cands in different orders, it doesn't get messed up.
   if (inherits(rpv_results, "eiCompare")) {
+    
+    # function to use in lapply to make data.frame from each object in 
+    # summary(rpv_results)
     fun <- function(x) {
       df <- summary(rpv_results)[[x]]
       df <- df %>% dplyr::select(-"sd")
@@ -80,36 +96,64 @@ rpv_toDF <- function (rpv_results = NULL, model = NULL, jurisdiction = "",
       df <- data.frame(original_name = row.names(df), df)
       return(df)
     }
-    sink(tempfile())
+    
+    sink(tempfile()) # sink to suppress the print from summary(rpv_results)
     smry_dfs <- lapply(names(summary(rpv_results)), fun)
-    rpv_data <- suppressMessages(Reduce(dplyr::inner_join, 
-                                        smry_dfs))
+    rpv_data <-suppressMessages(
+      Reduce(dplyr::inner_join, smry_dfs)
+    ) 
     sink()
-  }
-  else if (inherits(rpv_results, "data.frame")) {
-    rpv_data <- data.frame(original_name = row.names(rpv_results), 
-                           rpv_results)
-  }
-  else {
-    stop("incorrect class type for argument rpv_results")
-  }
+    
+    # If ci_cvap_full output
+  } else if ( inherits(rpv_results, "data.frame") ){
+    
+    rpv_data <- data.frame(
+      original_name = row.names(rpv_results),
+      rpv_results)
+    
+  } else {stop("incorrect class type for argument rpv_results")}
+  
+  # ------------------------      Edit col/row names     -------------------------
+  
+  #add row names
   rownames(rpv_data) <- 1:nrow(rpv_data)
+  
+  #update col names
   colnames(rpv_data) <- colnames(rpv_data) %>% stringr::str_to_lower()
+  
   newcols <- gsub("mean", "Estimate", colnames(rpv_data))
-  # Handle both ci_95_lower and ci_lower naming conventions
-  newcols <- gsub("ci_95_lower", "Lower_Bound", newcols)
-  newcols <- gsub("ci_95_upper", "Upper_Bound", newcols)
   newcols <- gsub("ci_lower", "Lower_Bound", newcols)
   newcols <- gsub("ci_upper", "Upper_Bound", newcols)
+  
+  # # NOTE: should make ei_cvap_full output names match ei_iter/rxc so dont need these 
+  # newcols <- gsub("_pe", ".Estimate", colnames(rpv_data))
+  # newcols <- gsub("_ci_95_low", ".Lower_Bound", newcols)
+  # newcols <- gsub("_ci_95_high", ".Upper_Bound", newcols)
+  
   colnames(rpv_data) <- newcols
-  plotDF <- rpv_data %>% dplyr::mutate(Model = model, Jurisdiction = jurisdiction, 
-                                       Election_Type = election_type, Year = as.numeric(year), 
-                                       Contest = contest, Candidate = candidate, Party = party, 
-                                       Preferred_Candidate = preferred_candidate) %>% tidyr::pivot_longer(cols = grep("\\.", 
-                                                                                                                      colnames(rpv_data), value = TRUE), names_to = c("Voter_Race", 
-                                                                                                                                                                      ".value"), names_pattern = "(.*)\\.(.*)", names_repair = "unique")
+  
+  # ---------------------      Create Final Dataframe     -----------------------
+  
+  plotDF <- rpv_data %>% 
+    dplyr::mutate(Model = model,
+           Jurisdiction = jurisdiction, 
+           Election_Type = election_type, 
+           Year = as.numeric(year), 
+           Contest = contest, 
+           Candidate = candidate, 
+           Party = party, 
+           Preferred_Candidate = preferred_candidate
+   ) %>% 
+    tidyr::pivot_longer(
+     cols = grep("\\.", 
+                                                                                                                                                                 ".value"), names_pattern = "(.*)\\.(.*)", names_repair = "unique")
   plotDF$Voter_Race <- gsub("^pct_", "", plotDF$Voter_Race)
+  
+  # remove "_ei" or "_rxc" from colnames in case user used "name" argument in 
+  # ei_iter() or ei_rxc()
   colnames(plotDF) <- gsub("_ei", "", colnames(plotDF))
   colnames(plotDF) <- gsub("_rxc", "", colnames(plotDF))
-  return(plotDF)
-}
+  
+  return (plotDF)
+  
+} # END rpv_toDF function
