@@ -339,3 +339,7 @@
 #' @usage data(gwinnett_ei)
 "gwinnett_ei"
 
+#' Example RPV analysis results in Washington State
+#'
+"example_rpvDF"
+

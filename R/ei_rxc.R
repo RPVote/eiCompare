@@ -164,10 +164,9 @@ ei_rxc <- function(
       chain = seq_len(n_chains),
       .inorder = TRUE,
       .packages = c("ei"),
-      .options.snow = opts
-    ) %myinfix% {
-      # Bayes model estimation
-      suppressWarnings(
+      .options.snow = opts) %myinfix% 
+      {
+        suppressWarnings(
         md_out <- ei.MD.bayes(
           formula = formula,
           sample = samples,
@@ -301,7 +300,7 @@ ei_rxc <- function(
       )
     } else {
       colnames(results_table) <- c(
-        "cand", "race", "mean", "sd", "ci_95_lower", "ci_95_upper"
+        "cand", "race", "mean", "sd", "ci_lower", "ci_upper"
       )
     }
 
