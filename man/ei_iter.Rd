@@ -19,6 +19,7 @@ ei_iter(
   n_cores = NULL,
   verbose = FALSE,
   plot_path = NULL,
+  CI = 0.95,
   ...
 )
 }
@@ -57,6 +58,9 @@ tomography plots}
 \item{verbose}{A boolean indicating whether to print out status messages.}
 
 \item{plot_path}{A string to specify plot save location. If NULL, plot is not saved}
+
+\item{CI}{Numeric. Confidence interval level (default = 0.95). Specifies the
+interval width for calculation with bayestestR package.}
 
 \item{...}{Additional arguments passed directly to ei::ei()}
 }
