@@ -69,11 +69,7 @@ in \code{rpv_plot()}.
  # cand_cols = c('pct_mcmaster', 'pct_smith'),
  # race_cols = c('pct_white', 'pct_black'),
  # totals_col = "total_vap"
-#) \%>\%
- # rpv_normalize(
- #   cand_cols = c('pct_mcmaster', 'pct_smith'), 
- #   race_cols = c('pct_white', 'pct_black')
- # )
+#)
 
 ## use function to create dataframe from rpv results
 #plotDF <- rpv_toDF(
