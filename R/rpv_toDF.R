@@ -143,14 +143,16 @@ rpv_toDF <- function(
            Candidate = candidate, 
            Party = party, 
            Preferred_Candidate = preferred_candidate
-   ) %>% 
+    ) %>%
     tidyr::pivot_longer(
-     cols = grep("\\.", 
-                                                                                                                                                                 ".value"), names_pattern = "(.*)\\.(.*)", names_repair = "unique")
+      cols = grep("\\.", colnames(rpv_data), value = TRUE),
+      names_to = c("Voter_Race",".value"),
+      names_pattern = "(.*)\\.(.*)",
+      names_repair = "unique"
+    )
+                                                                                                                                                                
   plotDF$Voter_Race <- gsub("^pct_", "", plotDF$Voter_Race)
   
-  # remove "_ei" or "_rxc" from colnames in case user used "name" argument in 
-  # ei_iter() or ei_rxc()
   colnames(plotDF) <- gsub("_ei", "", colnames(plotDF))
   colnames(plotDF) <- gsub("_rxc", "", colnames(plotDF))
   
