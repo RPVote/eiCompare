@@ -5,7 +5,7 @@
 #' @return A nicely formatted dataframe for printing results
 #' @export
 summary.eiCompare <- function(object, ...) {
-  objects <- list(object, ...)
+  objects <- list(object)
   tables <- vector("list", length(objects))
 
   for (ii in seq_along(objects)) {
@@ -25,5 +25,5 @@ summary.eiCompare <- function(object, ...) {
     race <- race_groups[[ii]]
     outputs[[race]] <- data.frame(lapply(tables, function(x) x[[race]]))
   }
-  message(outputs)
+  print(outputs)
 }

@@ -18,6 +18,13 @@ Problem. Princeton: Princeton University Press. Lau, Olivia, Ryan Moore, and
 Michael Kellerman. eiPack: Ecological Inference and Higher-Dimension Data
 Management
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/RPVote/eiCompare}
+}
+
+}
 \author{
 Loren Collingwood
 

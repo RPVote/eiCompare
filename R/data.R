@@ -339,3 +339,11 @@
 #' @usage data(gwinnett_ei)
 "gwinnett_ei"
 
+#' Example RPV analysis results in Washington State
+#'
+"example_rpvDF"
+
+#' Example election and demographic data from South Carolina 2020 General Elections
+#' 
+"south_carolina"
+
