@@ -20,7 +20,7 @@ rpv_toDF(
 \arguments{
 \item{rpv_results}{RPV analysis results either from the output of 
 \code{ei_iter()} or \code{ei_rxc()} from the \code{eiCompare} package or from 
-the internal function \code{ci_cvap_full()}.}
+the internal function \code{rpv_normalize()}.}
 
 \item{model}{A string indicating the model used to create \code{rpv_results}. 
 Examples include "ei", "rxc", "ei cvap", etc.}
