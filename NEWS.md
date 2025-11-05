@@ -1,3 +1,15 @@
+# eiCompare 3.0.6
+
+## added function 11/5/25
+
+* included extract_rxc_precinct() function to extract precinct level estimates from ei_rxc()
+
+# eiCompare 3.0.5
+
+## Package changes 10/27/25
+
+* added add_rpv_normalize and removed wru dependency
+
 # eiCompare 3.0.4
 
 ## Package changes
