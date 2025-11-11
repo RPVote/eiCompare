@@ -4,18 +4,18 @@
 \alias{extract_rxc_precinct}
 \title{Extract Precinct-Level Estimates from ei.MD.bayes Object}
 \usage{
-extract_rxc_precinct(eivote, cand_cols, race_cols, dat, uniq)
+extract_rxc_precinct(eivote, cand_cols, race_cols, dat, precinct_id)
 }
 \arguments{
-\item{eivote}{ei_rxc() output object containing stat_objects}
+\item{eivote}{`ei_rxc()` output object containing `stat_objects`}
 
-\item{cand_cols}{Character vector of candidate column names (e.g., c("pct_cand_A", "pct_cand_B"))}
+\item{cand_cols}{Character vector of candidate column names (e.g., `c("pct_cand_A", "pct_cand_B")`)}
 
-\item{race_cols}{Character vector of race column names (e.g., c("pct_black", "pct_white"))}
+\item{race_cols}{Character vector of race column names (e.g., `c("pct_black", "pct_white")`)}
 
-\item{dat}{Original data frame used in ei_rxc() call}
+\item{dat}{Original data frame used in `ei_rxc()` call}
 
-\item{uniq}{Column name for precinct identifier (must exist in dat)}
+\item{precinct_id}{Column name for precinct identifier (must exist in `dat`)}
 }
 \value{
 Data frame with precinct IDs and race×candidate estimate columns
@@ -25,13 +25,13 @@ Extracts precinct-specific ecological inference estimates from ei_rxc() output.
 Uses exact string matching to handle variation column names
 }
 \details{
-The function extracts md_out$draws$Beta from the ei_rxc() output, which contains
+The function extracts `md_out$draws$Beta` from the `ei_rxc()` output, which contains
 MCMC draws for each precinct-race-candidate combination. Beta column names follow
-the format "beta.race_name.cand_name.precinct_idx". The function computes posterior
+the format `"beta.race_name.cand_name.precinct_idx"`. The function computes posterior
 means across MCMC iterations for each precinct.
 
-Output columns follow expand.grid(cand, race) ordering, with column names formatted
-as paste0(race, cand) (e.g., "pct_blackpct_cand_A").
+Output columns follow `expand.grid(cand, race)` ordering, with column names formatted
+as `paste0(race, cand)` (e.g., `"pct_blackpct_cand_A"`).
 }
 \examples{
 \donttest{
@@ -43,8 +43,8 @@ as paste0(race, cand) (e.g., "pct_blackpct_cand_A").
 #
 # eivote <- ei_rxc( #this will take some time
 #  data = gwinnett_ei,
-# cand_cols = c("kemp", "abrams", "metz"),
-# race_cols = c("white", "black", "other"),
+#  cand_cols = c("kemp", "abrams", "metz"),
+#  race_cols = c("white", "black", "other"),
 #  totals_col = "turnout",
 #  seed = 12345
 #)
@@ -55,7 +55,7 @@ as paste0(race, cand) (e.g., "pct_blackpct_cand_A").
 #  cand_cols = c("kemp", "abrams"),
 #  race_cols = c("white", "black", "other"),
 #  dat = gwinnett_ei,
-#  uniq = "precinct"
+#  precinct_id = "precinct"
 #)
 
 #head(precinct_results)

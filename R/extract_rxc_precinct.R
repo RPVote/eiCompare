@@ -3,22 +3,22 @@
 #' Extracts precinct-specific ecological inference estimates from ei_rxc() output.
 #' Uses exact string matching to handle variation column names
 #'
-#' @param eivote ei_rxc() output object containing stat_objects
-#' @param cand_cols Character vector of candidate column names (e.g., c("pct_cand_A", "pct_cand_B"))
-#' @param race_cols Character vector of race column names (e.g., c("pct_black", "pct_white"))
-#' @param dat Original data frame used in ei_rxc() call
-#' @param uniq Column name for precinct identifier (must exist in dat)
+#' @param eivote `ei_rxc()` output object containing `stat_objects`
+#' @param cand_cols Character vector of candidate column names (e.g., `c("pct_cand_A", "pct_cand_B")`)
+#' @param race_cols Character vector of race column names (e.g., `c("pct_black", "pct_white")`)
+#' @param dat Original data frame used in `ei_rxc()` call
+#' @param precinct_id Column name for precinct identifier (must exist in `dat`)
 #'
 #' @return Data frame with precinct IDs and race×candidate estimate columns
 #'
 #' @details
-#' The function extracts md_out$draws$Beta from the ei_rxc() output, which contains
+#' The function extracts `md_out$draws$Beta` from the `ei_rxc()` output, which contains
 #' MCMC draws for each precinct-race-candidate combination. Beta column names follow
-#' the format "beta.race_name.cand_name.precinct_idx". The function computes posterior
+#' the format `"beta.race_name.cand_name.precinct_idx"`. The function computes posterior
 #' means across MCMC iterations for each precinct.
 #'
-#' Output columns follow expand.grid(cand, race) ordering, with column names formatted
-#' as paste0(race, cand) (e.g., "pct_blackpct_cand_A").
+#' Output columns follow `expand.grid(cand, race)` ordering, with column names formatted
+#' as `paste0(race, cand)` (e.g., `"pct_blackpct_cand_A"`).
 #'
 #' @examples
 #' \donttest{
@@ -30,8 +30,8 @@
 #' #
 #' # eivote <- ei_rxc( #this will take some time
 #' #  data = gwinnett_ei,
-#' # cand_cols = c("kemp", "abrams", "metz"),
-#' # race_cols = c("white", "black", "other"),
+#' #  cand_cols = c("kemp", "abrams", "metz"),
+#' #  race_cols = c("white", "black", "other"),
 #' #  totals_col = "turnout",
 #' #  seed = 12345
 #' #)
@@ -42,14 +42,14 @@
 #' #  cand_cols = c("kemp", "abrams"),
 #' #  race_cols = c("white", "black", "other"),
 #' #  dat = gwinnett_ei,
-#' #  uniq = "precinct"
+#' #  precinct_id = "precinct"
 #' #)
 #'
 #' #head(precinct_results)
 #' }
 #'
 #' @export
-extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, uniq) {
+extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, precinct_id) {
 
   # Extract md_out object from ei_rxc wrapper
   eiMD_object <- eivote$stat_objects[[1]]
@@ -57,9 +57,9 @@ extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, uniq) {
   # Extract Beta matrix (MCMC iterations × beta parameters)
   Beta <- eiMD_object$draws$Beta
 
-  # Check that uniq column exists in dat
-  if(!uniq %in% colnames(dat)) {
-    stop(paste0("Column '", uniq, "' not found in dat. ",
+  # Check that precinct_id column exists in dat
+  if(!precinct_id %in% colnames(dat)) {
+    stop(paste0("Column '", precinct_id, "' not found in dat. ",
                 "Available columns: ", paste(colnames(dat), collapse = ", ")))
   }
 
@@ -112,7 +112,7 @@ extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, uniq) {
   colnames(result_df) <- col_names
 
   # Attach precinct IDs from original data as first column
-  result_df <- cbind(dat[, uniq, drop = FALSE], result_df)
+  result_df <- cbind(dat[, precinct_id, drop = FALSE], result_df)
 
   return(result_df)
 }

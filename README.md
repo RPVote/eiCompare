@@ -13,22 +13,17 @@
 
 ## News
 
-# eiCompare 3.0.6
+# eiCompare 3.0.5
 
 ## New function
 
 * included extract_rxc_precinct() function to extract precinct level estimates from ei_rxc()
 
-# eiCompare 3.0.5
-
-## Package changes 10/27/25
-
-* added add_rpv_normalize and removed wru dependency
-
 # eiCompare 3.0.4
 
 ## Package changes
-
+* added add_rpv_normalize() function
+* removed wru dependency
 * incorporated rpv_coef_plot() and rpv_toDF() functions from eiExpand package
 * edited ei_iter() to have flexible CI parameters (default is 0.95) using bayestestR for calculation and updated column naming, and to use reproducible parallel processing (.inorder=TRUE)
 * edited ei_rxc() with repdocuible parallel processing and changed column naming to fit ei_iter()
