@@ -7,7 +7,7 @@
 # eiCompare 3.0.4
 
 ## Package changes
-* added add_rpv_normalize() function
+* added rpv_normalize() function
 * removed wru dependency
 * incorporated rpv_coef_plot() and rpv_toDF() functions from eiExpand package
 * edited ei_iter() to have flexible CI parameters (default is 0.95) using bayestestR for calculation and updated column naming, and to use reproducible parallel processing (.inorder=TRUE)
