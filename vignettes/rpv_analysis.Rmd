@@ -19,10 +19,10 @@ options(scipen = 999, digits = 4)
 ```
 
 This vignette demonstrates how to conduct a racially polarized voting (RPV)
-analysis using `eiCompare` and `eiExpand`. We walk through the full workflow:
-descriptive bivariate plots, three ecological inference methods (Goodman's
-regression, iterative EI, and RxC EI), and visualization of results using
-`eiExpand::rpv_plot()`.
+analysis using `eiCompare`. We walk through the full workflow: descriptive
+bivariate plots, three ecological inference methods (Goodman's regression,
+iterative EI, and RxC EI), and preparing results for visualization with
+`rpv_toDF()`.
 
 ## Data
 
@@ -215,41 +215,7 @@ We can inspect the structure:
 head(iter_df)
 ```
 
-## Step 7: Visualize RPV results with eiExpand
-
-The `eiExpand` package provides `rpv_plot()` for publication-quality RPV bar
-charts. We can plot each method individually or combine them.
-
-```{r rpv-plot-iter, message = FALSE, warning = FALSE, fig.height = 5, fig.width = 8}
-library(eiExpand)
-
-rpv_plot(iter_df,
-  title = "Racially Polarized Voting: Iterative EI",
-  subtitle = "2018 Gwinnett County Governor"
-)
-```
-
-```{r rpv-plot-rxc, message = FALSE, warning = FALSE, fig.height = 5, fig.width = 8}
-rpv_plot(rxc_df,
-  title = "Racially Polarized Voting: RxC EI",
-  subtitle = "2018 Gwinnett County Governor"
-)
-```
-
-We can also combine all three methods into one data frame for a comparative
-plot:
-
-```{r rpv-plot-combined, message = FALSE, warning = FALSE, fig.height = 6, fig.width = 9}
-combined_df <- dplyr::bind_rows(good_df, iter_df, rxc_df)
-
-rpv_plot(combined_df,
-  title = "RPV Estimates Across Methods",
-  subtitle = "2018 Gwinnett County Governor",
-  panelBy = "Model"
-)
-```
-
-## Step 8: VAP-denominator normalization with rpv_normalize
+## Step 7: VAP-denominator normalization with rpv_normalize
 
 When using voting age population (VAP) or citizen voting age population
 (CVAP) as the denominator instead of total votes cast, we include a "no vote"
@@ -286,8 +252,6 @@ This vignette demonstrated the full RPV analysis workflow:
 3. **Iterative EI** with `ei_iter()` -- Bayesian 2x2 estimates with CIs
 4. **RxC EI** with `ei_rxc()` -- simultaneous multinomial-Dirichlet estimates
 5. **Method comparison** with `plot()` and side-by-side `rpv_toDF()` output
-6. **RPV visualization** with `eiExpand::rpv_plot()`
 
 All three EI functions return `eiCompare` class objects that work with
-`summary()`, `rpv_toDF()`, and `plot()`. The `rpv_toDF()` output is directly
-compatible with `eiExpand::rpv_plot()` for publication-ready RPV bar charts.
+`summary()`, `rpv_toDF()`, and `plot()`.
