@@ -12,7 +12,6 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @keywords classes
 #' @examples
-#'
 #' \dontrun{
 #' # TOY DATA EXAMPLE
 #' canda <- c(.1, .09, .85, .9, .92)

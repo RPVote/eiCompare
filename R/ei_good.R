@@ -11,16 +11,15 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
-#' @return matrix with precinct results, columns = race groups, rows = candidates
+#' @return An object of class eiCompare containing Goodman's regression estimates
 #' @references eiPack King et. al. (http://gking.harvard.edu/eiR)
 #'
 #' L. A. Goodman. Ecological regressions and behavior of individuals. American
 #' Sociological Review, 1953.
 #'
-#' @importFrom stats formula lm coef na.omit
+#' @importFrom stats formula glm coef na.omit
 #' @export
-ei_good <- function(
-                    data,
+ei_good <- function(data,
                     cand_cols,
                     race_cols,
                     totals_col) {
@@ -32,6 +31,9 @@ ei_good <- function(
 
   # Check for missings
   data <- remove_nas(data)
+
+  # Force data to be a dataframe
+  data <- as.data.frame(data)
 
   # Get race and cand lengths
   n_races <- length(race_cols)
@@ -45,8 +47,11 @@ ei_good <- function(
     stringsAsFactors = FALSE
   )
 
-  # Create lists for storing loop results
-  district_results <- list()
+  # Vectors for storing results
+  vote_pcts <- c()
+  std_errs <- c()
+  cands_vec <- c()
+  races_vec <- c()
 
   # Create count of estimates pushed to 0, 1 bounds
   bounded <- 0
@@ -74,26 +79,18 @@ ei_good <- function(
       vote_pct <- 0
     }
 
-    # Compute SE (needs fixing)
+    # Compute SE
     ses <- coef(summary(res))[, 2]
-
-    # Compute with and without covariance term
 
     # SE on sum of coefficients = sqrt(SE1^2 + SE2^2 + 2COV(1,2))
     # Omit the 2COV(1,2) term because covariance here is spurious
     se <- sqrt(ses[1]^2 + ses[2]^2)
 
-    # Create dataframe of results
-    # This is set up to match the procedure in ei_iter()
-    res <- data.frame(
-      c(cand, "se"),
-      c(vote_pct, se)
-    )
-    colnames(res) <- c("Candidate", race)
-    rownames(res) <- NULL
-
-    # Store in list
-    district_results <- append(district_results, list(res))
+    # Store results
+    vote_pcts <- append(vote_pcts, vote_pct)
+    std_errs <- append(std_errs, se)
+    cands_vec <- append(cands_vec, cand)
+    races_vec <- append(races_vec, race)
   }
 
   # Print warning if estimates were bounded
@@ -107,17 +104,22 @@ ei_good <- function(
     )
   }
 
-  # Put results in dataframe
-  results_table <- get_results_table(
-    district_results,
-    cand_col = cand_cols,
-    race_col = race_cols,
-    n_cand = n_cands,
-    n_race = n_races,
-    n_iter = n_iters,
-    add_other = FALSE
+  # Build eiCompare class object
+  estimates <- data.frame(
+    cand = cands_vec,
+    race = races_vec,
+    mean = vote_pcts,
+    sd = std_errs,
+    stringsAsFactors = FALSE
   )
 
-  # Return results
-  return(results_table)
+  output <- list(
+    "type" = "goodman",
+    "estimates" = estimates,
+    "precinct_samples" = NULL,
+    "stat_objects" = NULL,
+    "name" = ""
+  )
+  class(output) <- "eiCompare"
+  return(output)
 }

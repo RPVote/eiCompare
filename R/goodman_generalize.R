@@ -38,7 +38,6 @@
 #' @export goodman_generalize
 goodman_generalize <-
   function(cand_vector, race_group, total, data, table_names, ...) {
-
     # Functions
     list_extract <- function(x) x[, 1:2] # sends to lapply to extract indiv column estimates
 

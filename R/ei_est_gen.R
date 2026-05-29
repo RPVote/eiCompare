@@ -105,8 +105,7 @@ ei_est_gen <- function(cand_vector,
   seq_split <- 2:length(cand_vector)
   if (length(cand_vector) == 1) {
     rn <- c(cand_vector, "se")
-  }
-  else {
+  } else {
     se_cols <- rep("se", length(cand_vector))
     rn <- c(rbind(cand_vector, se_cols))
   }
@@ -179,8 +178,7 @@ ei_est_gen <- function(cand_vector,
     race_group_table <- data.frame(race_group_table)
     beta_full_hold <- data.frame(beta_full_hold)
     colnames(beta_full_hold) <- c("betab", "betaw")
-  }
-  else {
+  } else {
     race_group_table <- data.frame(lapply(
       race_group_table,
       list_extract
@@ -215,8 +213,7 @@ ei_est_gen <- function(cand_vector,
     beta_full_hold <- as.data.frame(beta_full_hold)
     names(beta_full_hold) <- beta_names
     return(list(race_group_table = race_group_table, all_betas = beta_full_hold))
-  }
-  else {
+  } else {
     return(race_group_table)
   }
 }

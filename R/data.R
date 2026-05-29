@@ -344,6 +344,5 @@
 "example_rpvDF"
 
 #' Example election and demographic data from South Carolina 2020 General Elections
-#' 
+#'
 "south_carolina"
-

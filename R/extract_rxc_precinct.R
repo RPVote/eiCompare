@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \donttest{
-#' 
+#'
 #' # library(eiCompare)
 #' # data(gwinnett_ei)
 #' #
@@ -34,7 +34,7 @@
 #' #  race_cols = c("white", "black", "other"),
 #' #  totals_col = "turnout",
 #' #  seed = 12345
-#' #)
+#' # )
 #'
 #' # # Extract precinct-level estimates
 #' # precinct_results <- extract_rxc_precinct(
@@ -43,14 +43,13 @@
 #' #  race_cols = c("white", "black", "other"),
 #' #  dat = gwinnett_ei,
 #' #  precinct_id = "precinct"
-#' #)
+#' # )
 #'
-#' #head(precinct_results)
+#' # head(precinct_results)
 #' }
 #'
 #' @export
 extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, precinct_id) {
-
   # Extract md_out object from ei_rxc wrapper
   eiMD_object <- eivote$stat_objects[[1]]
 
@@ -58,9 +57,11 @@ extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, precinct_id)
   Beta <- eiMD_object$draws$Beta
 
   # Check that precinct_id column exists in dat
-  if(!precinct_id %in% colnames(dat)) {
-    stop(paste0("Column '", precinct_id, "' not found in dat. ",
-                "Available columns: ", paste(colnames(dat), collapse = ", ")))
+  if (!precinct_id %in% colnames(dat)) {
+    stop(paste0(
+      "Column '", precinct_id, "' not found in dat. ",
+      "Available columns: ", paste(colnames(dat), collapse = ", ")
+    ))
   }
 
   n_precincts <- nrow(dat)
@@ -68,28 +69,31 @@ extract_rxc_precinct <- function(eivote, cand_cols, race_cols, dat, precinct_id)
 
   # Initialize result matrix (precincts × race-candidate combinations)
   result_matrix <- matrix(NA,
-                          nrow = n_precincts,
-                          ncol = length(race_cols) * length(cand_cols))
+    nrow = n_precincts,
+    ncol = length(race_cols) * length(cand_cols)
+  )
 
   # Loop through race-candidate combinations and extract precinct estimates
   col_idx <- 1
-  for(race in race_cols) {
-    for(cand in cand_cols) {
-
+  for (race in race_cols) {
+    for (cand in cand_cols) {
       # Build expected prefix pattern for exact matching
       # Format: beta.race.cand.precinct_number
       expected_prefix <- paste0("beta.", race, ".", cand, ".")
 
       # Find Beta columns matching this race-candidate pair
       matching_cols <- grep(paste0("^", gsub("\\.", "\\\\.", expected_prefix)),
-                           beta_colnames,
-                           value = FALSE)
+        beta_colnames,
+        value = FALSE
+      )
 
       # Validation - should have exactly n_precincts matches
-      if(length(matching_cols) != n_precincts) {
-        stop(paste0("Column matching error for race='", race, "', cand='", cand,
-                    "': found ", length(matching_cols), " columns but expected ",
-                    n_precincts, " precincts"))
+      if (length(matching_cols) != n_precincts) {
+        stop(paste0(
+          "Column matching error for race='", race, "', cand='", cand,
+          "': found ", length(matching_cols), " columns but expected ",
+          n_precincts, " precincts"
+        ))
       }
 
       # Extract precinct indices and reorder to match dat row order

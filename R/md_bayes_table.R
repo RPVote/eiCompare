@@ -11,7 +11,6 @@
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
-#'
 #' \donttest{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)

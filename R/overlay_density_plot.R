@@ -64,7 +64,6 @@ overlay_density_plot <- function(agg_betas, results_table, race_cols, cand_cols,
     .packages = c("overlapping", "ggplot2"),
     .options.snow = opts
   ) %do% {
-
     # Keep columns for race[k]
     race_comb <- agg_betas[, grep(race[k], colnames(agg_betas))]
 

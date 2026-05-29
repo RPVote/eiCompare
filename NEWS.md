@@ -1,3 +1,13 @@
+# eiCompare 3.0.6
+
+## Bug fixes and improvements
+
+* `ei_good()` now returns an `eiCompare` class object, consistent with `ei_iter()` and `ei_rxc()`. This means `ei_good()` output now works directly with `summary()`, `rpv_toDF()`, and `rpv_plot()`. The function signature is unchanged. The legacy data.frame output is no longer returned by default.
+* `rpv_toDF()` now correctly handles column names from `rpv_normalize()` output. Previously, the `ci_95_lower` and `ci_95_upper` columns produced by `rpv_normalize()` were not recognized during column renaming, causing downstream errors in `pivot_longer()`. The function now matches both `ci_lower`/`ci_upper` and `ci_95_lower`/`ci_95_upper` naming conventions.
+* `rpv_normalize()` now returns an informative error message when passed `ei_good()` output, explaining that Goodman's regression does not produce the posterior district-level samples required for vote share normalization.
+* Switched maintainer to Loren Collingwood (lcollingwood@unm.edu)
+* Added RPV analysis vignette demonstrating the full workflow from descriptive analysis through EI estimation and visualization with `eiExpand`
+
 # eiCompare 3.0.5
 
 ## added function 11/11/25

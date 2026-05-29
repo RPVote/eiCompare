@@ -1,10 +1,10 @@
 #' race_check_2_3
-#' 
+#'
 #' Checks that both sides of the RxC equation for White/Minority and White,
 #' Black, Hispanic, Other, respectively, add up to the same values.  If small
 #' rounding issues, adjusts the "other" race category.
-#' 
-#' 
+#'
+#'
 #' @param dat data.frame() object. One no vote/third party vote column, with
 #' candidate votes (for either 2 or 3 candidates), then up to four demographics
 #' with last as other
@@ -20,11 +20,10 @@
 #' preparation process.
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
 #' @examples
-#' 
-#'   
-#'   # EXAMPLE: NOT RUN #
-#'   
-#' 
+#'
+#'
+#' # EXAMPLE: NOT RUN #
+#'
 #' @export race_check_2_3
 race_check_2_3 <- function(dat, split = c(3, 4), catch = FALSE, catch_col = NULL,
                            print_sides = TRUE) {

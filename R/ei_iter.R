@@ -63,8 +63,7 @@
 #' @export
 
 
-ei_iter <- function(
-                    data,
+ei_iter <- function(data,
                     cand_cols,
                     race_cols,
                     totals_col,
@@ -80,7 +79,6 @@ ei_iter <- function(
                     plot_path = NULL,
                     CI = .95,
                     ...) {
-
   # Preparation for parallel processing if user specifies parallelization
   if (par_compute) {
     # Detect the number of cores you have
@@ -365,7 +363,6 @@ ei_iter <- function(
   }
 
   if (eiCompare_class) {
-
     # Set up containers
     races <- c()
     cands <- c()

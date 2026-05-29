@@ -105,23 +105,25 @@ od_plot_create <- function(race,
       linetype = "dotted"
     ) +
     # Add horizontal lines for standard deviation
-    ggplot2::geom_segment(ggplot2::aes(
-      x = sd_minus[1],
-      y = .1,
-      xend = sd_plus[1],
-      yend = .1
-    ),
-    color = "red",
-    linetype = "dashed", data = out_sub
+    ggplot2::geom_segment(
+      ggplot2::aes(
+        x = sd_minus[1],
+        y = .1,
+        xend = sd_plus[1],
+        yend = .1
+      ),
+      color = "red",
+      linetype = "dashed", data = out_sub
     ) +
-    ggplot2::geom_segment(aes(
-      x = sd_minus[2],
-      y = .1,
-      xend = sd_plus[2],
-      yend = .1
-    ),
-    color = "blue",
-    linetype = "dashed", data = out_sub
+    ggplot2::geom_segment(
+      aes(
+        x = sd_minus[2],
+        y = .1,
+        xend = sd_plus[2],
+        yend = .1
+      ),
+      color = "blue",
+      linetype = "dashed", data = out_sub
     ) +
     # Add sigma label
     ggplot2::geom_text(
@@ -171,7 +173,7 @@ od_plot_create <- function(race,
       gsub("pct_", "", race), ".png"
     ), height = 4, width = 6)
   }
-  
+
 
   return(densplot)
 }

@@ -20,7 +20,7 @@ race}
 precinct}
 }
 \value{
-matrix with precinct results, columns = race groups, rows = candidates
+An object of class eiCompare containing Goodman's regression estimates
 }
 \description{
 EI iterative estimation via Goodman's Regression

@@ -24,7 +24,6 @@
 #' <jhgross@@umass.edu>
 #' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
 #' @examples
-#'
 #' \donttest{
 #' # TOY DATA EXAMPLE
 #' canda <- c(10, 8, 10, 4, 8)
@@ -36,7 +35,7 @@
 #' # Generate formula for passage to ei.reg.bayes() function
 #' form <- formula(cbind(canda, candb) ~ cbind(black, white))
 #' # Then excute md_bayes_draw(); not run here due to time
-#' md_bayes_draw_lambda(toy, c(2,3), form )
+#' md_bayes_draw_lambda(toy, c(2, 3), form)
 #' }
 #' @import eiPack
 #' @export md_bayes_draw_lambda

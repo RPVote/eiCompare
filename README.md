@@ -2,7 +2,7 @@
 [![R build status](https://github.com/RPVote/eiCompare/workflows/R-CMD-check/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=R-CMD-check)
 [![Style status](https://github.com/RPVote/eiCompare/workflows/Styler/badge.svg)](https://github.com/RPVote/eiCompare/actions?workflow=Styler)
 
-`eiCompare` is an R package built to help practitioners and academics quantify racially polarized voting (RPV) with ease and confidence. It builds on top of several existing packages, augmenting their utility for measuring racially polarized voting in elections. Underlying packages include `ei` and `eiPack`. 
+`eiCompare` is an R package built to help practitioners and academics quantify racially polarized voting (RPV) with ease and confidence. It builds on top of several existing packages, augmenting their utility for measuring racially polarized voting in elections. Underlying packages include `ei` and `eiPack`.
 
 `eiCompare` was built with several types of users in mind:
 
@@ -13,6 +13,16 @@
 
 ## News
 
+# eiCompare 3.0.6
+
+## Bug fixes and improvements
+
+* `ei_good()` now returns an `eiCompare` class object, consistent with `ei_iter()` and `ei_rxc()`. Output works directly with `summary()`, `rpv_toDF()`, and `rpv_plot()`.
+* `rpv_toDF()` now correctly handles `ci_95_lower`/`ci_95_upper` column names from `rpv_normalize()` output.
+* `rpv_normalize()` returns an informative error when passed `ei_good()` output.
+* Switched maintainer to Loren Collingwood (lcollingwood@unm.edu)
+* Added RPV analysis vignette
+
 # eiCompare 3.0.5
 
 ## New function
@@ -22,50 +32,17 @@
 # eiCompare 3.0.4
 
 ## Package changes
-* added add_rpv_normalize() function
+* added rpv_normalize() function
 * removed wru dependency
 * incorporated rpv_coef_plot() and rpv_toDF() functions from eiExpand package
 * edited ei_iter() to have flexible CI parameters (default is 0.95) using bayestestR for calculation and updated column naming, and to use reproducible parallel processing (.inorder=TRUE)
-* edited ei_rxc() with repdocuible parallel processing and changed column naming to fit ei_iter()
+* edited ei_rxc() with reproducible parallel processing and changed column naming to fit ei_iter()
 * Fixed summary.eiCompare() print behavior
-* Added viridis to imports for color visualiztion and updated RoxygenNote to 7.3.2
+* Added viridis to imports for color visualization and updated RoxygenNote to 7.3.2
 
-### eiCompare 3.0.3
-
-Updated 
-
-### eiCompare 3.0.2 
-
-#### Package changes
-
-* Removed geocoding helpers from package. These are mostly trivial to code separately and added extra dependencies to the package. Change instigated by update to previous dependency `censusxy`.
-
-### eiCompare 3.0.1
-
-#### Minor package changes
-
-* Switched maintainer from Loren Collingwood to Ari Decter-Frain (@aridf)
-* Minor changes to functions dependent on `wru` to ensure compatibility with new version
-
-### 3.0 Update:
-
-The Voting Rights Team of the 2020 University of Washington Data Science for Social Good Fellowship program worked throughout the summer to develop the latest iteration of the package. Highlights from the update include:
-
-- Functions for geocoding addresses on voter files.
-- Improved accuracy of BISG estimation through surname preprocessing.
-- Refactored code for ecological inference functions.
-- Parallel processing to speed up ecological inference and geocoding.
-- New built-in visualizations of EI results and estimation diagnostics.
-- Performance analysis tools for comparing different election maps.
-- Functions for preprocessing address data, surname data, data for ecological inference.
-
-See [here](NEWS.md) for a full list of new features. 
+See [NEWS.md](NEWS.md) for a full changelog.
 
 ## Installation
-
-### From CRAN
-
-CRAN submission is currently underway. Check back soon for instructions on installation from CRAN.
 
 ### From Github (development version)
 
@@ -77,36 +54,113 @@ remotes::install_github('RPVote/eiCompare')
 
 ## Usage
 
-The name `eiCompare` highlights the utility of this package for comparing different ecological inference estimates. For instance, the following code compares iterative and RxC estimates of racial voting preferences in a stylized version of the 2018 Georgia gubernatorial election:
+The name `eiCompare` highlights the utility of this package for comparing different ecological inference estimates. The package provides three EI methods:
+
+- **Goodman's Regression** (`ei_good()`) -- A fast, deterministic method based on ecological regression. Useful as a baseline estimate.
+- **Iterative EI** (`ei_iter()`) -- King's (1997) iterative 2x2 ecological inference method with Bayesian estimation.
+- **RxC EI** (`ei_rxc()`) -- Multinomial-Dirichlet model for simultaneous estimation across all race-candidate pairs.
+
+All three functions return `eiCompare` class objects that work with `summary()`, `rpv_toDF()`, and visualization functions.
+
+### Quick example
+
+The following code estimates racial voting preferences in the 2018 Georgia gubernatorial election using Gwinnett County data:
 
 ``` r
 library(eiCompare)
 data("gwinnett_ei")
 
+cands <- c("kemp", "abrams", "metz")
+races <- c("white", "black", "other")
+
+# Goodman's Regression (fast baseline)
+good <- ei_good(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = "turnout"
+)
+summary(good)
+
+# Iterative EI
 iter <- ei_iter(
   data = gwinnett_ei,
-  cand_cols = c("kemp", "abrams", "metz"),
-  race_cols = c("white", "black", "other"),
+  cand_cols = cands,
+  race_cols = races,
   totals_col = "turnout",
-  name = "Iterative EI",
+  name = "Iterative EI"
 )
 
+# RxC EI
 rxc <- ei_rxc(
   data = gwinnett_ei,
-  cand_cols = c("kemp", "abrams", "metz"),
-  race_cols = c("white", "black", "other"),
+  cand_cols = cands,
+  race_cols = races,
   totals_col = "turnout",
-  name = "RxC EI",
+  name = "RxC EI"
 )
 
+# Compare results
 plot(iter, rxc)
 ```
 
 <div style="text-align:center"><img src="inst/readme_plot.png" /></div>
 
-The top panel shows that the majority of white voters voted for Brian Kemp, who won this election. The middle panel shows the estiamted preferences of black voters. The estimates indicate that black voters strongly preferred Stacey Abrams over Brian Kemp.
+The top panel shows that the majority of white voters voted for Brian Kemp, who won this election. The middle panel shows the estimated preferences of black voters. The estimates indicate that black voters strongly preferred Stacey Abrams over Brian Kemp.
 
-Please refer to the package vignettes for detailed walkthroughs of how this package facilitates ecological inference. To view these in Rstudio, enter `browseVignettes("eiCompare")` in the console after installing the package.
+### RPV visualization with eiExpand
+
+Use `rpv_toDF()` to convert results into a format compatible with `eiExpand::rpv_plot()`:
+
+``` r
+library(eiExpand)
+
+# Convert ei_iter results to plot-ready dataframe
+iter_df <- rpv_toDF(
+  rpv_results = iter,
+  model = "ei",
+  jurisdiction = "Gwinnett",
+  candidate = c("Kemp", "Abrams", "Metz"),
+  preferred_candidate = c("White", "Black", "Other"),
+  party = c("Republican", "Democratic", "Libertarian"),
+  election_type = "General",
+  year = "2018",
+  contest = "Governor"
+)
+
+# Plot RPV results
+rpv_plot(iter_df)
+```
+
+### VAP-denominator normalization
+
+When using voting age population (VAP) as the denominator (instead of total votes), use `rpv_normalize()` to condition estimates on voters only:
+
+``` r
+# Run EI with a NoVote column
+iter_vap <- ei_iter(
+  data = my_data,
+  cand_cols = c("pct_cand1", "pct_cand2", "pct_novote"),
+  race_cols = c("pct_white", "pct_black"),
+  totals_col = "total_vap"
+)
+
+# Normalize to remove NoVote
+norm <- rpv_normalize(
+  ei_object = iter_vap,
+  cand_cols = c("pct_cand1", "pct_cand2"),
+  race_cols = c("pct_white", "pct_black")
+)
+
+# Convert to plot-ready format
+norm_df <- rpv_toDF(
+  rpv_results = norm,
+  model = "ei vap",
+  ...
+)
+```
+
+Please refer to the package vignettes for detailed walkthroughs. To view these in RStudio, enter `browseVignettes("eiCompare")` in the console after installing the package.
 
 ## Platform dependencies
 

@@ -1,0 +1,293 @@
+---
+title: "Racially Polarized Voting Analysis with eiCompare"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Racially Polarized Voting Analysis with eiCompare}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center"
+)
+options(scipen = 999, digits = 4)
+```
+
+This vignette demonstrates how to conduct a racially polarized voting (RPV)
+analysis using `eiCompare` and `eiExpand`. We walk through the full workflow:
+descriptive bivariate plots, three ecological inference methods (Goodman's
+regression, iterative EI, and RxC EI), and visualization of results using
+`eiExpand::rpv_plot()`.
+
+## Data
+
+We use the `gwinnett_ei` dataset bundled with `eiCompare`. This contains
+precinct-level data from the 2018 Gwinnett County, Georgia gubernatorial
+election between Republican Brian Kemp, Democrat Stacey Abrams, and
+Libertarian Jim Metz.
+
+```{r setup, message = FALSE, warning = FALSE}
+library(eiCompare)
+library(dplyr)
+
+data("gwinnett_ei")
+head(gwinnett_ei)
+```
+
+The columns are already expressed as proportions of turnout (candidates) and
+proportions of the voting population (race groups). The candidate columns sum
+to 1 and the race columns sum to 1 within each precinct.
+
+```{r}
+cands <- c("kemp", "abrams", "metz")
+races <- c("white", "black", "other")
+total <- "turnout"
+```
+
+## Step 1: Descriptive analysis with bivariate plots
+
+Before running any EI model, it is useful to examine the precinct-level
+relationship between each racial group's share of the electorate and each
+candidate's vote share. The `plot_bivariate()` function produces a faceted
+scatterplot with OLS trend lines.
+
+```{r bivariate-plot}
+plot_bivariate(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  corrs = TRUE
+)
+```
+
+The bivariate plots reveal clear patterns of racially polarized voting:
+
+- **White voters**: As the proportion of white voters in a precinct increases,
+  Kemp's vote share rises and Abrams' falls. The correlation between white
+  share and Kemp vote share is strongly positive.
+- **Black voters**: The opposite pattern holds. Higher black voter share is
+  associated with higher Abrams vote share.
+- **Metz**: Received very few votes across all precincts, so we do not expect
+  EI to detect meaningful racial differences for this candidate.
+
+We can also inspect the correlation matrix directly:
+
+```{r}
+race_cand_cors(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races
+)
+```
+
+## Step 2: Goodman's ecological regression
+
+Goodman's regression is the simplest ecological inference method. It fits a
+linear model for each candidate-race pair and extracts the implied group-level
+vote share from the regression coefficients. It is fast and deterministic but
+can produce estimates outside the [0, 1] bound.
+
+As of version 3.0.6, `ei_good()` returns an `eiCompare` class object,
+consistent with `ei_iter()` and `ei_rxc()`.
+
+```{r goodman}
+ei_good_out <- ei_good(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total
+)
+
+summary(ei_good_out)
+```
+
+The summary shows point estimates and standard errors for each candidate-race
+combination. Note that Goodman estimates are based on OLS and do not produce
+credible intervals or posterior samples.
+
+## Step 3: Iterative EI (King's 2x2 method)
+
+Iterative EI runs King's (1997) 2x2 ecological inference model for every
+candidate-race pair. It produces Bayesian point estimates with credible
+intervals.
+
+```{r ei-iter, results = "hide", message = FALSE}
+ei_iter_out <- ei_iter(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total,
+  name = "Iter",
+  seed = 543210
+)
+```
+
+```{r}
+summary(ei_iter_out)
+```
+
+## Step 4: RxC EI (multinomial-Dirichlet)
+
+RxC EI estimates all candidate-race combinations simultaneously using a
+Bayesian multinomial-Dirichlet model. This method accounts for the constraint
+that vote shares must sum to one within each racial group.
+
+```{r ei-rxc, results = "hide", message = FALSE, warning = FALSE}
+ei_rxc_out <- ei_rxc(
+  data = gwinnett_ei,
+  cand_cols = cands,
+  race_cols = races,
+  totals_col = total,
+  name = "RxC",
+  seed = 543210,
+  samples = 10000,
+  burnin = 5000
+)
+```
+
+```{r}
+summary(ei_rxc_out)
+```
+
+## Step 5: Compare EI methods
+
+The built-in `plot()` method for `eiCompare` objects lets us visually compare
+estimates across methods:
+
+```{r compare-plot, fig.height = 6, fig.width = 8}
+plot(ei_iter_out, ei_rxc_out)
+```
+
+## Step 6: Prepare results for RPV visualization
+
+The `rpv_toDF()` function converts EI results into a tidy data frame suitable
+for `eiExpand::rpv_plot()`. We prepare data frames for all three methods.
+
+```{r rpv-todf, message = FALSE, warning = FALSE}
+# Goodman
+good_df <- rpv_toDF(
+  rpv_results = ei_good_out,
+  model = "Goodman",
+  jurisdiction = "Gwinnett",
+  candidate = c("Kemp", "Abrams", "Metz"),
+  preferred_candidate = c("White", "Black", "Other"),
+  party = c("Republican", "Democratic", "Libertarian"),
+  election_type = "General",
+  year = "2018",
+  contest = "Governor"
+)
+
+# Iterative EI
+iter_df <- rpv_toDF(
+  rpv_results = ei_iter_out,
+  model = "Iter EI",
+  jurisdiction = "Gwinnett",
+  candidate = c("Kemp", "Abrams", "Metz"),
+  preferred_candidate = c("White", "Black", "Other"),
+  party = c("Republican", "Democratic", "Libertarian"),
+  election_type = "General",
+  year = "2018",
+  contest = "Governor"
+)
+
+# RxC EI
+rxc_df <- rpv_toDF(
+  rpv_results = ei_rxc_out,
+  model = "RxC EI",
+  jurisdiction = "Gwinnett",
+  candidate = c("Kemp", "Abrams", "Metz"),
+  preferred_candidate = c("White", "Black", "Other"),
+  party = c("Republican", "Democratic", "Libertarian"),
+  election_type = "General",
+  year = "2018",
+  contest = "Governor"
+)
+```
+
+We can inspect the structure:
+
+```{r}
+head(iter_df)
+```
+
+## Step 7: Visualize RPV results with eiExpand
+
+The `eiExpand` package provides `rpv_plot()` for publication-quality RPV bar
+charts. We can plot each method individually or combine them.
+
+```{r rpv-plot-iter, message = FALSE, warning = FALSE, fig.height = 5, fig.width = 8}
+library(eiExpand)
+
+rpv_plot(iter_df,
+  title = "Racially Polarized Voting: Iterative EI",
+  subtitle = "2018 Gwinnett County Governor"
+)
+```
+
+```{r rpv-plot-rxc, message = FALSE, warning = FALSE, fig.height = 5, fig.width = 8}
+rpv_plot(rxc_df,
+  title = "Racially Polarized Voting: RxC EI",
+  subtitle = "2018 Gwinnett County Governor"
+)
+```
+
+We can also combine all three methods into one data frame for a comparative
+plot:
+
+```{r rpv-plot-combined, message = FALSE, warning = FALSE, fig.height = 6, fig.width = 9}
+combined_df <- dplyr::bind_rows(good_df, iter_df, rxc_df)
+
+rpv_plot(combined_df,
+  title = "RPV Estimates Across Methods",
+  subtitle = "2018 Gwinnett County Governor",
+  panelBy = "Model"
+)
+```
+
+## Step 8: VAP-denominator normalization with rpv_normalize
+
+When using voting age population (VAP) or citizen voting age population
+(CVAP) as the denominator instead of total votes cast, we include a "no vote"
+category in the candidate columns. After EI estimation, `rpv_normalize()`
+conditions the estimates on people who actually voted, removing the no-vote
+share.
+
+This approach is useful when precinct-level voter file data is unavailable
+and demographic denominators (VAP/CVAP) are used instead.
+
+**Note:** `rpv_normalize()` requires posterior samples from MCMC-based methods
+and therefore works with `ei_iter()` and `ei_rxc()` output only. Passing
+`ei_good()` output will produce an error, since Goodman's regression does not
+generate posterior samples.
+
+```{r rpv-normalize-error}
+# This will error as expected:
+tryCatch(
+  rpv_normalize(
+    ei_object = ei_good_out,
+    cand_cols = c("kemp", "abrams"),
+    race_cols = c("white", "black")
+  ),
+  error = function(e) message("Expected error: ", e$message)
+)
+```
+
+## Summary
+
+This vignette demonstrated the full RPV analysis workflow:
+
+1. **Descriptive analysis** with `plot_bivariate()` and `race_cand_cors()`
+2. **Goodman's regression** with `ei_good()` -- fast baseline estimates
+3. **Iterative EI** with `ei_iter()` -- Bayesian 2x2 estimates with CIs
+4. **RxC EI** with `ei_rxc()` -- simultaneous multinomial-Dirichlet estimates
+5. **Method comparison** with `plot()` and side-by-side `rpv_toDF()` output
+6. **RPV visualization** with `eiExpand::rpv_plot()`
+
+All three EI functions return `eiCompare` class objects that work with
+`summary()`, `rpv_toDF()`, and `plot()`. The `rpv_toDF()` output is directly
+compatible with `eiExpand::rpv_plot()` for publication-ready RPV bar charts.

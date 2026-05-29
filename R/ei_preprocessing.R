@@ -39,7 +39,6 @@ sum_over_cols <- function(data, cols) {
 #' column identifying duplicated precincts for further investigation.
 
 dedupe_precincts <- function(data, id_cols, verbose = TRUE) {
-
   # Remove any fully duplicated rows
   init_rows <- nrow(data)
   data <- unique(data)
@@ -92,8 +91,7 @@ duplicates...")
 #' @param verbose A boolean indicating whether to give status updates
 #' @return A dataframe of inputs to ecological inference without any missing values.
 #' @export
-resolve_missing_vals <- function(
-                                 data,
+resolve_missing_vals <- function(data,
                                  cand_cols,
                                  race_cols,
                                  totals_col,
@@ -195,7 +193,6 @@ check_diffs <- function(vote_sums,
                         provided_totals,
                         max_dev = 0.1,
                         avg_dev = 0.25) {
-
   # Check max_dev, avg_dev validity
   if ((max_dev < 0) | (avg_dev < 0)) {
     stop(
@@ -290,7 +287,6 @@ stdize_votes <- function(data,
                          new_names = FALSE,
                          verbose = TRUE,
                          diagnostic = FALSE) {
-
   # Set data as dataframe
   data <- as.data.frame(data)
 
@@ -299,7 +295,6 @@ stdize_votes <- function(data,
   vote_sums <- rowSums(votes)
 
   if (is.null(totals_col)) {
-
     # If no vote totals_col passed, use vote_sums for totals
     proportions <- standardize_votes(votes, new_names)
     return(proportions)
@@ -400,7 +395,6 @@ stdize_votes_all <- function(data,
                              ignore_devs = FALSE,
                              verbose = TRUE,
                              diagnostic = FALSE) {
-
   # Use different totals depending on user input.
   if (is.null(totals_col) & totals_from == "cand") {
     if (verbose) {
@@ -437,13 +431,13 @@ stdize_votes_all <- function(data,
     max_dev_cand <- Inf
     avg_dev_race <- Inf
     avg_dev_cand <- Inf
-    verbose = FALSE
+    verbose <- FALSE
   }
 
   if (verbose) {
     message("Standardizing candidate columns...")
   }
-# Get candidate standardized proportions
+  # Get candidate standardized proportions
   cand_prps <- stdize_votes(
     data = data,
     cols = cand_cols,

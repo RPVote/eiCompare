@@ -24,8 +24,7 @@ remove_nas <- function(data) {
 #' for ei_good.
 #'
 #' @return a dataframe of results that will work with table comparison funcs.
-get_results_table <- function(
-                              district_results,
+get_results_table <- function(district_results,
                               cand_col,
                               race_col,
                               n_cand,
@@ -178,7 +177,6 @@ get_md_bayes_gen_output <- function(results_table, tag = "") {
   new_results <- list()
 
   for (i in seq_along(races)) {
-
     # get race name
     race <- races[i]
 

@@ -1,6 +1,6 @@
-# Run styler and lintr checks
+# Run styler check
 # https://github.com/r-lib/styler
-# https://github.com/jimhester/lintr
+name: Styler
 
 on:
   push:
@@ -10,61 +10,36 @@ on:
     branches:
       - master
 
-name: Styler
-
 jobs:
   check-style:
-    env:
-      RSPM: "https://cloud.r-project.org"
     if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
     runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup R
-        uses: r-lib/actions/setup-r@master
+      - uses: r-lib/actions/setup-r@v2
         with:
-           r-version: 'release'
+          r-version: 'release'
 
-      - name: Report R Version
-        run: |
-          which R
-          R --version
-
-      - name: Query dependencies for cache
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
-          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
-
-      - name: Cache R packages
-        uses: actions/cache@v1
+      - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        run: |
-          while read -r cmd
-          do
-            eval sudo $cmd
-          done < <(Rscript -e 'cat(remotes::system_requirements("ubuntu", "20.04"), sep = "\n")')
-
-      - name: Install dependencies
-        run: |
-          install.packages("stringi", type="source")
-          install.packages(c("remotes", "styler"))
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("lintr")
-        shell: Rscript {0}
+          extra-packages: any::styler
+          needs: styler
 
       - name: Style
-        run: Rscript -e 'styler::style_pkg()'
-
-      - name: Lint
-        run: lintr::lint_package()
+        run: |
+          styled <- styler::style_pkg(dry = "on")
+          if (any(styled$changed)) {
+            files <- styled$file[styled$changed]
+            stop(paste(
+              "The following files need restyling:",
+              paste(files, collapse = "\n"),
+              "\nRun styler::style_pkg() locally and commit the changes.",
+              sep = "\n"
+            ))
+          }
+          cat("All files conform to style guidelines.\n")
         shell: Rscript {0}

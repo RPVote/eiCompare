@@ -1,7 +1,6 @@
 context("Testing performance of ei_propreprocessing functions")
 
 test_that("dedupe_precincts handles cases correctly", {
-
   # unduplicated dataset returns the same result
   input <- data.frame("p" = c(1, 2), "e" = c(1, 1))
   expected <- input
@@ -25,7 +24,6 @@ test_that("dedupe_precincts handles cases correctly", {
 })
 
 test_that("resolve_missing_vals() handles cases correctly", {
-
   # Base case, no NAs
   input <- data.frame(
     "x" = rep(1, 3),

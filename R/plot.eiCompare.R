@@ -42,7 +42,7 @@ plot.eiCompare <- function(x, ...) {
   data$upper <- data$mean + data$sd
   data$lower[data$lower < 0] <- 0
   data$upper[data$upper > 1] <- 1
-  
+
   # Construct error bar plot
   ggplot2::ggplot(
     data = data,

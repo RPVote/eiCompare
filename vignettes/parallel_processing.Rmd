@@ -99,23 +99,23 @@ race_cols <- c("pct_hisp", "pct_asian", "pct_white")
 totals_col <- "totvote"
 
 # Run without parallization
-#start_time <- Sys.time()
-#results_test <- ei_iter(corona, cand_cols, race_cols, totals_col)
-#(end_time <- Sys.time() - start_time)
+# start_time <- Sys.time()
+# results_test <- ei_iter(corona, cand_cols, race_cols, totals_col)
+# (end_time <- Sys.time() - start_time)
 ```
 
 To run in this parallel, all you need to do is toggle `par_compute` to be TRUE.
 ```{r eval=FALSE}
 # Run with paralleization
-#start_time <- Sys.time()
-#results_test <- ei_iter(
-#   corona, 
-#   cand_cols, 
-#   race_cols, 
-#   totals_col, 
-#   par_compute = TRUE, 
+# start_time <- Sys.time()
+# results_test <- ei_iter(
+#   corona,
+#   cand_cols,
+#   race_cols,
+#   totals_col,
+#   par_compute = TRUE,
 #   n_cores = 2)
-#(end_time <- Sys.time() - start_time)
+# (end_time <- Sys.time() - start_time)
 ```
 This saves us about a minute for this specific data set (on the computer we ran this on, but times will vary). With larger datasets and more candidate and racial demographic comparisons, the process will take longer and parallelization will become more beneficial.
 
@@ -124,7 +124,6 @@ This saves us about a minute for this specific data set (on the computer we ran 
 Depending on your dataset, the number of races and candidates you're analyzing, the amount of RAM you have, and the number of physical and logical cores you have the amount of time it takes to run `eiCompare` functions will differ. Furthermore, its important to understand parallelizing requires overhead time and relationships between sample size and run time are not necessarily linear. In the plot below, you'll be able to see the average run time of a dataset for a sample of 100, 200, and 300 precincts. It is apparent here that less samples does not equate a shorter run time. Nonetheless, parallelization can save multitudes of the ~4 minutes saved here, especially if you repeat function calls for analyses such as a boostrap.
 
 ```{r echo=FALSE, out.width='100%'}
-
 knitr::include_graphics("para_benchmark_box_nsamples.png")
 ```
 
