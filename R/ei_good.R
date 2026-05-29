@@ -12,7 +12,7 @@
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
 #' @return An object of class eiCompare containing Goodman's regression estimates
-#' @references eiPack King et. al. (http://gking.harvard.edu/eiR)
+#' @references eiPack King et. al. (https://gking.harvard.edu/eiR/)
 #'
 #' L. A. Goodman. Ecological regressions and behavior of individuals. American
 #' Sociological Review, 1953.

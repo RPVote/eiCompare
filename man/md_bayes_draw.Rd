@@ -48,7 +48,7 @@ Matrix object, of simulation reults
 Tunes and estimates MD Bayes algorithm (ei.MD.bayes)
 }
 \references{
-eiPack, King et. al. (http://gking.harvard.edu/eiR)
+eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>

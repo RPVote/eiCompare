@@ -40,9 +40,8 @@ rounding issues, adjusts the "other" race category.
 }
 \examples{
 
-  
-  # EXAMPLE: NOT RUN #
-  
+
+# EXAMPLE: NOT RUN #
 
 }
 \author{

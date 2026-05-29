@@ -19,9 +19,8 @@ Internal
 }
 \examples{
 
-  
-  # EXAMPLE: NOT RUN #
-  
+
+# EXAMPLE: NOT RUN #
 
 }
 \author{

@@ -18,24 +18,24 @@ rpv_toDF(
 )
 }
 \arguments{
-\item{rpv_results}{RPV analysis results either from the output of 
-\code{ei_iter()} or \code{ei_rxc()} from the \code{eiCompare} package or from 
+\item{rpv_results}{RPV analysis results either from the output of
+\code{ei_iter()} or \code{ei_rxc()} from the \code{eiCompare} package or from
 the internal function \code{rpv_normalize()}.}
 
-\item{model}{A string indicating the model used to create \code{rpv_results}. 
+\item{model}{A string indicating the model used to create \code{rpv_results}.
 Examples include "ei", "rxc", "ei cvap", etc.}
 
 \item{jurisdiction}{A string of the jurisdiction.}
 
 \item{preferred_candidate}{A character vector of races indicating racial
-preference of each candidate. The racial preferences must be listed 
+preference of each candidate. The racial preferences must be listed
 in the correct order with respect to \code{candidate}.}
 
-\item{party}{A character vector containing the political parties of the 
-candidates. Must be listed in the correct order with respect to 
+\item{party}{A character vector containing the political parties of the
+candidates. Must be listed in the correct order with respect to
 \code{candidate}.}
 
-\item{election_type}{A string on the election type (usually "General" or 
+\item{election_type}{A string on the election type (usually "General" or
 "Primary")}
 
 \item{year}{The year of the contest}
@@ -43,43 +43,43 @@ candidates. Must be listed in the correct order with respect to
 \item{contest}{A string of contest name as it would appear in an rpv visualization
 (e.g. "President" or "Sec. of State")}
 
-\item{candidate}{A character vector of candidate names written as they would 
+\item{candidate}{A character vector of candidate names written as they would
 appear on a visualization. The candidate names must be listed in the same order
-as the candidate estimates appear in \code{rpv_results}, i.e the same order 
-as the \code{cands} argument in \code{eiCompare::ei_iter()} or 
+as the candidate estimates appear in \code{rpv_results}, i.e the same order
+as the \code{cands} argument in \code{eiCompare::ei_iter()} or
 \code{eiCompare::ei_rxc()}.}
 }
 \value{
 rpv results in a data.frame
 }
 \description{
-Create a dataframe from RPV analysis output to facilitate 
-RPV visualizations. The output dataframe of this function can be used directly 
+Create a dataframe from RPV analysis output to facilitate
+RPV visualizations. The output dataframe of this function can be used directly
 in \code{rpv_plot()}.
 }
 \examples{
 \donttest{
-#library(eiCompare)
-#data("south_carolina")
-#prec_election_demog <- south_carolina[1:50,]
+# library(eiCompare)
+# data("south_carolina")
+# prec_election_demog <- south_carolina[1:50,]
 
 ## run rpv analysis
-#eiVote <- eiCompare::ei_iter(
- # data = prec_election_demog,
- # cand_cols = c('pct_mcmaster', 'pct_smith'),
- # race_cols = c('pct_white', 'pct_black'),
- # totals_col = "total_vap"
-#)
+# eiVote <- eiCompare::ei_iter(
+# data = prec_election_demog,
+# cand_cols = c('pct_mcmaster', 'pct_smith'),
+# race_cols = c('pct_white', 'pct_black'),
+# totals_col = "total_vap"
+# )
 
 ## use function to create dataframe from rpv results
-#plotDF <- rpv_toDF(
+# plotDF <- rpv_toDF(
 #   rpv_results = eiVote,
-#   model = "ei vap", #since we used ei_iter model normalized with vap denominator       
+#   model = "ei vap", #since we used ei_iter model normalized with vap denominator
 #   jurisdiction = "Statewide",
-#   candidate = c("McMaster", "Smith"), #must be in correct order relative to rpv_results                             
-#   preferred_candidate = c("White", "Black"), #must be in correct order rpv_results  
+#   candidate = c("McMaster", "Smith"), #must be in correct order relative to rpv_results
+#   preferred_candidate = c("White", "Black"), #must be in correct order rpv_results
 #   party = c("Republican", "Democratic"),
-#   election_type = "General",  
+#   election_type = "General",
 #   year = "2020",
 #   contest = "Governor"
 # )

@@ -15,7 +15,6 @@ form is to have them called ei_rc_good_table()
 }
 
 \examples{
-
 \dontrun{
 # TOY DATA EXAMPLE
 canda <- c(.1, .09, .85, .9, .92)

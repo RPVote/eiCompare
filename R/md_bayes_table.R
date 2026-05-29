@@ -9,7 +9,7 @@
 #' results. This, combined with results from ei_est_gen() sends to the
 #' ei_rc_good_table() function for combined table results and comparisons.
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
-#' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
+#' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples
 #' \donttest{
 #' # TOY DATA EXAMPLE

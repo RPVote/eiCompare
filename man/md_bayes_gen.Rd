@@ -71,7 +71,6 @@ md_bayes_table() produces tables of results compatible with EI table of
 results.
 }
 \examples{
-
 \donttest{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
@@ -111,7 +110,7 @@ head(drawings$draws)
 }
 }
 \references{
-eiPack, King et. al. (http://gking.harvard.edu/eiR)
+eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>

@@ -45,7 +45,7 @@ good_corona <- goodman_generalize(cands, race_group3, "totvote", corona, table_n
 }
 }
 \references{
-eiPack King et. al. (http://gking.harvard.edu/eiR) L. A.
+eiPack King et. al. (https://gking.harvard.edu/eiR/) L. A.
 Goodman. Ecological regressions and behavior of individuals. American
 Sociological Review, 1953.
 }

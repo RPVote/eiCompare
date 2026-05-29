@@ -35,7 +35,7 @@ Most of the time the user will not include the Goodman table, as they
 are interested in the EI vs. EI:RxC comparison
 }
 \references{
-eiPack, King et. al. (http://gking.harvard.edu/eiR)
+eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>

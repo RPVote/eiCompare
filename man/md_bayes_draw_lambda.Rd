@@ -51,7 +51,6 @@ of lambda posterior distribution draws. Similar to md_bayes_draw, but used
 primarily for assessing posterior distribution tests.
 }
 \examples{
-
 \donttest{
 # TOY DATA EXAMPLE
 canda <- c(10, 8, 10, 4, 8)
@@ -63,11 +62,11 @@ toy <- data.frame(canda, candb, white, black)
 # Generate formula for passage to ei.reg.bayes() function
 form <- formula(cbind(canda, candb) ~ cbind(black, white))
 # Then excute md_bayes_draw(); not run here due to time
-md_bayes_draw_lambda(toy, c(2,3), form )
+md_bayes_draw_lambda(toy, c(2, 3), form)
 }
 }
 \references{
-eiPack, King et. al. (http://gking.harvard.edu/eiR)
+eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
 Loren Collingwood <loren.collingwood@ucr.edu>; Justin Gross

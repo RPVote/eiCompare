@@ -19,7 +19,7 @@
 #' @note Most of the time the user will not include the Goodman table, as they
 #' are interested in the EI vs. EI:RxC comparison
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>
-#' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
+#' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #'
 #' @importFrom methods new
 #' @export ei_rc_good_table

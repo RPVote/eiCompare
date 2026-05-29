@@ -47,7 +47,7 @@ as `paste0(race, cand)` (e.g., `"pct_blackpct_cand_A"`).
 #  race_cols = c("white", "black", "other"),
 #  totals_col = "turnout",
 #  seed = 12345
-#)
+# )
 
 # # Extract precinct-level estimates
 # precinct_results <- extract_rxc_precinct(
@@ -56,9 +56,9 @@ as `paste0(race, cand)` (e.g., `"pct_blackpct_cand_A"`).
 #  race_cols = c("white", "black", "other"),
 #  dat = gwinnett_ei,
 #  precinct_id = "precinct"
-#)
+# )
 
-#head(precinct_results)
+# head(precinct_results)
 }
 
 }

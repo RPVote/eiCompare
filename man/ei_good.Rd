@@ -26,7 +26,7 @@ An object of class eiCompare containing Goodman's regression estimates
 EI iterative estimation via Goodman's Regression
 }
 \references{
-eiPack King et. al. (http://gking.harvard.edu/eiR)
+eiPack King et. al. (https://gking.harvard.edu/eiR/)
 
 L. A. Goodman. Ecological regressions and behavior of individuals. American
 Sociological Review, 1953.

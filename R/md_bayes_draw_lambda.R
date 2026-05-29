@@ -22,7 +22,7 @@
 #' RPB in elections with a small number of precincts.
 #' @author Loren Collingwood <loren.collingwood@@ucr.edu>; Justin Gross
 #' <jhgross@@umass.edu>
-#' @references eiPack, King et. al. (http://gking.harvard.edu/eiR)
+#' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples
 #' \donttest{
 #' # TOY DATA EXAMPLE

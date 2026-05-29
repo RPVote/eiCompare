@@ -25,10 +25,10 @@ ei_homog(
 
 \item{cp}{numeric; homogeneous precinct cut-point, e.g., 0.80; default = 0.80}
 
-\item{warn_row}{= numeric; threshold number of precincts racial group must be above to 
-conduct analysis; default = 5. For example, with three groups, whites, blacks, Hispanics, 
-each group must have at least 5 precincts with at least 80% share of the population for 
-that group. All racial groups need to have at least n number of precincts at or above 
+\item{warn_row}{= numeric; threshold number of precincts racial group must be above to
+conduct analysis; default = 5. For example, with three groups, whites, blacks, Hispanics,
+each group must have at least 5 precincts with at least 80% share of the population for
+that group. All racial groups need to have at least n number of precincts at or above
 warn_row level or error will be thrown.}
 
 \item{verbose}{A boolean indicating whether to print out status messages.}
@@ -37,8 +37,8 @@ warn_row level or error will be thrown.}
 matrix with homogeneous precinct results, columns = race groups, rows = candidates
 }
 \description{
-Creates matrix table of homogeneous precinct analysis results by racial/ethnic group. The idea, 
-for example, is to get a basic sense of voting behavior by racial group, examine candidate 
+Creates matrix table of homogeneous precinct analysis results by racial/ethnic group. The idea,
+for example, is to get a basic sense of voting behavior by racial group, examine candidate
 preference in districts that are above 80% white, 80% black, etc.
 }
 \details{
@@ -46,41 +46,49 @@ ei_homog
 }
 \examples{
 # Toy data example
-cand_a <- c( rep(.8, 10), rep(.2, 10))
+cand_a <- c(rep(.8, 10), rep(.2, 10))
 cand_b <- 1 - cand_a
 white <- c(rep(.7, 5), rep(.85, 5), rep(.1, 5), rep(.05, 5))
 black <- 1 - white
-total <- c ( rep(200, 5), rep(100, 5), rep(80, 5), rep(300, 5) )
+total <- c(rep(200, 5), rep(100, 5), rep(80, 5), rep(300, 5))
 toy <- data.frame(cand_a, cand_b, white, black, total)
 
 # Default Example #
-ei_homog(data = toy,
-        race_cols = c("white", "black"),
-        cand_cols = c("cand_a", "cand_b"),
-        totals_col = "total")
-           
+ei_homog(
+  data = toy,
+  race_cols = c("white", "black"),
+  cand_cols = c("cand_a", "cand_b"),
+  totals_col = "total"
+)
+
 # Verbosity Example #
-ei_homog(data = toy,
-        race_cols = c("white", "black"),
-        cand_cols = c("cand_a", "cand_b"),
-        totals_col = "total", 
-        verbose = TRUE)
-           
+ei_homog(
+  data = toy,
+  race_cols = c("white", "black"),
+  cand_cols = c("cand_a", "cand_b"),
+  totals_col = "total",
+  verbose = TRUE
+)
+
 # Adjust Cut Point (cp) to 0.70
-ei_homog(data = toy,
-        race_cols = c("white", "black"),
-        cand_cols = c("cand_a", "cand_b"),
-        totals_col = "total", 
-        cp = 0.70,
-        verbose = TRUE)
-           
+ei_homog(
+  data = toy,
+  race_cols = c("white", "black"),
+  cand_cols = c("cand_a", "cand_b"),
+  totals_col = "total",
+  cp = 0.70,
+  verbose = TRUE
+)
+
 # Set Precincts to anything above 3
-ei_homog(data = toy,
-        race_cols = c("white", "black"),
-        cand_cols = c("cand_a", "cand_b"),
-        totals_col = "total", 
-        warn_row = 3,
-        verbose = TRUE)
+ei_homog(
+  data = toy,
+  race_cols = c("white", "black"),
+  cand_cols = c("cand_a", "cand_b"),
+  totals_col = "total",
+  warn_row = 3,
+  verbose = TRUE
+)
 
 }
 \author{

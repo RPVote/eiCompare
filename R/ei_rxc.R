@@ -37,7 +37,7 @@
 #' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
-#' @references eiPack, King et al., (http://gking.harvard.edu/eiR)
+#' @references eiPack, King et al., (https://gking.harvard.edu/eiR/)
 #'
 #' @return If ret_mcmc == TRUE, a list is returned containing results and a data
 #' frame of the full chains from the MCMC. If ret_mcmc == FALSE, results are
