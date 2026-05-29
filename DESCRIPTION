@@ -50,14 +50,4 @@ Suggests: knitr, plyr, rmarkdown, reshape2, RColorBrewer,
 RoxygenNote: 7.3.2
 Encoding: UTF-8
 VignetteBuilder: knitr
-Packaged: 2020-09-08 07:00:35 UTC; lorencollingwood
-Author: Loren Collingwood [aut] (<https://orcid.org/0000-0002-4447-8204>),
-  Ari Decter-Frain [aut, cre] (<https://orcid.org/0000-0001-9635-3334>),
-  Hikari Murayama [aut] (<https://orcid.org/0000-0002-4067-4734>),
-  Pratik Sachdeva [aut] (<https://orcid.org/0000-0002-6809-2437>),
-  Juandalyn Burke [aut] (<https://orcid.org/0000-0002-6345-7505>),
-  Scott Henderson [ctb] (<https://orcid.org/0000-0003-0624-4965>),
-  Spencer Wood [ctb] (<https://orcid.org/0000-0002-5794-2619>),
-  Matt Barreto [ctb] (<https://orcid.org/0000-0003-2423-6395>)
-Maintainer: Loren Collingwood <lcollingwood@unm.edu>
 LazyData: true
