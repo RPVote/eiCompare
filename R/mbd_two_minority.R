@@ -8,7 +8,7 @@
 #' @param colnames Vector of candidate names. Stick to c(V1,V2) or c(V1,V2,V3)
 #' @param two Logical. Two candidates (TRUE), or three (FALSE)
 #' @return List with two data frames
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #'
 #'
 #' @export mbd_two_minority

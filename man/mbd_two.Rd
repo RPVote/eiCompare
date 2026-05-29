@@ -22,5 +22,5 @@ variables: V1, V2, when two=FALSE, add V3; Hispanic = VtdHVap_cor, White =
 VtdAVap_cor, Black = VtdBVap_cor
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

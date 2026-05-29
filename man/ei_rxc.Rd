@@ -96,7 +96,7 @@ EI Bayesian simultaneous estimation for multiple races and candidates
 eiPack, King et al., (https://gking.harvard.edu/eiR/)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>, <loren.collingwood@gmail.com>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Hikari Murayama <hikari_murayama@berkeley.edu>
 

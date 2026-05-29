@@ -92,7 +92,7 @@ ei_homog(
 
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>; <loren.collingwood@gmail.com>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Stephen Popick
 }

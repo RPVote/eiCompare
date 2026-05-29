@@ -9,7 +9,7 @@
 #' @param plot_path Path to save
 #' @param ei_type Specify whether the data comes from iterative ei ("ei") or rxc ("rxc")
 #' @return Prep and run density plot creation iteratively
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Hikari Murayama
 #'
 #' @importFrom foreach %dopar% %do%

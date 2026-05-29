@@ -4,7 +4,7 @@
 #' @param agg_betas Aggregated beta values
 #' @param plot_path Path to save. If NULL, plot is not saved.
 #' @return Return density for every race/candidate pair for Bb-Bw
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Hikari Murayama
 #'
 #' @examples

@@ -33,7 +33,7 @@
 #' @param n_cores The number of cores to use in parallel computation. Defaulted to NULL, in which case parallel::detectCores() - 1 is used
 #' @param ... Additional parameters passed to eiPack::tuneMD()
 #'
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>, <loren.collingwood@@gmail.com>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'

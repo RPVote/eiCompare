@@ -31,7 +31,7 @@
 #' tabular results, with mean, SE, and credible intervals. Second item is mcmc
 #' draws.
 #'
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples
 #' \donttest{

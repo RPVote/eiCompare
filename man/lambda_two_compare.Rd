@@ -51,6 +51,6 @@ lambda_two_compare(lmd, cnames = cnames, cand1or2 = 1)
 eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>; Justin Gross
+Loren Collingwood <lcollingwood@unm.edu>; Justin Gross
 <jhgross@umass.edu>
 }

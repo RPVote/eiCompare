@@ -5,7 +5,7 @@
 #'
 #' @param ei_bayes Object result of call to ei.reg.bayes() function.
 #' @return Matrix object, table of results
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples
 #' \donttest{

@@ -15,7 +15,7 @@
 #' @param \dots Arguments passed onto lm() function
 #' @return Object of class data.frame() returned containing table summary of
 #' all the Goodman regressions
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @seealso \code{\link{ei_rc_good_table}}
 #' @references eiPack King et. al. (https://gking.harvard.edu/eiR/) L. A.
 #' Goodman. Ecological regressions and behavior of individuals. American

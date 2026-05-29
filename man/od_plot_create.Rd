@@ -29,7 +29,7 @@ overlay density plot comparing candidates for votes by race
 Internal
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Hikari Murayama
 }

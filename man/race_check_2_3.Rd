@@ -45,5 +45,5 @@ rounding issues, adjusts the "other" race category.
 
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

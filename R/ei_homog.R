@@ -18,7 +18,7 @@
 #' warn_row level or error will be thrown.
 #' @param verbose A boolean indicating whether to print out status messages.
 #' @return matrix with homogeneous precinct results, columns = race groups, rows = candidates
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; <loren.collingwood@@gmail.com>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Stephen Popick
 #' @examples
 #' # Toy data example

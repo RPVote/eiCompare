@@ -1,6 +1,6 @@
 #' EI iterative estimation via Goodman's Regression
 #'
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #'
 #' @param data A data.frame() object containing precinct-level turnout data by

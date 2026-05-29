@@ -10,7 +10,7 @@
 #' @param plot_path Path to save plots. If NULL, plot is not saved.
 #' @param cand_colors Colors for every candidate
 #' @return Comparison density plots
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Hikari Murayama
 #'
 #' @return overlay density plot comparing candidates for votes by race

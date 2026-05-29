@@ -95,5 +95,5 @@ ei_reg_bayes_conf_int(ei_bayes)
 eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

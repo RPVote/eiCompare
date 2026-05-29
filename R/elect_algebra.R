@@ -23,8 +23,8 @@
 #'
 #' @return Table with estimated candidate A/B votes by race, with columns for
 #' percent vote too
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>;
-#' <loren.collingwood@@gmail.com>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>;
+
 #' @author Matt Barreto <barretom@@ucla.edu>
 #'
 #' @examples

@@ -29,7 +29,7 @@
 #' results, second dataframe of betas themselves.
 #' @note If this results in an error, "Error in .subset2(x, i, exact = exact) :
 #' invalid subscript type 'list'", just rerun the algorithm again.
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references eiPack. Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press.
 #' @examples

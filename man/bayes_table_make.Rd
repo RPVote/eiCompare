@@ -93,5 +93,5 @@ inference and higher-dimension data management. New Functions for
 Multivariate Analysis, 18(1):43, 2006.
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

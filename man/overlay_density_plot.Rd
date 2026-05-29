@@ -33,7 +33,7 @@ Prep and run density plot creation iteratively
 Internal
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Hikari Murayama
 }

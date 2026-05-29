@@ -18,7 +18,7 @@
 #' @return Dataset of Left side (Votes) vs. Right side (Demographics). diff
 #' column can be tagged on to exiting 'other' category to expedite data
 #' preparation process.
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @examples
 #'
 #'

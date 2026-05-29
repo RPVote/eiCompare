@@ -14,7 +14,7 @@
 #' @return Data frame of the probability of one scenario over the other by 10
 #' pct., by 5 pct., greater than 0 (e.g., what is the probability that
 #' candidate 1 beats candidate 2 among Latinos by 10 percentage points, etc.)
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; Justin Gross
+#' @author Loren Collingwood <lcollingwood@@unm.edu>; Justin Gross
 #' <jhgross@@umass.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples

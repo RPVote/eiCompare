@@ -24,6 +24,6 @@ Table of congruence scores
 Calculates congruence scores between EI and RxC for the 2x2 Scenario
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>, Matt Barreto
+Loren Collingwood <lcollingwood@unm.edu>, Matt Barreto
 <barretom@ucla.edu>
 }

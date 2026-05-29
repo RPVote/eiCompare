@@ -20,7 +20,7 @@
 #' @param ret.mcmc Logical. Default = TRUE
 #' @return Posterior distribution of lambdas. This is often used for assessing
 #' RPB in elections with a small number of precincts.
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>; Justin Gross
+#' @author Loren Collingwood <lcollingwood@@unm.edu>; Justin Gross
 #' <jhgross@@umass.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples

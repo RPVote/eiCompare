@@ -11,7 +11,7 @@
 #' @param group_race Numeric vector, taking similar values as cand_race where
 #' 1=Latino; 2=Black; 3=Asian; 4=White/Non
 #' @return Table of congruence scores
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>, Matt Barreto
+#' @author Loren Collingwood <lcollingwood@@unm.edu>, Matt Barreto
 #' <barretom@@ucla.edu>
 #'
 #' @export ei_rc_congruence

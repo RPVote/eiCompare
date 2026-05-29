@@ -32,7 +32,7 @@ L. A. Goodman. Ecological regressions and behavior of individuals. American
 Sociological Review, 1953.
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Ari Decter-Frain <agd75@cornell.edu>
 }

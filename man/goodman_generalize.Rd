@@ -53,5 +53,5 @@ Sociological Review, 1953.
 \code{\link{ei_rc_good_table}}
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

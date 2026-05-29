@@ -9,7 +9,7 @@
 #' @param table_names Character vector of column names, e.g., c("RxC: Pct
 #' Hisp", "RxC: Pct Asian")
 #' @return Data frame object in similar vein to ei_est_gen
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references O. Lau, R. T. Moore, and M. Kellermann. eipack: RxC ecological
 #' inference and higher-dimension data management. New Functions for
 #' Multivariate Analysis, 18(1):43, 2006.

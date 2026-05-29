@@ -28,6 +28,6 @@ Useful links:
 \author{
 Loren Collingwood
 
-Maintainer: Loren Collingwood <loren.collingwood@ucr.edu>
+Maintainer: Loren Collingwood <lcollingwood@unm.edu>
 }
 \keyword{package}

@@ -69,6 +69,6 @@ md_bayes_draw_lambda(toy, c(2, 3), form)
 eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>; Justin Gross
+Loren Collingwood <lcollingwood@unm.edu>; Justin Gross
 <jhgross@umass.edu>
 }

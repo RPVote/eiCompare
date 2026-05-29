@@ -53,7 +53,7 @@
 #' @importFrom purrr lift
 #' @importFrom utils capture.output setTxtProgressBar
 #'
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @author Ari Decter-Frain <agd75@@cornell.edu>
 #' @author Hikari Murayama <hikari_murayama@@berkeley.edu>
 #'

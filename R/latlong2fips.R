@@ -8,7 +8,7 @@
 #' @param longitude Numeric. Longitude coordinate.
 #' @param number Numeric. Usually part of a loop index counter
 #' @return Character string 15-digit FIPS code corresponding to Lat/Long entry
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references https://geo.fcc.gov/api/census/block/
 #'
 #' @export latlong2fips

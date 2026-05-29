@@ -8,7 +8,7 @@
 #' @return Data.frame object of candidate (rows) and race (columns) RxC
 #' results. This, combined with results from ei_est_gen() sends to the
 #' ei_rc_good_table() function for combined table results and comparisons.
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @examples
 #' \donttest{

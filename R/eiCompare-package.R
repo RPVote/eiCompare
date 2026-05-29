@@ -9,7 +9,7 @@
 #' @section Objects from the Class: Objects can, in principle, be created by
 #' calls of the form \code{new("ei_compare", ...)}.  However, the preferred
 #' form is to have them called ei_rc_good_table()
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @keywords classes
 #' @examples
 #' \dontrun{
@@ -98,7 +98,7 @@ NULL
 #' @docType package
 #' @author Loren Collingwood
 #'
-#' Maintainer: Loren Collingwood <loren.collingwood@@ucr.edu>
+#' Maintainer: Loren Collingwood <lcollingwood@@unm.edu>
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem. Princeton: Princeton University Press. Lau, Olivia, Ryan Moore, and
 #' Michael Kellerman. eiPack: Ecological Inference and Higher-Dimension Data

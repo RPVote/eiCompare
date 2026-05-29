@@ -38,5 +38,5 @@ are interested in the EI vs. EI:RxC comparison
 eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

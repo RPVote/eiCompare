@@ -17,7 +17,7 @@
 #' @param burnin Numeric. Default = 100000
 #' @param ret.mcmc Logical. Default = TRUE
 #' @return Matrix object, of simulation reults
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @references eiPack, King et. al. (https://gking.harvard.edu/eiR/)
 #' @import eiPack
 #' @export md_bayes_draw

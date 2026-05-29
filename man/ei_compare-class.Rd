@@ -88,6 +88,6 @@ ei_rc_combine
 
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }
 \keyword{classes}

@@ -93,7 +93,7 @@ eiPack. Gary King (1997). A Solution to the Ecological Inference
 Problem. Princeton: Princeton University Press.
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Ari Decter-Frain <agd75@cornell.edu>
 

@@ -21,5 +21,5 @@ Extract posterior means and credible intervals. Need to call variables V1,
 V2. When two=FALSE, add in V3; Race names = VtdAVap_cor, VtdMVap_cor
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 }

@@ -6,7 +6,7 @@
 #' @param cbind_dat cbind object
 #' @param ci Credible intervals. Default: c(.025, .975)
 #' @return Mean and credible interval
-#' @author Loren Collingwood <loren.collingwood@@ucr.edu>
+#' @author Loren Collingwood <lcollingwood@@unm.edu>
 #' @examples
 #'
 #'

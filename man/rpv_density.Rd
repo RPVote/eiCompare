@@ -23,7 +23,7 @@ rpv_density
 # EXAMPLE: NOT RUN #
 }
 \author{
-Loren Collingwood <loren.collingwood@ucr.edu>
+Loren Collingwood <lcollingwood@unm.edu>
 
 Hikari Murayama
 }
