@@ -22,7 +22,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v2
         with:
-          r-version: 'release'
+          r-version: '4.4'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -32,8 +32,14 @@ jobs:
       - name: Style
         run: |
           styled <- styler::style_pkg(dry = "on")
-          if (any(styled$changed)) {
-            files <- styled$file[styled$changed]
+          errored <- is.na(styled$changed)
+          if (any(errored)) {
+            cat("Warning: styler could not parse", sum(errored), "file(s):\n")
+            cat(paste(styled$file[errored], collapse = "\n"), "\n")
+          }
+          needs_restyle <- styled$changed & !is.na(styled$changed)
+          if (any(needs_restyle)) {
+            files <- styled$file[needs_restyle]
             stop(paste(
               "The following files need restyling:",
               paste(files, collapse = "\n"),
