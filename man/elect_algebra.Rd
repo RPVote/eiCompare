@@ -106,6 +106,5 @@ elect_algebra(totals = totals, c1_ei_res, c2_ei_res, cand_names)
 \author{
 Loren Collingwood <lcollingwood@unm.edu>;
 
-
 Matt Barreto <barretom@ucla.edu>
 }

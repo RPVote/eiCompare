@@ -11,18 +11,23 @@
 #' race
 #' @param totals_col The name of the column containing total votes cast in each
 #' precinct
+#' @param ci_size The confidence interval size (default = 0.95). Set to NULL to
+#' omit confidence intervals from the output.
 #' @return An object of class eiCompare containing Goodman's regression estimates
+#' with point estimates, standard errors, and confidence intervals in the same
+#' format as \code{ei_iter()} and \code{ei_rxc()}.
 #' @references eiPack King et. al. (https://gking.harvard.edu/eiR/)
 #'
 #' L. A. Goodman. Ecological regressions and behavior of individuals. American
 #' Sociological Review, 1953.
 #'
-#' @importFrom stats formula glm coef na.omit
+#' @importFrom stats formula glm coef na.omit qnorm
 #' @export
 ei_good <- function(data,
                     cand_cols,
                     race_cols,
-                    totals_col) {
+                    totals_col,
+                    ci_size = 0.95) {
   # Check for valid arguments
   check_args(data, cand_cols, race_cols, totals_col)
 
@@ -79,7 +84,7 @@ ei_good <- function(data,
       vote_pct <- 0
     }
 
-    # Compute SE
+    # Compute SE of summed coefficients
     ses <- coef(summary(res))[, 2]
 
     # SE on sum of coefficients = sqrt(SE1^2 + SE2^2 + 2COV(1,2))
@@ -104,12 +109,19 @@ ei_good <- function(data,
     )
   }
 
-  # Build eiCompare class object
+  # Compute confidence intervals from SE
+  z <- stats::qnorm(1 - (1 - ci_size) / 2)
+  ci_lowers <- pmax(vote_pcts - z * std_errs, 0)
+  ci_uppers <- pmin(vote_pcts + z * std_errs, 1)
+
+  # Build eiCompare class object (matches ei_iter/ei_rxc column format)
   estimates <- data.frame(
     cand = cands_vec,
     race = races_vec,
     mean = vote_pcts,
     sd = std_errs,
+    ci_lower = ci_lowers,
+    ci_upper = ci_uppers,
     stringsAsFactors = FALSE
   )
 

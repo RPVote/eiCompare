@@ -4,7 +4,7 @@
 \alias{ei_good}
 \title{EI iterative estimation via Goodman's Regression}
 \usage{
-ei_good(data, cand_cols, race_cols, totals_col)
+ei_good(data, cand_cols, race_cols, totals_col, ci_size = 0.95)
 }
 \arguments{
 \item{data}{A data.frame() object containing precinct-level turnout data by
@@ -18,9 +18,14 @@ race}
 
 \item{totals_col}{The name of the column containing total votes cast in each
 precinct}
+
+\item{ci_size}{The confidence interval size (default = 0.95). Set to NULL to
+omit confidence intervals from the output.}
 }
 \value{
 An object of class eiCompare containing Goodman's regression estimates
+with point estimates, standard errors, and confidence intervals in the same
+format as \code{ei_iter()} and \code{ei_rxc()}.
 }
 \description{
 EI iterative estimation via Goodman's Regression
